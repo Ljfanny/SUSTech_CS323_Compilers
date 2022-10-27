@@ -58,6 +58,8 @@ ExtDef: Specifier ExtDecList SEMI
     | Specifier FunDec CompSt 
     {$$= newNodeNTER(EXTDEf, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | error FunDec CompSt 
+    { printf("Missing specifier\n"); }
     ;
 
 ExtDecList: VarDec 
@@ -91,6 +93,8 @@ VarDec: ID
     {$$= newNodeNTER(VARDEc, getLine()); tmpnum = 4;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4;
     setNode($$, tmpcld, tmpnum);}
+    | VarDec LB INT error 
+    {printf("Missing closing bracket ']'\n");}
     ;
 
 FunDec: ID LP VarList RP 
@@ -99,6 +103,10 @@ FunDec: ID LP VarList RP
     | ID LP RP 
     {$$= newNodeNTER(FUNDEc, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | ID LP VarList error 
+    { printf("Missing closing parenthesis ')'\n"); }
+    | ID LP error 
+    { printf("Missing closing parenthesis ')'\n"); }
     ;
 
 VarList: ParamDec COMMA VarList 
@@ -136,6 +144,8 @@ Stmt: Exp SEMI
     | RETURN Exp SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    |RETURN Exp error 
+    { printf("Missing semicolon ';'\n");}
     | IF LP Exp RP Stmt %prec PREFIX_IF_ELSE 
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 5;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
@@ -160,6 +170,8 @@ DefList: Def DefList
 Def: Specifier DecList SEMI
     {$$= newNodeNTER(DEf, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | Specifier DecList error {printf("Missing semicolon ';'\n");}
+    | error DecList SEMI {printf("Missing specifier\n");}
     ;
 
 DecList: Dec
@@ -236,10 +248,13 @@ Exp: Exp ASSIGN Exp
     | ID LP RP
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | ID LP Args error{ printf("Missing closing parenthesis ')'\n");} 
+    | ID LP error { printf("Missing closing parenthesis ')'\n"); }
     | Exp LB Exp RB
     {$$ = newNodeNTER(EXp, getLine()); tmpnum = 4;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
     tmpcld[3] = $4; setNode($$, tmpcld, tmpnum);}
+    | Exp LB Exp error {printf("Missing closing bracket ']'\n");}
     | Exp DOT ID
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
@@ -265,9 +280,9 @@ Args: Exp COMMA Args
     ;
 %%
 void yyerror(const char *s) {
-    fprintf(stderr, "%s\n", s);
+    errorType = 1;
+    printf("Error type B at Line %d: ", yylineno)
 }
-
 int getLine(){
     return yylineno;
 }

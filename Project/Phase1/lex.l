@@ -49,9 +49,15 @@ INT32_DEC 0|([1-9]{DIGIT}*)
 INT32_HEX 0[xX]{DIGIT_HEX}+
 FLOAT32 {DIGIT}+\.{DIGIT}+
 
-/* CHAR */
+CHAR '[^']'|'\\[xX](0|[1-9a-fA-F]{DIGIT_HEX}{0,1})'
+INT_LEADING0 0{DIGIT}+
+INT_INVALID_HEX 0[xX]{DIGIT_HEX}*[g-zG-Z]+{DIGIT_HEX}*
+CHAR_DOUBLE0S '\\[xX]00'
+CHAR_MORE_HEX '\\[xX]{DIGIT_HEX}{3,}'
+CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*'
 /* CHAR {DIGIT}|{LETTER}|{} */
 ID {LETTER_}({LETTER_}|{DIGIT}){0,31}
+ID_INVALID {DIGIT}+{LETTER_}+{DIGIT}*
 
 %%
 
@@ -114,6 +120,42 @@ ID {LETTER_}({LETTER_}|{DIGIT}){0,31}
 {FLOAT32} {
     yylval = newNodeNL(FLOAt,yylineno,yytext);
     return FLOAT;
+}
+
+{INT_LEADING0} {
+    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    errorType = 0;
+    return INT;
+}
+
+{INT_INVALID_HEX} {
+    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    errorType = 0;
+    return INT;
+}
+
+{CHAR_DOUBLE0S} {
+    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    errorType = 0;
+    return CHAR;
+}
+
+{CHAR_MORE_HEX} {
+    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    errorType = 0;
+    return CHAR;
+}
+
+{CHAR_INVALID_HEX} {
+    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    errorType = 0;
+    return CHAR;
+}
+
+{ID_INVALID} {
+    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    errorType = 0;
+    return ID;
 }
 
 %%
