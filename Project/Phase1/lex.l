@@ -134,6 +134,11 @@ ID_INVALID {DIGIT}+{LETTER_}+{DIGIT}*
     return INT;
 }
 
+{CHAR} {
+    yylval = newNodeNL(CHAr,yylineno,yytext);
+    return CHAR;
+}
+
 {CHAR_DOUBLE0S} {
     printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
