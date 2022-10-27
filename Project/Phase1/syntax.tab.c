@@ -93,7 +93,7 @@
 
     #define MISSING_SPECIFIER_ERROR(er) { \
         errors++; \
-        printf("Error type B at Line %d: Missing specifier\n", er->line-1); \
+        printf("Error type B at Line %d: Missing specifier\n", er->line); \
     }
 
     int errors = 0;

@@ -127,26 +127,9 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
     yylval = newNodeNL(-1, yylineno, yytext);
     return ERROR;
 }
-<<<<<<< HEAD
-{CHAR} {
-    yylval = newNodeNL(CHAr,yylineno,yytext);
-=======
-
-{INT_INVALID_HEX} {
-    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
-    errorType = 0;
-    return INT;
-}
 
 {CHAR} {
     yylval = newNodeNL(CHAr,yylineno,yytext);
-    return CHAR;
-}
-
-{CHAR_DOUBLE0S} {
-    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
-    errorType = 0;
->>>>>>> 823eb7588ca987bc59f5593fa747c871aabbbe37
     return CHAR;
 }
 
