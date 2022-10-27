@@ -1,4 +1,4 @@
-int test_1_o01()
+int test_12011543_1()
 {
   int _wrong_hex_int_1 = 0x77G;
   int _wrong_hex_int_2 = 0xCS;
