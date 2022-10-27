@@ -123,41 +123,40 @@ ID_INVALID {DIGIT}+{LETTER_}+{DIGIT}*
 }
 
 {INT_LEADING0} {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return INT;
 }
 
 {INT_INVALID_HEX} {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return INT;
 }
 
 {CHAR_DOUBLE0S} {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return CHAR;
 }
 
 {CHAR_MORE_HEX} {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return CHAR;
 }
 
 {CHAR_INVALID_HEX} {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return CHAR;
 }
 
 {ID_INVALID} {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return ID;
 }
-
 %%
 
 /* int main(int argc, char **argv){

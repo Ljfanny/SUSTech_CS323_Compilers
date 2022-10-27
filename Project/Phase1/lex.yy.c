@@ -1198,7 +1198,7 @@ case 40:
 YY_RULE_SETUP
 #line 125 "lex.l"
 {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return INT;
 }
@@ -1207,7 +1207,7 @@ case 41:
 YY_RULE_SETUP
 #line 131 "lex.l"
 {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return INT;
 }
@@ -1216,7 +1216,7 @@ case 42:
 YY_RULE_SETUP
 #line 137 "lex.l"
 {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return CHAR;
 }
@@ -1225,7 +1225,7 @@ case 43:
 YY_RULE_SETUP
 #line 143 "lex.l"
 {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return CHAR;
 }
@@ -1235,7 +1235,7 @@ case 44:
 YY_RULE_SETUP
 #line 149 "lex.l"
 {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return CHAR;
 }
@@ -1244,14 +1244,14 @@ case 45:
 YY_RULE_SETUP
 #line 155 "lex.l"
 {
-    printf("Error type A at line %d: unknown lexeme %s\n", yylineno, yytext);
+    printf("Error type A at line %d: Mysterious lexeme %s\n", yylineno, yytext);
     errorType = 0;
     return ID;
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 161 "lex.l"
+#line 160 "lex.l"
 ECHO;
 	YY_BREAK
 #line 1258 "lex.yy.c"
@@ -2271,7 +2271,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 161 "lex.l"
+#line 160 "lex.l"
 
 
 /* int main(int argc, char **argv){

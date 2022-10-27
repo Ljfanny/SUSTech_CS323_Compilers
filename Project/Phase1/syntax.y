@@ -144,7 +144,7 @@ Stmt: Exp SEMI
     | RETURN Exp SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
-    |RETURN Exp error 
+    | RETURN Exp error 
     { printf("Missing semicolon ';'\n");}
     | IF LP Exp RP Stmt %prec PREFIX_IF_ELSE 
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 5;

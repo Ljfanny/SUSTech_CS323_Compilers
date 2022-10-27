@@ -30,4 +30,6 @@
 *.exe
 *.out
 *.app
+.output
 Project/Phase1/syntax.tab.c
+Project/Phase1/syntax.tab.h
