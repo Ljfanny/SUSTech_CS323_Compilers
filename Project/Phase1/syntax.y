@@ -281,7 +281,7 @@ Args: Exp COMMA Args
 %%
 void yyerror(const char *s) {
     errorType = 1;
-    printf("Error type B at Line %d: ", yylineno)
+    printf("Error type B at Line %d: ", yylineno);
 }
 int getLine(){
     return yylineno;
