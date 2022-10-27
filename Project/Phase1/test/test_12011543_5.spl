@@ -1,4 +1,4 @@
-int test_1_r05(int n)
+int test_12011543_5(int n)
 {
   int res = 1;
   while (n > 0)

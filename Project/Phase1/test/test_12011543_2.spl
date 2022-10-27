@@ -1,4 +1,4 @@
-int test_1_o02()
+int test_12011543_2()
 {
   int dec_int = 323;
   int hex_int = 0xFFF;
