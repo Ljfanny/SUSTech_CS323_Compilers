@@ -6,6 +6,7 @@
     // #define YYSTYPE struct node*
     struct node* tmpcld[10];
     int tmpnum;
+    
     enum myYYTYPE{
         PROGRAm = 33, 
         EXTDEFLISt,
@@ -15,32 +16,63 @@
         DEf, DECLISt, DEc, ARGs, EXp
     };
 
+    #define MISSING_SEMI_ERROR(er) { \
+        errors++; \
+        printf("Error type B at Line %d: Missing semicolon ';'\n", er->line); \
+    }
+
+    #define MISSING_RP_ERROR(er) { \
+        errors++; \
+        printf("Error type B at Line %d: Missing closing parenthesis ')'\n", er->line); \
+    }
+
+    #define MISSING_SPECIFIER_ERROR(er) { \
+        errors++; \
+        printf("Error type B at Line %d: Missing specifier\n", er->line); \
+    }
+
+    int errors = 0;
+
     void yyerror(const char*);
     int getLine();
     int yylex();
 %}
 %define api.value.type {struct node*}
-
-%nonassoc PREFIX_IF_ELSE
-%token ELSE
-%token TYPE STRUCT IF WHILE RETURN
 %token INT FLOAT CHAR
 %token ID
+%token TYPE
+%token STRUCT IF ELSE WHILE RETURN
+%token NOT
+%token SEMI COMMA
 %token ASSIGN
-%token OR
-%token AND
 %token LT LE GT GE NE EQ
-%nonassoc MINUS_EXP
 %token PLUS MINUS
 %token MUL DIV
-%token NOT
+%token OR
+%token AND
 %token LP RP LB RB DOT
-%token SEMI COMMA
 %token LC RC
+%token ERROR
+
+%right ASSIGN
+%right NOT
+
+%left OR
+%left AND
+%left LT LE GT GE NE EQ
+%left PLUS MINUS
+%left MUL DIV
+%left COMMA DOT
+
+%nonassoc LP RP LB RB LC RC
+%nonassoc SEMI
+%nonassoc ELSE
+
 %%
 Program: ExtDefList 
     {$$= newNodeNTER(PROGRAm, getLine()); tmpnum = 1;
-    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum); treePrint($$);}
+    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
+    if(errors == 0) {treePrint($$);}}
     ;   
 
 ExtDefList: ExtDef ExtDefList 
@@ -59,7 +91,19 @@ ExtDef: Specifier ExtDecList SEMI
     {$$= newNodeNTER(EXTDEf, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
     | error FunDec CompSt 
-    { printf("Missing specifier\n"); }
+    { $$= newNodeNTER(EXTDEf, getLine()); tmpnum = 2;
+    tmpcld[0] = $2; tmpcld[1] = $3; setNode($$, tmpcld, tmpnum);
+    MISSING_SPECIFIER_ERROR($$);}
+    | Specifier error
+    {$$= newNodeNTER(EXTDEf, getLine()); tmpnum = 1;
+    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
+    MISSING_SEMI_ERROR($1);}
+    | Specifier ExtDecList error
+    {$$= newNodeNTER(EXTDEf, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);
+    MISSING_SEMI_ERROR($2);}
+    | error SEMI
+    {errors++;}
     ;
 
 ExtDecList: VarDec 
@@ -89,12 +133,16 @@ StructSpecifier: STRUCT ID LC DefList RC
 VarDec: ID 
     {$$= newNodeNTER(VARDEc, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
+    |ERROR
+    {$$= newNodeNTER(VARDEc, getLine()); tmpnum = 1;
+    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
+    errors++;}
     | VarDec LB INT RB 
     {$$= newNodeNTER(VARDEc, getLine()); tmpnum = 4;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4;
     setNode($$, tmpcld, tmpnum);}
-    | VarDec LB INT error 
-    {printf("Missing closing bracket ']'\n");}
+    /* | VarDec LB INT error 
+    {printf("Missing closing bracket ']'\n");} */
     ;
 
 FunDec: ID LP VarList RP 
@@ -104,9 +152,14 @@ FunDec: ID LP VarList RP
     {$$= newNodeNTER(FUNDEc, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
     | ID LP VarList error 
-    { printf("Missing closing parenthesis ')'\n"); }
+    {$$= newNodeNTER(FUNDEc, getLine()); tmpnum = 3;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);
+    MISSING_RP_ERROR($3);}
     | ID LP error 
-    { printf("Missing closing parenthesis ')'\n"); }
+    {$$= newNodeNTER(FUNDEc, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);
+    MISSING_RP_ERROR($2);}
     ;
 
 VarList: ParamDec COMMA VarList 
@@ -143,10 +196,13 @@ Stmt: Exp SEMI
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
     | RETURN Exp SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 3;
-    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);}
     | RETURN Exp error 
-    { printf("Missing semicolon ';'\n");}
-    | IF LP Exp RP Stmt %prec PREFIX_IF_ELSE 
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);
+    MISSING_SEMI_ERROR($2);}
+    | IF LP Exp RP Stmt
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 5;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
     setNode($$, tmpcld, tmpnum);}
@@ -158,6 +214,20 @@ Stmt: Exp SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 5;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
     setNode($$, tmpcld, tmpnum);}
+    |Exp error
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 1;
+    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
+    MISSING_SEMI_ERROR($1);}
+    | IF LP Exp error Stmt ELSE Stmt 
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 6;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $5;
+    tmpcld[4] = $6; tmpcld[5] = $7; setNode($$, tmpcld, tmpnum);
+    MISSING_RP_ERROR($3);}
+    | WHILE LP Exp error Stmt
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 4;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $5;
+    setNode($$, tmpcld, tmpnum);
+    MISSING_RP_ERROR($3);}
     ;
 
 
@@ -169,9 +239,18 @@ DefList: Def DefList
 
 Def: Specifier DecList SEMI
     {$$= newNodeNTER(DEf, getLine()); tmpnum = 3;
-    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
-    | Specifier DecList error {printf("Missing semicolon ';'\n");}
-    | error DecList SEMI {printf("Missing specifier\n");}
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);}
+    | Specifier DecList error 
+    {$$= newNodeNTER(DEf, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2;
+    setNode($$, tmpcld, tmpnum);
+    MISSING_SEMI_ERROR($2);}
+    | error DecList SEMI 
+    {$$= newNodeNTER(DEf, getLine()); tmpnum = 2;
+    tmpcld[0] = $2; tmpcld[1] = $3;
+    setNode($$, tmpcld, tmpnum);
+    MISSING_SPECIFIER_ERROR($$);}
     ;
 
 DecList: Dec
@@ -235,7 +314,7 @@ Exp: Exp ASSIGN Exp
     | LP Exp RP
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
-    | MINUS Exp %prec MINUS_EXP
+    | MINUS Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
     tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
     | NOT Exp
@@ -248,13 +327,10 @@ Exp: Exp ASSIGN Exp
     | ID LP RP
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
-    | ID LP Args error{ printf("Missing closing parenthesis ')'\n");} 
-    | ID LP error { printf("Missing closing parenthesis ')'\n"); }
     | Exp LB Exp RB
     {$$ = newNodeNTER(EXp, getLine()); tmpnum = 4;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
     tmpcld[3] = $4; setNode($$, tmpcld, tmpnum);}
-    | Exp LB Exp error {printf("Missing closing bracket ']'\n");}
     | Exp DOT ID
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
@@ -270,6 +346,25 @@ Exp: Exp ASSIGN Exp
     | CHAR
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
+    | Exp ERROR Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);
+    errors++;}
+    |ERROR
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 1; tmpcld[0] = $1;
+    setNode($$, tmpcld, tmpnum); errors++;}
+    | LP Exp error
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 2; tmpcld[0] = $1;
+    tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);
+    MISSING_RP_ERROR($2);}
+    | ID LP Args error
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);
+    MISSING_RP_ERROR($3);}
+    | ID LP error 
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 2; tmpcld[0] = $1;
+    tmpcld[1] = $2; setNode($$, tmpcld, tmpnum); 
+    MISSING_RP_ERROR($2); }
     ;
 Args: Exp COMMA Args
     {$$= newNodeNTER(ARGs, getLine()); tmpnum = 3;
@@ -280,8 +375,8 @@ Args: Exp COMMA Args
     ;
 %%
 void yyerror(const char *s) {
-    errorType = 1;
-    printf("Error type B at Line %d: ", yylineno);
+    /* errorType = 1; */
+    /* printf ("ERROR: Line %d, %s \"%s\"\n", yylineno, s, yytext); */
 }
 int getLine(){
     return yylineno;

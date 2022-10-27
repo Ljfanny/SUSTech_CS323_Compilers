@@ -64,10 +64,10 @@ void nodePrint(struct node *nd, int space) {
     if (nd->value == NULL) {
         if (nd->type >= 33) {
             printf("%s (%d)\n", NDtypes[nd->type], nd->line);
-        } else {
+        } else if(nd->type >= 0) {
             printf("%s\n", NDtypes[nd->type]);
         }
-    } else {
+    }else {
         printf("%s: %s\n", NDtypes[nd->type], nd->value);
     }
     for (int i = 0; i < nd->number; ++i) {
