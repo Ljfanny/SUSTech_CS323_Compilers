@@ -3,12 +3,13 @@
 #include "stdlib.h"
 #include "string.h"
 // #include "syntax.tab.c"
-
+int nter_idx = 41;
 char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID","STRUCT", "IF", "WHILE", "ELSE", "RETURN",
-        "DOT", "SEMI", "COMMA", "ASSIGN", "LT",
-        "LE", "GT", "GE", "NE", "EQ", "AND",
-        "OR", "NOT", "PLUS", "MINUS", "MUL",
-        "DIV", "LP", "RP", "LB", "RB",
+        "DOT", "SEMI", "COMMA", "ASSIGN", "PLUS_ASSIGN", "MINUS_ASSIGN",
+        "MUL_ASSIGN", "DIV_ASSIGN", "MOD_ASSIGN",
+        "LT", "LE", "GT", "GE", "NE", "EQ", "AND",
+        "OR", "NOT", "PLUS", "MINUS","DOUBLE_PLUS","DOUBLE_MINUS", "MUL",
+        "DIV", "MOD", "LP", "RP", "LB", "RB",
         "LC", "RC","Program", "ExtDefList",
         "ExtDef", "Specifier", "ExtDecList", "StructSpecifier",
         "VarDec", "FunDec", "VarList", "ParamDec",
@@ -62,7 +63,7 @@ void nodePrint(struct node *nd, int space) {
     for (int i = 0; i < space; ++i)
         printf(" ");
     if (nd->value == NULL) {
-        if (nd->type >= 33) {
+        if (nd->type >= nter_idx) {
             printf("%s (%d)\n", NDtypes[nd->type], nd->line);
         } else if(nd->type >= 0) {
             printf("%s\n", NDtypes[nd->type]);

@@ -14,14 +14,16 @@
         DOt,
         SEMi,
         COMMa,
-        ASSIGn,
+        ASSIGn, PLUS_ASSIGn, MINUS_ASSIGn, MUL_ASSIGn, DIV_ASSIGn, MOD_ASSIGn,
         Lt, Le, Gt, Ge,
         Ne,
         Eq,
         ANd,
         Or,
         NOt,
-        PLUs, MINUs, MUl, DIv,
+        PLUs, MINUs,
+        DOUBLE_PLUs, DOUBLE_MINUs,
+        MUl, DIv, MOd,
         Lp, Rp, Lb, Rb,
         Lc, Rc
     };
@@ -76,6 +78,9 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 "int" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 "float" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 "char" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
+"int*"|"int *" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
+"float*"|"float *" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
+"char*"|"char *" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 
 "struct" {yylval = newNodeTER(STRUCt,yylineno); return STRUCT;}
 "if" {yylval = newNodeTER(If,yylineno); return IF;}
@@ -87,6 +92,7 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 ";" {yylval = newNodeTER(SEMi,yylineno); return SEMI;}
 "," {yylval = newNodeTER(COMMa,yylineno); return COMMA;}
 "=" {yylval = newNodeTER(ASSIGn,yylineno); return ASSIGN;}
+
 "<" {yylval = newNodeTER(Lt,yylineno); return LT;}
 "<=" {yylval = newNodeTER(Le,yylineno); return LE;}
 ">" {yylval = newNodeTER(Gt,yylineno); return GT;}
@@ -100,6 +106,16 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 "-" {yylval = newNodeTER(MINUs,yylineno); return MINUS;}
 "*" {yylval = newNodeTER(MUl,yylineno); return MUL;}
 "/" {yylval = newNodeTER(DIv,yylineno); return DIV;}
+"%" {yylval = newNodeTER(MOd,yylineno); return MOD;}
+
+"+=" {yylval = newNodeTER(PLUS_ASSIGn,yylineno); return PLUS_ASSIGN;}
+"-=" {yylval = newNodeTER(MINUS_ASSIGn,yylineno); return MINUS_ASSIGN;}
+"*=" {yylval = newNodeTER(MUL_ASSIGn,yylineno); return MUL_ASSIGN;}
+"/=" {yylval = newNodeTER(DIV_ASSIGn,yylineno); return DIV_ASSIGN;}
+"%=" {yylval = newNodeTER(MOD_ASSIGn,yylineno); return MOD_ASSIGN;}
+
+"++" {yylval = newNodeTER(DOUBLE_PLUs,yylineno); return DOUBLE_PLUS;}
+"--" {yylval = newNodeTER(DOUBLE_MINUs,yylineno); return DOUBLE_MINUS;}
 "(" {yylval = newNodeTER(Lp,yylineno); return LP;}
 ")" {yylval = newNodeTER(Rp,yylineno); return RP;}
 "[" {yylval = newNodeTER(Lb,yylineno); return LB;}

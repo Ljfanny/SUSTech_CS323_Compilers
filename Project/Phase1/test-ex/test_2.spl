@@ -1,0 +1,14 @@
+int test_3(int len)
+{
+    int idx = 0;
+    int sum = 0;
+    char* chs;
+    int * ints;
+    while (idx < len)
+    {
+        sum = sum + ints[idx];
+        idx++;
+    }
+    --idx;
+    return idx;
+}

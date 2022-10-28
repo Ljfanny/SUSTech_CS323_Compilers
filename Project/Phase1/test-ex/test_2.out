@@ -1,0 +1,113 @@
+Program (1)
+  ExtDefList (1)
+    ExtDef (1)
+      Specifier (1)
+        TYPE: int
+      FunDec (1)
+        ID: test_3
+        LP
+        VarList (1)
+          ParamDec (1)
+            Specifier (1)
+              TYPE: int
+            VarDec (1)
+              ID: len
+        RP
+      CompSt (2)
+        LC
+        DefList (3)
+          Def (3)
+            Specifier (3)
+              TYPE: int
+            DecList (3)
+              Dec (3)
+                VarDec (3)
+                  ID: idx
+                ASSIGN
+                Exp (3)
+                  INT: 0
+            SEMI
+          DefList (4)
+            Def (4)
+              Specifier (4)
+                TYPE: int
+              DecList (4)
+                Dec (4)
+                  VarDec (4)
+                    ID: sum
+                  ASSIGN
+                  Exp (4)
+                    INT: 0
+              SEMI
+            DefList (5)
+              Def (5)
+                Specifier (5)
+                  TYPE: char*
+                DecList (5)
+                  Dec (5)
+                    VarDec (5)
+                      ID: chs
+                SEMI
+              DefList (6)
+                Def (6)
+                  Specifier (6)
+                    TYPE: int *
+                  DecList (6)
+                    Dec (6)
+                      VarDec (6)
+                        ID: ints
+                  SEMI
+        StmtList (7)
+          Stmt (7)
+            WHILE
+            LP
+            Exp (7)
+              Exp (7)
+                ID: idx
+              LT
+              Exp (7)
+                ID: len
+            RP
+            Stmt (8)
+              CompSt (8)
+                LC
+                StmtList (9)
+                  Stmt (9)
+                    Exp (9)
+                      Exp (9)
+                        ID: sum
+                      ASSIGN
+                      Exp (9)
+                        Exp (9)
+                          ID: sum
+                        PLUS
+                        Exp (9)
+                          Exp (9)
+                            ID: ints
+                          LB
+                          Exp (9)
+                            ID: idx
+                          RB
+                    SEMI
+                  StmtList (10)
+                    Stmt (10)
+                      Exp (10)
+                        Exp (10)
+                          ID: idx
+                        DOUBLE_PLUS
+                      SEMI
+                RC
+          StmtList (12)
+            Stmt (12)
+              Exp (12)
+                DOUBLE_MINUS
+                Exp (12)
+                  ID: idx
+              SEMI
+            StmtList (13)
+              Stmt (13)
+                RETURN
+                Exp (13)
+                  ID: idx
+                SEMI
+        RC

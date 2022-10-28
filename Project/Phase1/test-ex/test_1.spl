@@ -3,7 +3,7 @@ multiline
 \/\///\\/
 comment
 **/
-int /*func*/test_12011543_3(int m,//)
+int /*func*/test_1(int m,//)
 int n)
 {
   int max;

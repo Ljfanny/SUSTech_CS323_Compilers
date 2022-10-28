@@ -8,7 +8,7 @@
     int tmpnum;
     
     enum myYYTYPE{
-        PROGRAm = 33, 
+        PROGRAm = 41, 
         EXTDEFLISt,
         EXTDEf, SPECIFIEr, EXTDECLISt, STRUCTSPECIFIEr,
         VARDEc, FUNDEc, VARLISt, PARAMDEc,
@@ -25,6 +25,16 @@
         errors++; \
         printf("Error type B at Line %d: Missing closing parenthesis ')'\n", er->line); \
     }
+
+    // #define MISSING_RB_ERROR(er) { \
+    //     errors++; \
+    //     printf("Error type B at Line %d: Missing closing parenthesis ']'\n", er->line); \
+    // }
+
+    // #define MISSING_RC_ERROR(er) { \
+    //     errors++; \
+    //     printf("Error type B at Line %d: Missing closing parenthesis '}'\n", er->line); \
+    // }
 
     #define MISSING_SPECIFIER_ERROR(er) { \
         errors++; \
@@ -44,24 +54,25 @@
 %token STRUCT IF ELSE WHILE RETURN
 %token NOT
 %token SEMI COMMA
-%token ASSIGN
+%token ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 %token LT LE GT GE NE EQ
 %token PLUS MINUS
-%token MUL DIV
+%token MUL DIV MOD
+%token DOUBLE_PLUS DOUBLE_MINUS
 %token OR
 %token AND
 %token LP RP LB RB DOT
 %token LC RC
 %token ERROR
 
-%right ASSIGN
+%right ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 %right NOT
 
 %left OR
 %left AND
 %left LT LE GT GE NE EQ
 %left PLUS MINUS
-%left MUL DIV
+%left MUL DIV MOD
 %left COMMA DOT
 
 %nonassoc LP RP LB RB LC RC
@@ -114,20 +125,28 @@ ExtDecList: VarDec
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
     ;
 
-Specifier: TYPE
+Specifier: 
+    TYPE
     {$$= newNodeNTER(SPECIFIEr, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
-    |StructSpecifier
+    | StructSpecifier
     {$$= newNodeNTER(SPECIFIEr, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
     ;
 
-StructSpecifier: STRUCT ID LC DefList RC  
+StructSpecifier: 
+    STRUCT ID LC DefList RC  
     {$$= newNodeNTER(STRUCTSPECIFIEr, getLine()); tmpnum = 5;
-    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5; setNode($$, tmpcld, tmpnum);}
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4;
+    tmpcld[4] = $5; setNode($$, tmpcld, tmpnum);}
     | STRUCT ID 
     {$$= newNodeNTER(STRUCTSPECIFIEr, getLine()); tmpnum = 2;
     tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
+    /* | STRUCT ID LC DefList error
+    {$$= newNodeNTER(STRUCTSPECIFIEr, getLine()); tmpnum = 4;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4;
+    setNode($$, tmpcld, tmpnum);
+    MISSING_RC_ERROR($4);} */
     ;
 
 VarDec: ID 
@@ -142,7 +161,10 @@ VarDec: ID
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4;
     setNode($$, tmpcld, tmpnum);}
     /* | VarDec LB INT error 
-    {printf("Missing closing bracket ']'\n");} */
+    {$$= newNodeNTER(VARDEc, getLine()); tmpnum = 3;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);
+    MISSING_RB_ERROR($3);} */
     ;
 
 FunDec: ID LP VarList RP 
@@ -180,6 +202,11 @@ CompSt: LC DefList StmtList RC
         {$$= newNodeNTER(COMPSt, getLine()); tmpnum = 4;
         tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4;
         setNode($$, tmpcld, tmpnum);}
+        /* | LC DefList StmtList error
+        {$$= newNodeNTER(COMPSt, getLine()); tmpnum = 3;
+        tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+        setNode($$, tmpcld, tmpnum);
+        MISSING_RC_ERROR($3);} */
     ;
 
 StmtList: Stmt StmtList 
@@ -269,12 +296,52 @@ Dec: VarDec
     {$$= newNodeNTER(DEc, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
     setNode($$, tmpcld, tmpnum);}
+    /* += -= *= /= %= */
+    | VarDec PLUS_ASSIGN Exp
+    {$$= newNodeNTER(DEc, getLine()); tmpnum = 3;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);}
+    | VarDec MINUS_ASSIGN Exp
+    {$$= newNodeNTER(DEc, getLine()); tmpnum = 3;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);}
+    | VarDec MUL_ASSIGN Exp
+    {$$= newNodeNTER(DEc, getLine()); tmpnum = 3;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);}
+    | VarDec DIV_ASSIGN Exp
+    {$$= newNodeNTER(DEc, getLine()); tmpnum = 3;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);}
+    | VarDec MOD_ASSIGN Exp
+    {$$= newNodeNTER(DEc, getLine()); tmpnum = 3;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);}
     ;
 
 
 Exp: Exp ASSIGN Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+
+     /* += -= *= /= %= */
+    | Exp PLUS_ASSIGN Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | Exp MINUS_ASSIGN Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | Exp MUL_ASSIGN Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | Exp DIV_ASSIGN Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | Exp MOD_ASSIGN Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+
+
     | Exp AND Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
@@ -311,6 +378,9 @@ Exp: Exp ASSIGN Exp
     | Exp DIV Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+    | Exp MOD Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
     | LP Exp RP
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
@@ -320,6 +390,24 @@ Exp: Exp ASSIGN Exp
     | NOT Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
     tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
+
+     /* DOUBLE_MINUS */
+    | DOUBLE_MINUS Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
+    | Exp DOUBLE_MINUS
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
+
+    /* DOUBLE_PLUS */
+    | DOUBLE_PLUS Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
+    | Exp DOUBLE_PLUS
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
+
+
     | ID LP Args RP
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 4;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
@@ -346,6 +434,11 @@ Exp: Exp ASSIGN Exp
     | CHAR
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
+    /* | Exp LB Exp error
+    {$$ = newNodeNTER(EXp, getLine()); tmpnum = 3;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    setNode($$, tmpcld, tmpnum);
+    MISSING_RB_ERROR($3);} */
     | Exp ERROR Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);
@@ -366,6 +459,7 @@ Exp: Exp ASSIGN Exp
     tmpcld[1] = $2; setNode($$, tmpcld, tmpnum); 
     MISSING_RP_ERROR($2); }
     ;
+
 Args: Exp COMMA Args
     {$$= newNodeNTER(ARGs, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
