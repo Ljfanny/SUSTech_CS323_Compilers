@@ -12,6 +12,7 @@
         Id,
         STRUCt, If, WHILe, ELSe, RETURn,
         EXTERn, STATIc, CONSt,
+        QUESTION_MARk, COLOn,
         DOt,
         SEMi,
         COMMa,
@@ -90,6 +91,8 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 "while" {yylval = newNodeTER(WHILe,yylineno); return WHILE;}
 "return" {yylval = newNodeTER(RETURn,yylineno); return RETURN;}
 
+"?" {yylval = newNodeTER(QUESTION_MARk,yylineno); return QUESTION_MARK;}
+":" {yylval = newNodeTER(COLOn,yylineno); return COLON;}
 "." {yylval = newNodeTER(DOt,yylineno); return DOT;}
 ";" {yylval = newNodeTER(SEMi,yylineno); return SEMI;}
 "," {yylval = newNodeTER(COMMa,yylineno); return COMMA;}

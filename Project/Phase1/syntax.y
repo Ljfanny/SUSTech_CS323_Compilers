@@ -8,7 +8,7 @@
     int tmpnum;
     
     enum myYYTYPE{
-        PROGRAm = 44, 
+        PROGRAm = 46, 
         EXTDEFLISt,
         EXTDEf, SPECIFIEr, EXTDECLISt, STRUCTSPECIFIEr,
         VARDEc, FUNDEc, VARLISt, PARAMDEc,
@@ -55,7 +55,7 @@
 %token NOT
 %token SEMI COMMA
 %token ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
-%token LT LE GT GE NE EQ
+%token LT LE GT GE NE EQ QUESTION_MARK COLON
 %token PLUS MINUS
 %token MUL DIV MOD
 %token DOUBLE_PLUS DOUBLE_MINUS
@@ -341,7 +341,6 @@ Exp: Exp ASSIGN Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
 
-
     | Exp AND Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
@@ -366,6 +365,48 @@ Exp: Exp ASSIGN Exp
     | Exp EQ Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
+
+    | Exp AND Exp QUESTION_MARK Exp COLON Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
+    tmpcld[5] = $6; tmpcld[6] = $7;
+    setNode($$, tmpcld, tmpnum);}
+    | Exp OR Exp QUESTION_MARK Exp COLON Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
+    tmpcld[5] = $6; tmpcld[6] = $7;
+    setNode($$, tmpcld, tmpnum);}
+    | Exp LT Exp QUESTION_MARK Exp COLON Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
+    tmpcld[5] = $6; tmpcld[6] = $7;
+    setNode($$, tmpcld, tmpnum);}
+    | Exp LE Exp QUESTION_MARK Exp COLON Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
+    tmpcld[5] = $6; tmpcld[6] = $7;
+    setNode($$, tmpcld, tmpnum);}
+    | Exp GT Exp QUESTION_MARK Exp COLON Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
+    tmpcld[5] = $6; tmpcld[6] = $7;
+    setNode($$, tmpcld, tmpnum);}
+    | Exp GE Exp QUESTION_MARK Exp COLON Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
+    tmpcld[5] = $6; tmpcld[6] = $7;
+    setNode($$, tmpcld, tmpnum);}
+    | Exp NE Exp QUESTION_MARK Exp COLON Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
+    tmpcld[5] = $6; tmpcld[6] = $7;
+    setNode($$, tmpcld, tmpnum);}
+    | Exp EQ Exp QUESTION_MARK Exp COLON Exp
+    {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
+    tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
+    tmpcld[5] = $6; tmpcld[6] = $7;
+    setNode($$, tmpcld, tmpnum);}
+
     | Exp PLUS Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}

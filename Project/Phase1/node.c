@@ -3,10 +3,10 @@
 #include "stdlib.h"
 #include "string.h"
 // #include "syntax.tab.c"
-int nter_idx = 44;
+int nter_idx = 46;
 char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID","STRUCT", "IF", "WHILE", "ELSE", "RETURN",
-        "EXTERN", "STATIC", "CONST",
-        "DOT", "SEMI", "COMMA", "ASSIGN", "PLUS_ASSIGN", "MINUS_ASSIGN",
+        "EXTERN", "STATIC", "CONST", "QUESTION_MARK", "COLON",
+        "DOT",  "SEMI", "COMMA", "ASSIGN", "PLUS_ASSIGN", "MINUS_ASSIGN",
         "MUL_ASSIGN", "DIV_ASSIGN", "MOD_ASSIGN",
         "LT", "LE", "GT", "GE", "NE", "EQ", "AND",
         "OR", "NOT", "PLUS", "MINUS","DOUBLE_PLUS","DOUBLE_MINUS", "MUL",
