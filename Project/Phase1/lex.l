@@ -90,6 +90,7 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 "else" {yylval = newNodeTER(ELSe,yylineno); return ELSE;}
 "while" {yylval = newNodeTER(WHILe,yylineno); return WHILE;}
 "return" {yylval = newNodeTER(RETURn,yylineno); return RETURN;}
+"const" {yylval = newNodeTER(CONSt,yylineno); return CONST;}
 
 "?" {yylval = newNodeTER(QUESTION_MARk,yylineno); return QUESTION_MARK;}
 ":" {yylval = newNodeTER(COLOn,yylineno); return COLON;}

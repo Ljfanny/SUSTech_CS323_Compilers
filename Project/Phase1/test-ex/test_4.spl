@@ -1,7 +1,7 @@
 void test_4(int a,int b)
 {
-    int max = a >= b ? a : b;
-    int idx = 0;
+    const int max = a >= b ? a : b;
+    const int idx = 0;
     int sum;
     while (idx < max)
     {

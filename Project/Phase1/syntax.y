@@ -51,7 +51,7 @@
 %token INT FLOAT CHAR
 %token ID
 %token TYPE
-%token STRUCT IF ELSE WHILE RETURN
+%token STRUCT IF ELSE WHILE RETURN CONST
 %token NOT
 %token SEMI COMMA
 %token ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
@@ -129,6 +129,9 @@ Specifier:
     TYPE
     {$$= newNodeNTER(SPECIFIEr, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
+    |CONST TYPE
+    {$$= newNodeNTER(SPECIFIEr, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
     | StructSpecifier
     {$$= newNodeNTER(SPECIFIEr, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}

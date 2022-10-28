@@ -25,6 +25,7 @@ Program (1)
         DefList (3)
           Def (3)
             Specifier (3)
+              CONST
               TYPE: int
             DecList (3)
               Dec (3)
@@ -47,6 +48,7 @@ Program (1)
           DefList (4)
             Def (4)
               Specifier (4)
+                CONST
                 TYPE: int
               DecList (4)
                 Dec (4)
