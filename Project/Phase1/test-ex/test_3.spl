@@ -1,4 +1,4 @@
-void test_1_r01(int a, int b)
+int test_3(int a, int b)
 {
     c = 'c';
     // int even = 0;

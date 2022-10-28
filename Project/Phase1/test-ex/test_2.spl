@@ -1,4 +1,4 @@
-int test_3(int len)
+void test_3(int len)
 {
     int idx = 0;
     int sum = 0;
@@ -10,5 +10,4 @@ int test_3(int len)
         idx++;
     }
     --idx;
-    return idx;
 }

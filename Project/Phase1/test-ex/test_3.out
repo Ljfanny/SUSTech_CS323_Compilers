@@ -2,9 +2,9 @@ Program (1)
   ExtDefList (1)
     ExtDef (1)
       Specifier (1)
-        TYPE: void
+        TYPE: int
       FunDec (1)
-        ID: test_1_r01
+        ID: test_3
         LP
         VarList (1)
           ParamDec (1)
