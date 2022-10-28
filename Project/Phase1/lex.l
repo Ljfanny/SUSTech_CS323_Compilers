@@ -11,6 +11,7 @@
         CHAr,
         Id,
         STRUCt, If, WHILe, ELSe, RETURn,
+        EXTERn, STATIc, CONSt,
         DOt,
         SEMi,
         COMMa,
@@ -78,6 +79,7 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 "int" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 "float" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 "char" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
+"void" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 "int*"|"int *" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 "float*"|"float *" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 "char*"|"char *" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}

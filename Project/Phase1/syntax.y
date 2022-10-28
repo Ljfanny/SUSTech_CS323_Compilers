@@ -8,7 +8,7 @@
     int tmpnum;
     
     enum myYYTYPE{
-        PROGRAm = 41, 
+        PROGRAm = 44, 
         EXTDEFLISt,
         EXTDEf, SPECIFIEr, EXTDECLISt, STRUCTSPECIFIEr,
         VARDEc, FUNDEc, VARLISt, PARAMDEc,
