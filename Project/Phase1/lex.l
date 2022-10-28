@@ -45,17 +45,18 @@ LETTER [a-zA-Z]
 LETTER_ {LETTER}|_
 DIGIT [0-9]
 DIGIT_HEX [0-9A-Fa-f]
-INT32_DEC 0|([1-9]{DIGIT}*)
+INT32_DEC {DIGIT}+
 INT32_HEX 0[xX]{DIGIT_HEX}+
 FLOAT32 {DIGIT}+\.{DIGIT}+
 
-CHAR '(([ -~])|(\\x[0-9a-fA-F]{2}))'
+CHAR '(([ -~·])|(\\x[0-9a-fA-F]{2}))'
 ID {LETTER_}({LETTER_}|{DIGIT}){0,31}
-INT_HEX_ERROR [+-]?0x[0-9a-zA-Z]+
+INT_HEX_ERROR [+-]?0[xX][0-9a-zA-Z]+
 CHAR_ERROR '\\x[0-9a-zA-Z]*'
-ID_ERROR [_a-zA-Zs0-9]*
+/* ID_ERROR [_a-zA-Zs0-9]* */
+/* ID_ERROR = {LETTER_}* */
 
-TEST [$@&'|']+
+/* TEST [$@&'|']+ */
 
 /* INT_LEADING0 0{DIGIT}+
 INT_INVALID_HEX 0[xX]{DIGIT_HEX}*[g-zG-Z]+{DIGIT_HEX}*
@@ -106,6 +107,10 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 "{" {yylval = newNodeTER(Lc,yylineno); return LC;}
 "}" {yylval = newNodeTER(Rc,yylineno); return RC;}
 
+{ID} {
+    yylval = newNodeNL(Id,yylineno,yytext);
+    return ID;
+}
 
 {INT32_DEC} {
     yylval = newNodeNL(INt,yylineno,yytext);
@@ -133,13 +138,6 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
     return CHAR;
 }
 
-{TEST} {
-    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext);
-    yylval = newNodeNL(-1, yylineno, yytext);
-    // errorType = 0;
-    return ERROR;
-}
-
 {CHAR_ERROR} {
     printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext);
     yylval = newNodeNL(-1, yylineno, yytext);
@@ -147,15 +145,15 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
     return ERROR;
 }
 
-{ID} {
-    yylval = newNodeNL(Id,yylineno,yytext);
-    return ID;
+[^0-9a-zA-Z_'\\\(\)\[\]\{\}\;\,\+\-\*\/] {
+    printf("Error type A at Line %d: unknown lexeme %s\n",yylineno, yytext);
+    yylval = newNodeNL(-1, yylineno, yytext);
+    return ERROR;
 }
 
-{ID_ERROR} {
-    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext);
+[0-9]*{ID} {
+    printf("Error type A at Line %d: unknown lexeme %s\n",yylineno, yytext);
     yylval = newNodeNL(-1, yylineno, yytext);
-    // errorType = 0;
     return ERROR;
 }
 
