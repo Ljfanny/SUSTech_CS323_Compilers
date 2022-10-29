@@ -1,8 +1,0 @@
-int test_12011543_3()
-{
-  int a, bb
-  if (a > 4)
-  	a = c | 4;
-  	b = a & 5;
-    return bb;
-}
