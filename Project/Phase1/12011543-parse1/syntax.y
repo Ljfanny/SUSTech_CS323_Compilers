@@ -253,6 +253,11 @@ Stmt: Exp SEMI
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $5;
     tmpcld[4] = $6; tmpcld[5] = $7; setNode($$, tmpcld, tmpnum);
     MISSING_RP_ERROR($3);}
+    | IF LP Exp error Stmt
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 4;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $5;
+    setNode($$, tmpcld, tmpnum);
+    MISSING_RP_ERROR($3);}
     | WHILE LP Exp error Stmt
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 4;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $5;
