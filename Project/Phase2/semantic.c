@@ -46,11 +46,24 @@ void parseExtDefList(Node extDefList)
 void parseExtDef(Node extDef)
 {
     Node specifier = extDef->children[0];
-    if (strcmp(NDtypes[specifier->type], "Specifier"))
+    Type *type = parseSpecifier(specifier);
+    if (type == NULL)
     {
         return;
     }
-    Type *type = parseSpecifier(specifier);
+    Node dec_type = extDef->children[1];
+    if (dec_type == NULL)
+    {
+        return;
+    }
+    if (!strcmp(dec_type->type, "ExtDecList"))
+    {
+        // TODO: parse extdeclist
+    }
+    if (!strcmp(dec_type->type, "FuncDec"))
+    {
+        /* code */
+    }
 }
 
 /*
@@ -77,6 +90,10 @@ typedef struct FieldList {
 */
 Type *parseSpecifier(Node specifier)
 {
+    if (!strcmp(NDtypes[specifier->type], "Specifier"))
+    {
+        return NULL;
+    }
     Type *type = (Type *)malloc(sizeof(Type));
     Node def = specifier->children[0];
     if (!strcmp(NDtypes[def->type], "TYPE"))
@@ -99,28 +116,33 @@ Type *parseSpecifier(Node specifier)
     {
         Node struct_ = def->children[0];
         Node struct_id = def->children[1];
-        char* identifier = struct_id->value;
+        char *identifier = struct_id->value;
         Symbol *symbol = findSymbolEntry(identifier);
-        if (def->number==2){ // STRUCT ID
-            if (symbol == NULL){
+        if (def->number == 2)
+        { // STRUCT ID
+            if (symbol == NULL)
+            {
                 printf("Error type 16 at Line %d: struct is used without definition \"%s\"\n",
-                        struct_id->line, identifier);
+                       struct_id->line, identifier);
                 return NULL;
             }
-            if (symbol->type->category !=STRUCTURE)
+            if (symbol->type->category != STRUCTURE)
             {
                 printf("Error type 17 at Line %d: \"%s\" is not a struct\n",
-                        struct_id->line, identifier);
+                       struct_id->line, identifier);
                 return NULL;
             }
-        }else{ //STRUCT ID LC DefList RC  
-            if (symbol != NULL){
-                 printf("Error type 15 at Line %d: redefine the same structure type \"%s\"\n",
-                        struct_id->line, identifier);
+        }
+        else
+        { // STRUCT ID LC DefList RC
+            if (symbol != NULL)
+            {
+                printf("Error type 15 at Line %d: redefine the same structure type \"%s\"\n",
+                       struct_id->line, identifier);
             }
             type->category = STRUCTURE;
             Node defList = def->children[3];
-            //TODO: Parse deflist type->structure = delist
+            // TODO: Parse deflist type->structure = delist
             Symbol *struct_symbol = (Symbol *)malloc(sizeof(Symbol));
             struct_symbol->identifier = identifier;
             struct_symbol->type = type;
@@ -130,4 +152,108 @@ Type *parseSpecifier(Node specifier)
     return type;
 }
 
+FieldList *parseDefList(Node defList)
+{ // DefList: Def DefList
 
+    Node def = defList->children[0];
+    Node def_list = def->children[1];
+    FieldList *fieldList = parseDef(def);
+    // if(fieldList == NULL){
+    //     fieldList= parseDef(def);
+    // }else{
+    //     fieldList->next = parseDef(def);
+    // }
+    while (def_list != NULL)
+    {
+        def = def_list->children[0];
+        def_list = def->children[1];
+        fieldList->next = parseDef(def);
+    }
+    return fieldList;
+}
+
+FieldList *parseDef(Node def)
+{
+    Type *type = parseSpecifier(def->children[0]);
+    if (type == NULL)
+    {
+        return NULL;
+    }
+    Node decList = def->children[1];
+    if (strcmp(NDtypes[decList->type], "DecList"))
+    {
+        return NULL;
+    }
+    FieldList *fieldlist = parseDecList(decList, type);
+    return fieldlist;
+}
+
+FieldList *parseDecList(Node decList, Type *type)
+{
+    // Dec COMMA DecList
+    // Dec
+    Node dec = decList->children[0];
+
+    FieldList *fieldList = parseDec(dec, type);
+    if (decList->number == 3)
+    {
+        Node dec_list = decList->children[2];
+        while (dec_list->number == 3)
+        {
+            dec = dec_list->children[0];
+            if (fieldList != NULL)
+            {
+                fieldList->next = parseDec(dec, type);
+            }
+            dec_list = dec_list->children[2];
+        }
+    }
+    return fieldList;
+}
+
+FieldList *parseDec(Node dec, Type* type)
+{
+    //| VarDec ASSIGN Exp
+    //| VarDec
+    Node varDec = dec->children[0];
+    FieldList* fieldList = parseVarDec(varDec, type);
+    if (dec->number == 3){
+        Node exp = dec->children[2];
+        //TODO: Parse exp and check whether exp has the same type
+    }
+}
+
+FieldList *parseVarDec(Node varDec, Type* type)
+{
+    //VarDec LB INT RB (Arrary)
+    //ID
+    Node tempNode = varDec->children[0];
+    FieldList* field = (FieldList*) malloc(sizeof(FieldList));
+    Type* lastType = type;
+    while (!strcmp(NDtypes[tempNode->type],"VarDec"))
+    {   
+        Type* arrayType = (Type*) malloc(sizeof(Type));
+        arrayType->array = (Array*) malloc(sizeof(Array));
+        //TODO: initialize the array
+		arrayType->category = ARRAY;
+		Node size = tempNode->children[2];
+		arrayType->array->size = atoi(size->value);
+		arrayType->array->base = lastType;
+		lastType = arrayType;
+		tempNode = tempNode->children[0];
+        /* code */
+    }
+    // Now the tempNode must be ID
+    Symbol* symbol = findSymbolEntry(tempNode->value);
+    if(symbol != NULL){
+          printf("Error type 3 at Line %d: variable is redefined in the same scope \"%s\"\n",
+                       tempNode->line, symbol->identifier);
+    }
+    field->name = tempNode->value;
+    field->type = lastType;
+    symbol->identifier = tempNode->value;
+    symbol->type = lastType;
+    insertSymbolEntry(symbol);
+    return field;
+    
+}
