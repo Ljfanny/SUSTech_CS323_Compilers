@@ -6,15 +6,6 @@
 #include "type.h"
 #include "symbol.h"
 
-/*
-Node {
-    int type;
-    int line;
-    char *value;
-    int number;
-    Node *children[10];
-};
-*/
 typedef struct node *Node;
 int nter_idx = 46;
 char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID", "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
@@ -66,28 +57,6 @@ void parseExtDef(Node extDef)
     }
 }
 
-/*
-typedef struct Type {
-    char name[32];
-    enum { PRIMITIVE, ARRAY, STRUCTURE, FUNCTION} category;
-    union {
-        enum { INt, FLOAt, CHAr } primitive;
-        struct Array *array;
-        struct FieldList *structure;
-    };
-} Type;
-
-typedef struct Array {
-    struct Type *base;
-    int size;
-} Array;
-
-typedef struct FieldList {
-    char* name;
-    struct Type *type;
-    struct FieldList *next;
-} FieldList;
-*/
 Type *parseSpecifier(Node specifier)
 {
     if (!strcmp(NDtypes[specifier->type], "Specifier"))
@@ -143,10 +112,11 @@ Type *parseSpecifier(Node specifier)
             type->category = STRUCTURE;
             Node defList = def->children[3];
             // TODO: Parse deflist type->structure = delist
-            Symbol *struct_symbol = (Symbol *)malloc(sizeof(Symbol));
-            struct_symbol->identifier = identifier;
-            struct_symbol->type = type;
-            insertSymbolEntry(struct_symbol);
+            FieldList * fieldList = parseDefList(defList);
+            // Symbol *struct_symbol = (Symbol *)malloc(sizeof(Symbol));
+            // struct_symbol->identifier = identifier;
+            // struct_symbol->type = type;
+            insertSymbolEntry(identifier, type);
         }
     }
     return type;
@@ -154,15 +124,12 @@ Type *parseSpecifier(Node specifier)
 
 FieldList *parseDefList(Node defList)
 { // DefList: Def DefList
-
+    if (decList == NULL){
+        return NULL;
+    }
     Node def = defList->children[0];
     Node def_list = def->children[1];
     FieldList *fieldList = parseDef(def);
-    // if(fieldList == NULL){
-    //     fieldList= parseDef(def);
-    // }else{
-    //     fieldList->next = parseDef(def);
-    // }
     while (def_list != NULL)
     {
         def = def_list->children[0];
@@ -193,7 +160,6 @@ FieldList *parseDecList(Node decList, Type *type)
     // Dec COMMA DecList
     // Dec
     Node dec = decList->children[0];
-
     FieldList *fieldList = parseDec(dec, type);
     if (decList->number == 3)
     {
@@ -220,6 +186,8 @@ FieldList *parseDec(Node dec, Type* type)
     if (dec->number == 3){
         Node exp = dec->children[2];
         //TODO: Parse exp and check whether exp has the same type
+        Type* exp_type = parseExp(exp);
+        if 
     }
 }
 

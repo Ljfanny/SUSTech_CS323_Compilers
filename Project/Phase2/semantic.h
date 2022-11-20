@@ -1,4 +1,3 @@
-
 #include "node.h"
 #include "type.h"
 typedef struct node*  Node;
