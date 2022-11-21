@@ -2,10 +2,10 @@
 #define _TYPE_DEFINITION
 
 typedef struct Type {
-    char name[32];
+    char* name;
     enum { PRIMITIVE, ARRAY, STRUCTURE, FUNCTION} category;
     union {
-        enum { INt, FLOAt, CHAr } primitive;
+        enum { INT, FLOAT, CHAR } primitive;
         struct Array *array;
         struct FieldList *structure;
     };
