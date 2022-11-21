@@ -1,6 +1,7 @@
 %{
     #include "lex.yy.c"
     #include "node.h"
+    #include "semantic.h"
     #include <stdio.h>
     #include <stdlib.h>
     // #define YYSTYPE struct node*
@@ -16,30 +17,11 @@
         DEf, DECLISt, DEc, ARGs, EXp
     };
 
-    #define MISSING_SEMI_ERROR(er) { \
-        errors++; \
-        printf("Error type B at Line %d: Missing semicolon ';'\n", er->line); \
-    }
+    #define MISSING_SEMI_ERROR(er) {}
 
-    #define MISSING_RP_ERROR(er) { \
-        errors++; \
-        printf("Error type B at Line %d: Missing closing parenthesis ')'\n", er->line); \
-    }
+    #define MISSING_RP_ERROR(er) {}
 
-    // #define MISSING_RB_ERROR(er) { \
-    //     errors++; \
-    //     printf("Error type B at Line %d: Missing closing parenthesis ']'\n", er->line); \
-    // }
-
-    // #define MISSING_RC_ERROR(er) { \
-    //     errors++; \
-    //     printf("Error type B at Line %d: Missing closing parenthesis '}'\n", er->line); \
-    // }
-
-    #define MISSING_SPECIFIER_ERROR(er) { \
-        errors++; \
-        printf("Error type B at Line %d: Missing specifier\n", er->line); \
-    }
+    #define MISSING_SPECIFIER_ERROR(er) {}
 
     int errors = 0;
 
@@ -86,7 +68,8 @@
 %%
 Program: ExtDefList 
     {$$= newNodeNTER(PROGRAm, getLine()); tmpnum = 1;
-    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
+    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
+    parseProgram($$);}
     /* if(errors == 0) {treePrint($$);}} */
     ;   
 

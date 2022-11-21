@@ -21,6 +21,7 @@ char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID", "STRUCT", "IF", "WHILE"
                    "Def", "DecList", "Dec", "Args", "Exp"};
 
 void parseProgram(Node program) {
+    // printf("Successful entering parseProgram()!\n");
     parseExtDefList(program->children[0]);
 }
 
@@ -30,6 +31,7 @@ void parseExtDefList(Node extDefList) {
     if (extDefList == NULL) {
         return;
     }
+    // printf("Successful entering parseExtDefList()!\n");
     parseExtDef(extDefList->children[0]);
     parseExtDefList(extDefList->children[1]);
 }
@@ -86,11 +88,11 @@ Type *parseSpecifier(Node specifier) {
     if (!strcmp(NDtypes[def->type], "TYPE")) {
         type->category = PRIMITIVE;
         if (!strcmp(def->value, "int")) {
-            type->primitive = INT;
+            type->primitive = TINT;
         } else if (!strcmp(def->value, "float")) {
-            type->primitive = FLOAT;
+            type->primitive = TFLOAT;
         } else {
-            type->primitive = CHAR;
+            type->primitive = TCHAR;
         }
     } else if (!strcmp(NDtypes[def->type], "StructSpecifier")) {
         Node _struct = def->children[0];
@@ -313,8 +315,9 @@ Type *parseExp(Node exp) {
         else if (!strcmp(NDtypes[operator->type],"AND") || !strcmp(NDtypes[operator->type],"OR")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
-            // TODO: check what situation will cause error type 7
-            if (!typecmp(leftmostType, rightmostType) && leftmostType->category == PRIMITIVE && leftmostType->primitive == INT){
+            if (!typecmp(leftmostType, rightmostType)){
+                printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
+            }else if(leftmostType->category != PRIMITIVE || leftmostType->primitive != TINT){
                 printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
             }else{
                 result = leftmostType;
@@ -328,18 +331,25 @@ Type *parseExp(Node exp) {
             || !strcmp(NDtypes[operator->type],"MUL") || !strcmp(NDtypes[operator->type],"DIV")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
-            if(!typecmp(leftmostType,rightmostType) && leftmostType->category == PRIMITIVE
-               && (leftmostType->primitive == INT || leftmostType->primitive == FLOAT)){
-                printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
-            }else{
-                result = leftmostType;
+            if (leftmostType == NULL){
+                printf("Error type 1 at Line %d: undefined variable: %s \n", leftmost->line, leftmost->value);
+            }
+            if(rightmostType == NULL){
+                printf("Error type 1 at Line %d: undefined variable: %s \n", rightmost->line, rightmost->value);
+            }
+            if (leftmostType != NULL && rightmostType != NULL){
+                if(!typecmp(leftmostType,rightmostType)){
+                    printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
+                }else{
+                    result = leftmostType;
+                }
             }
         }else if(!strcmp(NDtypes[operator->type], "LB")){
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
             if (leftmostType->category != ARRAY){
                 printf("Error type 10 at Line %d: applying indexing operator on non-array type variables\n", leftmost->line);
-            }else if(!(rightmostType->category == PRIMITIVE && rightmostType->primitive == INT)){
+            }else if(!(rightmostType->category == PRIMITIVE && rightmostType->primitive == TINT)){
                 printf("Error type 12 at Line %d: array indexing with non-integer type expression\n", leftmost->line);
                 result = leftmostType->array->base;
             }else{
@@ -381,12 +391,12 @@ Type *parseExp(Node exp) {
     // NOT Exp
     else if(!strcmp(NDtypes[leftmost->type],"NOT")){
         Type *leftmostType = parseExp(leftmost);
-        if (leftmostType->category != PRIMITIVE && leftmostType->primitive != INT){
+        if (leftmostType->category != PRIMITIVE && leftmostType->primitive != TINT){
             printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
         }else{
             result = (Type*)malloc(sizeof(Type));
             result->category = PRIMITIVE;
-            result->primitive = INT;
+            result->primitive = TINT;
         }
     }
     // ID LP Args RP
@@ -396,9 +406,8 @@ Type *parseExp(Node exp) {
         if(exp->number >= 3 && (!strcmp(NDtypes[exp->children[2]->type], "RP") || 
         (!strcmp(NDtypes[exp->children[2]->type], "Args") && !strcmp(NDtypes[exp->children[3]->type], "RP")))){
             if (tmp == NULL){
-                printf("Error type 1 at Line %d: function is invoked without definition \"%s\"\n",
+                printf("Error type 1 at Line %d: undefined variable: \"%s\"\n",
                 leftmost->line, leftmost->value);
-                // TODO: return NULL is necessary?
             }else if(tmp->type->category != FUNCTION){
                 printf("Error type 11 at Line %d: applying function invocation operator on non-function names \"%s\"\n",
                         leftmost->line, leftmost->value);
@@ -452,7 +461,7 @@ Type *parseExp(Node exp) {
         }else{
             // ID
             if (tmp == NULL){
-                printf("Error type 1 at Line %d: variable is used without definition \"%s\".\n",
+                printf("Error type 1 at Line %d: undefined variable: \"%s\".\n",
                         leftmost->line, leftmost->value);
             }else{
                 result = tmp->type;
@@ -462,21 +471,20 @@ Type *parseExp(Node exp) {
         // INT
         result = (Type*)malloc(sizeof(Type));
         result->category = PRIMITIVE;
-        result->primitive = INT;
+        result->primitive = TINT;
     }else if(!strcmp(NDtypes[leftmost->type], "FLOAT")){
         // FLOAT
         result = (Type*)malloc(sizeof(Type));
         result->category = PRIMITIVE;
-        result->primitive = FLOAT;
+        result->primitive = TFLOAT;
     }else if(!strcmp(NDtypes[leftmost->type], "CHAR")){
         // CHAR
         result = (Type*)malloc(sizeof(Type));
         result->category = PRIMITIVE;
-        result->primitive = CHAR;
+        result->primitive = TCHAR;
     }
     return result; 
 }
-
 
 void parseCompSt(Node compSt, Type* returnValType){
     //CompSt: LC DefList StmtList RC
@@ -499,10 +507,51 @@ void parseStmt(Node stmt, Type * returnValType){
     // Stmt: Exp SEMI
     //      |CompSt
     //      |RETURN Exp SEMI
-    //      |RETURN Exp error 
-    //      |IF LP Exp RP Stmt
-    //      |IF LP Exp RP Stmt ELSE Stmt 
-    //      |WHILE LP Exp RP Stmt
+    Node leftmost = stmt->children[0];
+    if (!strcmp(NDtypes[leftmost->type],"Exp")){
+        parseExp(leftmost);
+    }else if(!strcmp(NDtypes[leftmost->type],"CompSt")){
+        parseCompSt(leftmost, returnValType);
+    }else if(!strcmp(NDtypes[leftmost->type],"RETURN")){
+        Node exp = stmt->children[1];
+        Type* expType = parseExp(exp);
+        if(expType == NULL){
+            return;
+        }
+        if(!typecmp(expType, returnValType)){
+            printf("Error type 8 at Line %d: the function's return value type mismatches the declared type\n",
+                leftmost->line);
+        }
+    }else if(!strcmp(NDtypes[leftmost->type],"IF")){
+        // |IF LP Exp RP Stmt
+        // |IF LP Exp RP Stmt ELSE Stmt 
+        Node exp = stmt->children[2];
+        Type* expType = parseExp(exp);
+        if (expType == NULL){
+            return;
+        }
+        // TODO: what type of expType is legal?
+        if(expType->category != PRIMITIVE || expType->primitive != TINT){
+            printf("Error type 7 at Line %d: unmatching operands\n", exp->line);
+        }else{
+            parseStmt(stmt->children[4], returnValType);
+            if (stmt->number == 7){
+                parseStmt(stmt->children[6], returnValType);
+            }
+        }
+    }else if(!strcmp(NDtypes[leftmost->type],"WHILE")){
+        // |WHILE LP Exp RP Stmt
+        Node exp = stmt->children[2];
+        Type* expType = parseExp(exp);
+        if (expType == NULL){
+            return;
+        }
+        if(expType->category != PRIMITIVE || expType->primitive != TINT){
+            printf("Error type 7 at Line %d: unmatching operands\n", exp->line);
+        }else{
+            parseStmt(stmt->children[4], returnValType);
+        }
+    }
 }
 
 

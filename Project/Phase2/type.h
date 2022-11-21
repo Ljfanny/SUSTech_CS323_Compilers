@@ -5,7 +5,7 @@ typedef struct Type {
     char* name;
     enum { PRIMITIVE, ARRAY, STRUCTURE, FUNCTION} category;
     union {
-        enum { INT, FLOAT, CHAR } primitive;
+        enum { TINT, TFLOAT, TCHAR } primitive;
         struct Array *array;
         struct FieldList *structure;
     };
