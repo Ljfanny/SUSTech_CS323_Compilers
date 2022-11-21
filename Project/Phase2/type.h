@@ -1,4 +1,4 @@
-#ifdef _TYPE_DEFINITION
+#ifndef _TYPE_DEFINITION
 #define _TYPE_DEFINITION
 
 typedef struct Type {

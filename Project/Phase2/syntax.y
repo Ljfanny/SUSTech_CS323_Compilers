@@ -86,8 +86,8 @@
 %%
 Program: ExtDefList 
     {$$= newNodeNTER(PROGRAm, getLine()); tmpnum = 1;
-    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
-    if(errors == 0) {treePrint($$);}}
+    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
+    /* if(errors == 0) {treePrint($$);}} */
     ;   
 
 ExtDefList: ExtDef ExtDefList 

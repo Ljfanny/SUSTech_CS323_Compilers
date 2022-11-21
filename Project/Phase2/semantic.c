@@ -1,12 +1,11 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "node.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+// #include "node.h"
 #include "semantic.h"
-#include "type.h"
+// #include "type.h"
 #include "symbol.h"
 
-typedef struct node *Node;
 int nter_idx = 46;
 char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID", "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
                    "EXTERN", "STATIC", "CONST", "QUESTION_MARK", "COLON",
@@ -31,10 +30,8 @@ void parseExtDefList(Node extDefList) {
     if (extDefList == NULL) {
         return;
     }
-    Node extDef = extDefList->children[0];
-    Node leftList = extDefList->children[1];
-    parseExtDef(extDef);
-    parseExtDefList(leftList);
+    parseExtDef(extDefList->children[0]);
+    parseExtDefList(extDefList->children[1]);
 }
 
 void parseExtDef(Node extDef) {
@@ -54,7 +51,7 @@ void parseExtDef(Node extDef) {
         return;
     }
     if (!strcmp(NDtypes[extDecList->type], "ExtDecList")) {
-        parseExtDecList(ExtDecList, type);
+        parseExtDecList(extDecList, type);
     } else if (!strcmp(NDtypes[extDecList->type], "FunDec")) {
         // TODO: parse FunDec
         Node funDec = extDecList;
@@ -71,7 +68,7 @@ void parseExtDef(Node extDef) {
             parseCompSt(compSt, type);
         }else{
             printf("Error type 4 at Line %d: function is redefined \"%s\"\n",
-                    funDec->line, funSymbol->name);
+                    funDec->line, funSymbol->identifier);
         }
     } else {
         // SEMI
@@ -132,7 +129,7 @@ Type *parseSpecifier(Node specifier) {
 FieldList *parseDefList(Node defList) {
     // DefList -> Def DefList
     //           |NULL
-    if (decList == NULL) {
+    if (defList == NULL) {
         return NULL;
     }
     Node def = defList->children[0];
@@ -197,7 +194,7 @@ FieldList *parseDec(Node dec, Type *type) {
         Type *expType = parseExp(exp);
         if (!typecmp(type, expType)) {
             printf("Error type 5 at Line %d: unmatching types on both sides of assignment operator\n",
-                   dec->line)
+                   dec->line);
         }
     }
     return fieldList;
@@ -249,7 +246,7 @@ FieldList *parseVarList(Node varList) {
     }
     // ParamDec
     paramDec = varList->children[0];
-    tmpFieldList->next = parseParamDec(param_dec);
+    tmpFieldList->next = parseParamDec(paramDec);
     // fieldList for function variables
     return varFieldList;
 }
@@ -282,7 +279,7 @@ Type* parseFunDec(Node funDec, Type *type) {
         funDecType->structure = NULL;
     } else {
         Node varList = funDec->children[2];
-        funDecType->structure->next = parseVarList(var_list);
+        funDecType->structure->next = parseVarList(varList);
     }
 }
 
@@ -294,7 +291,7 @@ Type *parseExp(Node exp) {
         Node operator = exp->children[1];
         Node rightmost = exp->children[2];
         // Exp ASSIGN Exp
-        if (!strcmp(NDtypes[operator->value], "ASSIGN")) {
+        if (!strcmp(NDtypes[operator->type], "ASSIGN")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
             int lvalue1 = leftmost->number == 1 && !strcmp(NDtypes[leftmost->children[0]->type], "ID");
@@ -317,9 +314,8 @@ Type *parseExp(Node exp) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
             // TODO: check what situation will cause error type 7
-            if (!typecmp(leftmostType, rightmostType) && leftmostType->categroy == PRIMITIVE && leftmostType->primitive == INT){
-                    printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
-                }
+            if (!typecmp(leftmostType, rightmostType) && leftmostType->category == PRIMITIVE && leftmostType->primitive == INT){
+                printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
             }else{
                 result = leftmostType;
             }
@@ -345,9 +341,9 @@ Type *parseExp(Node exp) {
                 printf("Error type 10 at Line %d: applying indexing operator on non-array type variables\n", leftmost->line);
             }else if(!(rightmostType->category == PRIMITIVE && rightmostType->primitive == INT)){
                 printf("Error type 12 at Line %d: array indexing with non-integer type expression\n", leftmost->line);
-                result = leftmostType->Array->base;
+                result = leftmostType->array->base;
             }else{
-                result = leftmostType->Array->base;
+                result = leftmostType->array->base;
             }
         }else if(!strcmp(NDtypes[operator->type], "DOT")){
             Type *leftmostType = parseExp(leftmost);
@@ -369,25 +365,24 @@ Type *parseExp(Node exp) {
                 }
             }
         }
-    }
-    // LP Exp RP
-    else if(!strcmp(leftmost->name,"LP")){
+    }    // LP Exp RP
+    else if(!strcmp(NDtypes[leftmost->type],"LP")){
         result = parseExp(exp->children[1]);
     }
     // MINUS Exp
-    else if(!strcmp(leftmost->name,"MINUS")){
+    else if(!strcmp(NDtypes[leftmost->type],"MINUS")){
         Type *leftmostType = parseExp(leftmost);
         if (leftmostType->category != PRIMITIVE){
-            fprintf(fout, "Error type 7 at Line %d: unmatching operands\n", leftmost->line);
+            printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
         }else{
             result = leftmostType;
         }
     }
     // NOT Exp
-    else if(!strcmp(leftmost->name,"NOT")){
+    else if(!strcmp(NDtypes[leftmost->type],"NOT")){
         Type *leftmostType = parseExp(leftmost);
         if (leftmostType->category != PRIMITIVE && leftmostType->primitive != INT){
-            fprintf(fout, "Error type 7 at Line %d: unmatching operands\n", leftmost->line);
+            printf("Error type 7 at Line %d: unmatching operands\n", leftmost->line);
         }else{
             result = (Type*)malloc(sizeof(Type));
             result->category = PRIMITIVE;
@@ -465,22 +460,23 @@ Type *parseExp(Node exp) {
         }
     }else if(!strcmp(NDtypes[leftmost->type], "INT")){
         // INT
-        result = (Type*)malloc(sizeof(type));
+        result = (Type*)malloc(sizeof(Type));
         result->category = PRIMITIVE;
         result->primitive = INT;
     }else if(!strcmp(NDtypes[leftmost->type], "FLOAT")){
         // FLOAT
-        result = (Type*)malloc(sizeof(type));
+        result = (Type*)malloc(sizeof(Type));
         result->category = PRIMITIVE;
         result->primitive = FLOAT;
     }else if(!strcmp(NDtypes[leftmost->type], "CHAR")){
         // CHAR
-        result = (Type*)malloc(sizeof(type));
+        result = (Type*)malloc(sizeof(Type));
         result->category = PRIMITIVE;
         result->primitive = CHAR;
     }
-    return result;
+    return result; 
 }
+
 
 void parseCompSt(Node compSt, Type* returnValType){
     //CompSt: LC DefList StmtList RC
@@ -496,10 +492,10 @@ void parseStmtList(Node stmtList, Type* returnValType){
     }
     Node stmt = stmtList->children[0];
     parseStmt(stmt, returnValType);
-    parseStmtList(stmtList->children[1]);
+    parseStmtList(stmtList->children[1], returnValType);
 }
 
-void parStmt(Node stmt, Type * returnValType){
+void parseStmt(Node stmt, Type * returnValType){
     // Stmt: Exp SEMI
     //      |CompSt
     //      |RETURN Exp SEMI
@@ -522,7 +518,7 @@ void parseExtDecList(Node extDecList, Type* type){
 
 
 int typecmp(Type *type1, Type *type2) {
-    if (type1 == NULL ortype2 == NULL){
+    if (type1 == NULL || type2 == NULL){
         return 0;
     }
     if (type1->category == type2->category) {

@@ -1,7 +1,8 @@
-#ifdef _SYMBOL_TABLE_H
+#ifndef _SYMBOL_TABLE_H
 #define _SYMBOL_TABLE_H
 
 #include "type.h"
+#include "uthash/uthash.h"
 
 typedef struct Symbol
 {
@@ -10,12 +11,12 @@ typedef struct Symbol
     UT_hash_handle hh; /*makes the structure hashable*/
 } Symbol;
 
-void insertSymbolEntry(const char *identifier, const Type* type);
+void insertSymbolEntry(char *identifier, Type* type);
 
 Symbol *findSymbolEntry(const char *identifier);
 
 void freeSymbolEntry(const char *identifier);
 
-void freeSymbolTable();
+// void freeSymbolTable();
 
 #endif

@@ -17,9 +17,5 @@ struct node *newNodeTER(int type, int line);
 
 struct node *newNodeNTER(int type, int line);
 
-void treePrint(struct node* nd);
-
-void nodePrint(struct node *nd, int space);
-
 #endif
 

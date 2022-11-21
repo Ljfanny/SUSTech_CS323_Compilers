@@ -1,11 +1,15 @@
-#include "uthash.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
 #include "symbol.h"
 
 Symbol* symbolTable = NULL;
 
-void insertSymbolEntry(const char* identifier, const Type* type){
+void insertSymbolEntry(char* identifier, Type* type){
     Symbol * symbol = (Symbol *)malloc(sizeof(Symbol));
-    symbol->identifier = identifier;
+    char * _identifier = (char *)malloc(sizeof(char) * strlen(identifier));
+    strcpy(_identifier, identifier);
+    symbol->identifier = _identifier;
     symbol->type = type;
     HASH_ADD_STR(symbolTable, identifier, symbol);
 }
@@ -13,7 +17,7 @@ void insertSymbolEntry(const char* identifier, const Type* type){
 
 Symbol* findSymbolEntry(const char *identifier){
     Symbol * symbol;
-    HASH_FIND_STR(symbolTable, key, symbol);
+    HASH_FIND_STR(symbolTable, identifier, symbol);
     return symbol;
 }
 
@@ -24,6 +28,6 @@ void freeSymbolEntry(const char *identifier){
     free(symbol);
 }
 
-void freeSymbolTable(){
-    HASH_CLEAR(hh, symbolTable);
-}
+// void freeSymbolTable(){
+//     HASH_CLEAR(hh, symbolTable);
+// }
