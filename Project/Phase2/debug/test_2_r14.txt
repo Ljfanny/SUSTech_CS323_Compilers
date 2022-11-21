@@ -1,0 +1,104 @@
+Program (1)
+  ExtDefList (1)
+    ExtDef (1)
+      Specifier (1)
+        StructSpecifier (1)
+          STRUCT
+          ID: Girl
+          LC
+          DefList (3)
+            Def (3)
+              Specifier (3)
+                TYPE: int
+              DecList (3)
+                Dec (3)
+                  VarDec (3)
+                    ID: name
+              SEMI
+            DefList (4)
+              Def (4)
+                Specifier (4)
+                  TYPE: int
+                DecList (4)
+                  Dec (4)
+                    VarDec (4)
+                      ID: height
+                SEMI
+          RC
+      SEMI
+    ExtDefList (6)
+      ExtDef (6)
+        Specifier (6)
+          TYPE: int
+        FunDec (6)
+          ID: test_2_r14
+          LP
+          RP
+        CompSt (7)
+          LC
+          DefList (8)
+            Def (8)
+              Specifier (8)
+                StructSpecifier (8)
+                  STRUCT
+                  ID: Girl
+              DecList (8)
+                Dec (8)
+                  VarDec (8)
+                    ID: gg
+              SEMI
+          StmtList (9)
+            Stmt (9)
+              Exp (9)
+                Exp (9)
+                  Exp (9)
+                    ID: gg
+                  DOT
+                  ID: name
+                ASSIGN
+                Exp (9)
+                  INT: 1
+              SEMI
+            StmtList (10)
+              Stmt (10)
+                Exp (10)
+                  Exp (10)
+                    Exp (10)
+                      ID: gg
+                    DOT
+                    ID: age
+                  ASSIGN
+                  Exp (10)
+                    INT: 20
+                SEMI
+              StmtList (11)
+                Stmt (11)
+                  Exp (11)
+                    Exp (11)
+                      Exp (11)
+                        ID: gg
+                      DOT
+                      ID: height
+                    ASSIGN
+                    Exp (11)
+                      INT: 165
+                  SEMI
+                StmtList (12)
+                  Stmt (12)
+                    Exp (12)
+                      Exp (12)
+                        Exp (12)
+                          ID: gg
+                        DOT
+                        ID: weight
+                      ASSIGN
+                      Exp (12)
+                        INT: 95
+                    SEMI
+                  StmtList (13)
+                    Stmt (13)
+                      RETURN
+                      Exp (13)
+                        INT: 0
+                      SEMI
+          RC

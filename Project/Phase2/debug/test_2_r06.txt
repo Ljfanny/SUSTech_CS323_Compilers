@@ -1,0 +1,83 @@
+Program (1)
+  ExtDefList (1)
+    ExtDef (1)
+      Specifier (1)
+        TYPE: int
+      FunDec (1)
+        ID: test_2_r06
+        LP
+        VarList (1)
+          ParamDec (1)
+            Specifier (1)
+              TYPE: int
+            VarDec (1)
+              ID: i
+          COMMA
+          VarList (1)
+            ParamDec (1)
+              Specifier (1)
+                TYPE: int
+              VarDec (1)
+                ID: n
+        RP
+      CompSt (2)
+        LC
+        DefList (3)
+          Def (3)
+            Specifier (3)
+              TYPE: int
+            DecList (3)
+              Dec (3)
+                VarDec (3)
+                  ID: res
+                ASSIGN
+                Exp (3)
+                  INT: 0
+            SEMI
+        StmtList (4)
+          Stmt (4)
+            IF
+            LP
+            Exp (4)
+              Exp (4)
+                ID: i
+              EQ
+              Exp (4)
+                INT: 0
+            RP
+            Stmt (5)
+              CompSt (5)
+                LC
+                StmtList (6)
+                  Stmt (6)
+                    Exp (6)
+                      Exp (6)
+                        INT: 1
+                      ASSIGN
+                      Exp (6)
+                        ID: res
+                    SEMI
+                RC
+            ELSE
+            Stmt (9)
+              CompSt (9)
+                LC
+                StmtList (10)
+                  Stmt (10)
+                    Exp (10)
+                      Exp (10)
+                        ID: res
+                      ASSIGN
+                      Exp (10)
+                        MINUS
+                        Exp (10)
+                          ID: n
+                    SEMI
+                RC
+          StmtList (12)
+            Stmt (12)
+              RETURN
+              Exp (12)
+                ID: res
+              SEMI
+        RC

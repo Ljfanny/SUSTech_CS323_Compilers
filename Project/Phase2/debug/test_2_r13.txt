@@ -1,0 +1,195 @@
+Program (1)
+  ExtDefList (1)
+    ExtDef (1)
+      Specifier (1)
+        StructSpecifier (1)
+          STRUCT
+          ID: Child
+          LC
+          DefList (3)
+            Def (3)
+              Specifier (3)
+                TYPE: int
+              DecList (3)
+                Dec (3)
+                  VarDec (3)
+                    ID: name
+              SEMI
+            DefList (4)
+              Def (4)
+                Specifier (4)
+                  TYPE: int
+                DecList (4)
+                  Dec (4)
+                    VarDec (4)
+                      ID: age
+                SEMI
+          RC
+      SEMI
+    ExtDefList (6)
+      ExtDef (6)
+        Specifier (6)
+          StructSpecifier (6)
+            STRUCT
+            ID: Parent
+            LC
+            DefList (8)
+              Def (8)
+                Specifier (8)
+                  StructSpecifier (8)
+                    STRUCT
+                    ID: Child
+                DecList (8)
+                  Dec (8)
+                    VarDec (8)
+                      ID: c
+                SEMI
+              DefList (9)
+                Def (9)
+                  Specifier (9)
+                    TYPE: int
+                  DecList (9)
+                    Dec (9)
+                      VarDec (9)
+                        ID: cc
+                  SEMI
+            RC
+        SEMI
+      ExtDefList (11)
+        ExtDef (11)
+          Specifier (11)
+            TYPE: int
+          FunDec (11)
+            ID: test_2_r13
+            LP
+            RP
+          CompSt (12)
+            LC
+            DefList (13)
+              Def (13)
+                Specifier (13)
+                  StructSpecifier (13)
+                    STRUCT
+                    ID: Parent
+                DecList (13)
+                  Dec (13)
+                    VarDec (13)
+                      ID: father
+                SEMI
+              DefList (14)
+                Def (14)
+                  Specifier (14)
+                    StructSpecifier (14)
+                      STRUCT
+                      ID: Parent
+                  DecList (14)
+                    Dec (14)
+                      VarDec (14)
+                        ID: mother
+                  SEMI
+            StmtList (15)
+              Stmt (15)
+                Exp (15)
+                  Exp (15)
+                    Exp (15)
+                      Exp (15)
+                        ID: father
+                      DOT
+                      ID: c
+                    DOT
+                    ID: name
+                  ASSIGN
+                  Exp (15)
+                    INT: 1
+                SEMI
+              StmtList (16)
+                Stmt (16)
+                  Exp (16)
+                    Exp (16)
+                      Exp (16)
+                        Exp (16)
+                          ID: father
+                        DOT
+                        ID: c
+                      DOT
+                      ID: age
+                    ASSIGN
+                    Exp (16)
+                      INT: 1
+                  SEMI
+                StmtList (17)
+                  Stmt (17)
+                    Exp (17)
+                      Exp (17)
+                        Exp (17)
+                          ID: father
+                        DOT
+                        ID: cc
+                      ASSIGN
+                      Exp (17)
+                        INT: 30
+                    SEMI
+                  StmtList (18)
+                    Stmt (18)
+                      Exp (18)
+                        Exp (18)
+                          Exp (18)
+                            Exp (18)
+                              ID: mother
+                            DOT
+                            ID: c
+                          DOT
+                          ID: name
+                        ASSIGN
+                        Exp (18)
+                          Exp (18)
+                            Exp (18)
+                              ID: father
+                            DOT
+                            ID: c
+                          DOT
+                          ID: name
+                      SEMI
+                    StmtList (19)
+                      Stmt (19)
+                        Exp (19)
+                          Exp (19)
+                            Exp (19)
+                              Exp (19)
+                                ID: mother
+                              DOT
+                              ID: cc
+                            DOT
+                            ID: age
+                          ASSIGN
+                          Exp (19)
+                            Exp (19)
+                              Exp (19)
+                                ID: father
+                              DOT
+                              ID: cc
+                            DOT
+                            ID: age
+                        SEMI
+                      StmtList (20)
+                        Stmt (20)
+                          Exp (20)
+                            Exp (20)
+                              Exp (20)
+                                ID: mother
+                              DOT
+                              ID: cc
+                            ASSIGN
+                            Exp (20)
+                              Exp (20)
+                                ID: father
+                              DOT
+                              ID: cc
+                          SEMI
+                        StmtList (21)
+                          Stmt (21)
+                            RETURN
+                            Exp (21)
+                              INT: 0
+                            SEMI
+            RC

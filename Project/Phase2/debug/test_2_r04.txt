@@ -1,0 +1,180 @@
+Program (1)
+  ExtDefList (1)
+    ExtDef (1)
+      Specifier (1)
+        TYPE: int
+      FunDec (1)
+        ID: compare
+        LP
+        VarList (1)
+          ParamDec (1)
+            Specifier (1)
+              TYPE: int
+            VarDec (1)
+              ID: x
+          COMMA
+          VarList (1)
+            ParamDec (1)
+              Specifier (1)
+                TYPE: int
+              VarDec (1)
+                ID: y
+        RP
+      CompSt (2)
+        LC
+        StmtList (3)
+          Stmt (3)
+            IF
+            LP
+            Exp (3)
+              Exp (3)
+                ID: x
+              GT
+              Exp (3)
+                ID: y
+            RP
+            Stmt (3)
+              CompSt (3)
+                LC
+                StmtList (3)
+                  Stmt (3)
+                    RETURN
+                    Exp (3)
+                      INT: 1
+                    SEMI
+                RC
+            ELSE
+            Stmt (4)
+              IF
+              LP
+              Exp (4)
+                Exp (4)
+                  ID: y
+                GT
+                Exp (4)
+                  ID: x
+              RP
+              Stmt (4)
+                CompSt (4)
+                  LC
+                  StmtList (4)
+                    Stmt (4)
+                      RETURN
+                      Exp (4)
+                        MINUS
+                        Exp (4)
+                          INT: 1
+                      SEMI
+                  RC
+              ELSE
+              Stmt (5)
+                CompSt (5)
+                  LC
+                  StmtList (5)
+                    Stmt (5)
+                      RETURN
+                      Exp (5)
+                        INT: 0
+                      SEMI
+                  RC
+        RC
+    ExtDefList (7)
+      ExtDef (7)
+        Specifier (7)
+          TYPE: float
+        FunDec (7)
+          ID: compare
+          LP
+          VarList (7)
+            ParamDec (7)
+              Specifier (7)
+                TYPE: int
+              VarDec (7)
+                ID: a
+            COMMA
+            VarList (7)
+              ParamDec (7)
+                Specifier (7)
+                  TYPE: int
+                VarDec (7)
+                  ID: b
+          RP
+        CompSt (8)
+          LC
+          StmtList (9)
+            Stmt (9)
+              IF
+              LP
+              Exp (9)
+                Exp (9)
+                  ID: b
+                GT
+                Exp (9)
+                  ID: a
+              RP
+              Stmt (9)
+                CompSt (9)
+                  LC
+                  StmtList (9)
+                    Stmt (9)
+                      RETURN
+                      Exp (9)
+                        MINUS
+                        Exp (9)
+                          FLOAT: 1.0
+                      SEMI
+                  RC
+            StmtList (10)
+              Stmt (10)
+                IF
+                LP
+                Exp (10)
+                  Exp (10)
+                    ID: b
+                  EQ
+                  Exp (10)
+                    ID: a
+                RP
+                Stmt (10)
+                  CompSt (10)
+                    LC
+                    StmtList (10)
+                      Stmt (10)
+                        RETURN
+                        Exp (10)
+                          FLOAT: 0.0
+                        SEMI
+                    RC
+              StmtList (11)
+                Stmt (11)
+                  RETURN
+                  Exp (11)
+                    FLOAT: 1.0
+                  SEMI
+          RC
+      ExtDefList (13)
+        ExtDef (13)
+          Specifier (13)
+            TYPE: int
+          FunDec (13)
+            ID: test_2_r04
+            LP
+            RP
+          CompSt (14)
+            LC
+            StmtList (15)
+              Stmt (15)
+                RETURN
+                Exp (15)
+                  ID: compare
+                  LP
+                  Args (15)
+                    Exp (15)
+                      INT: 7
+                    COMMA
+                    Args (15)
+                      Exp (15)
+                        INT: 8
+                  RP
+                SEMI
+            RC

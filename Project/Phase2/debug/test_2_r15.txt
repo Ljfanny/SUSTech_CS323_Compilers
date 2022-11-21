@@ -1,0 +1,87 @@
+Program (1)
+  ExtDefList (1)
+    ExtDef (1)
+      Specifier (1)
+        StructSpecifier (1)
+          STRUCT
+          ID: Child
+          LC
+          DefList (3)
+            Def (3)
+              Specifier (3)
+                TYPE: int
+              DecList (3)
+                Dec (3)
+                  VarDec (3)
+                    ID: name
+              SEMI
+            DefList (4)
+              Def (4)
+                Specifier (4)
+                  TYPE: int
+                DecList (4)
+                  Dec (4)
+                    VarDec (4)
+                      VarDec (4)
+                        ID: friends
+                      LB
+                      INT: 10
+                      RB
+                SEMI
+          RC
+      SEMI
+    ExtDefList (6)
+      ExtDef (6)
+        Specifier (6)
+          StructSpecifier (6)
+            STRUCT
+            ID: Child
+            LC
+            DefList (8)
+              Def (8)
+                Specifier (8)
+                  TYPE: int
+                DecList (8)
+                  Dec (8)
+                    VarDec (8)
+                      ID: id
+                SEMI
+              DefList (9)
+                Def (9)
+                  Specifier (9)
+                    TYPE: int
+                  DecList (9)
+                    Dec (9)
+                      VarDec (9)
+                        ID: age
+                  SEMI
+            RC
+        SEMI
+      ExtDefList (11)
+        ExtDef (11)
+          Specifier (11)
+            TYPE: int
+          FunDec (11)
+            ID: test_2_r15
+            LP
+            RP
+          CompSt (12)
+            LC
+            DefList (13)
+              Def (13)
+                Specifier (13)
+                  StructSpecifier (13)
+                    STRUCT
+                    ID: Child
+                DecList (13)
+                  Dec (13)
+                    VarDec (13)
+                      ID: Amy
+                SEMI
+            StmtList (14)
+              Stmt (14)
+                RETURN
+                Exp (14)
+                  INT: 0
+                SEMI
+            RC

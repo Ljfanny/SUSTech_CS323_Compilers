@@ -1,0 +1,84 @@
+Program (1)
+  ExtDefList (1)
+    ExtDef (1)
+      Specifier (1)
+        StructSpecifier (1)
+          STRUCT
+          ID: Apple
+          LC
+          DefList (3)
+            Def (3)
+              Specifier (3)
+                TYPE: int
+              DecList (3)
+                Dec (3)
+                  VarDec (3)
+                    ID: weight
+              SEMI
+            DefList (4)
+              Def (4)
+                Specifier (4)
+                  TYPE: float
+                DecList (4)
+                  Dec (4)
+                    VarDec (4)
+                      ID: round
+                SEMI
+          RC
+      SEMI
+    ExtDefList (6)
+      ExtDef (6)
+        Specifier (6)
+          TYPE: int
+        FunDec (6)
+          ID: test_2_r07
+          LP
+          RP
+        CompSt (7)
+          LC
+          DefList (8)
+            Def (8)
+              Specifier (8)
+                StructSpecifier (8)
+                  STRUCT
+                  ID: Apple
+              DecList (8)
+                Dec (8)
+                  VarDec (8)
+                    ID: aa
+              SEMI
+            DefList (9)
+              Def (9)
+                Specifier (9)
+                  TYPE: float
+                DecList (9)
+                  Dec (9)
+                    VarDec (9)
+                      ID: weight_test
+                    ASSIGN
+                    Exp (9)
+                      FLOAT: 1.0
+                SEMI
+          StmtList (10)
+            Stmt (10)
+              Exp (10)
+                Exp (10)
+                  Exp (10)
+                    ID: aa
+                  DOT
+                  ID: weight
+                ASSIGN
+                Exp (10)
+                  Exp (10)
+                    ID: aa
+                  PLUS
+                  Exp (10)
+                    INT: 2
+              SEMI
+            StmtList (11)
+              Stmt (11)
+                RETURN
+                Exp (11)
+                  INT: 0
+                SEMI
+          RC

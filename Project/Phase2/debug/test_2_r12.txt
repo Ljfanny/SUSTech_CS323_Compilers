@@ -1,0 +1,153 @@
+Program (1)
+  ExtDefList (1)
+    ExtDef (1)
+      Specifier (1)
+        TYPE: int
+      FunDec (1)
+        ID: test_2_r12
+        LP
+        RP
+      CompSt (2)
+        LC
+        DefList (3)
+          Def (3)
+            Specifier (3)
+              TYPE: float
+            DecList (3)
+              Dec (3)
+                VarDec (3)
+                  VarDec (3)
+                    ID: arr1
+                  LB
+                  INT: 10
+                  RB
+            SEMI
+          DefList (4)
+            Def (4)
+              Specifier (4)
+                TYPE: float
+              DecList (4)
+                Dec (4)
+                  VarDec (4)
+                    VarDec (4)
+                      ID: arr2
+                    LB
+                    INT: 10
+                    RB
+              SEMI
+            DefList (5)
+              Def (5)
+                Specifier (5)
+                  TYPE: float
+                DecList (5)
+                  Dec (5)
+                    VarDec (5)
+                      ID: a
+                    ASSIGN
+                    Exp (5)
+                      FLOAT: 1.1
+                SEMI
+              DefList (6)
+                Def (6)
+                  Specifier (6)
+                    TYPE: int
+                  DecList (6)
+                    Dec (6)
+                      VarDec (6)
+                        ID: i
+                      ASSIGN
+                      Exp (6)
+                        INT: 0
+                  SEMI
+        StmtList (7)
+          Stmt (7)
+            WHILE
+            LP
+            Exp (7)
+              Exp (7)
+                ID: i
+              LT
+              Exp (7)
+                INT: 10
+            RP
+            Stmt (8)
+              CompSt (8)
+                LC
+                StmtList (9)
+                  Stmt (9)
+                    Exp (9)
+                      Exp (9)
+                        Exp (9)
+                          ID: arr1
+                        LB
+                        Exp (9)
+                          ID: i
+                        RB
+                      ASSIGN
+                      Exp (9)
+                        ID: a
+                    SEMI
+                  StmtList (10)
+                    Stmt (10)
+                      Exp (10)
+                        Exp (10)
+                          ID: a
+                        ASSIGN
+                        Exp (10)
+                          Exp (10)
+                            ID: a
+                          MUL
+                          Exp (10)
+                            ID: a
+                      SEMI
+                RC
+          StmtList (12)
+            Stmt (12)
+              Exp (12)
+                Exp (12)
+                  ID: i
+                ASSIGN
+                Exp (12)
+                  INT: 0
+              SEMI
+            StmtList (13)
+              Stmt (13)
+                WHILE
+                LP
+                Exp (13)
+                  Exp (13)
+                    ID: i
+                  LT
+                  Exp (13)
+                    INT: 10
+                RP
+                Stmt (14)
+                  CompSt (14)
+                    LC
+                    StmtList (15)
+                      Stmt (15)
+                        Exp (15)
+                          Exp (15)
+                            Exp (15)
+                              ID: arr2
+                            LB
+                            Exp (15)
+                              Exp (15)
+                                ID: arr1
+                              LB
+                              Exp (15)
+                                ID: i
+                              RB
+                            RB
+                          ASSIGN
+                          Exp (15)
+                            ID: a
+                        SEMI
+                    RC
+              StmtList (17)
+                Stmt (17)
+                  RETURN
+                  Exp (17)
+                    INT: 0
+                  SEMI
+        RC
