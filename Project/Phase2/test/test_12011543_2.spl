@@ -1,0 +1,19 @@
+int test_12011543_2()
+{
+  int a,b;
+  int x[12][01][15][43], y[120][115][43];
+  while(0) {
+    if(a) {
+      int c = 12011543;
+      x[0] = a;
+    } 
+    else if (b) {
+      int d = a;
+      y[0][0] = b;
+    }
+    else {
+      float c = 1.2011543;
+    }
+  }
+  return 0;
+}
