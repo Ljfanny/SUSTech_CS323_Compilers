@@ -6,28 +6,13 @@
     #define EXIT_FAIL 1
     enum ND_TYPE {
         TYPe = 0,
-        INt,
-        FLOAt,
-        CHAr,
-        Id,
+        INt, FLOAt, CHAr, Id,
         STRUCt, If, WHILe, ELSe, RETURn,
-        EXTERn, STATIc, CONSt,
-        QUESTION_MARk, COLOn,
-        DOt,
-        SEMi,
-        COMMa,
-        ASSIGn, PLUS_ASSIGn, MINUS_ASSIGn, MUL_ASSIGn, DIV_ASSIGn, MOD_ASSIGn,
-        Lt, Le, Gt, Ge,
-        Ne,
-        Eq,
-        ANd,
-        Or,
-        NOt,
-        PLUs, MINUs,
-        DOUBLE_PLUs, DOUBLE_MINUs,
-        MUl, DIv, MOd,
-        Lp, Rp, Lb, Rb,
-        Lc, Rc
+        DOt, SEMi, COMMa, ASSIGn,
+        Lt, Le, Gt, Ge, Ne, Eq,
+        ANd, Or, NOt,
+        PLUs, MINUs, MUl, DIv,
+        Lp, Rp, Lb, Rb, Lc, Rc
     };
 %}
 /* %option yylineno */

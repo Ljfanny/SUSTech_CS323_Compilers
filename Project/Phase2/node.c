@@ -13,7 +13,7 @@ void setNode(struct node *prt, struct node *nds[], int number) {
             min = min < nds[i]->line ? min : nds[i]->line;
         }
     }
-    prt->line = min < prt->line?min:prt->line;
+    prt->line = min < prt->line? min : prt->line;
 }
 
 struct node *newNodeNL(int type, int line, char *content) {

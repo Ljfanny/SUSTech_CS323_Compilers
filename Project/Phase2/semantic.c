@@ -6,19 +6,18 @@
 // #include "type.h"
 #include "symbol.h"
 
-int nter_idx = 46;
-char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID", "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
-                   "EXTERN", "STATIC", "CONST", "QUESTION_MARK", "COLON",
-                   "DOT", "SEMI", "COMMA", "ASSIGN", "PLUS_ASSIGN", "MINUS_ASSIGN",
-                   "MUL_ASSIGN", "DIV_ASSIGN", "MOD_ASSIGN",
-                   "LT", "LE", "GT", "GE", "NE", "EQ", "AND",
-                   "OR", "NOT", "PLUS", "MINUS", "DOUBLE_PLUS", "DOUBLE_MINUS", "MUL",
-                   "DIV", "MOD", "LP", "RP", "LB", "RB",
-                   "LC", "RC", "Program", "ExtDefList",
-                   "ExtDef", "Specifier", "ExtDecList", "StructSpecifier",
-                   "VarDec", "FunDec", "VarList", "ParamDec",
-                   "CompSt", "StmtList", "Stmt", "DefList",
-                   "Def", "DecList", "Dec", "Args", "Exp"};
+char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID",
+                    "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
+                    "DOT", "SEMI", "COMMA", "ASSIGN",
+                    "LT", "LE", "GT", "GE", "NE", "EQ",
+                    "AND", "OR", "NOT",
+                    "PLUS", "MINUS", "MUL", "DIV",
+                    "LP", "RP", "LB", "RB", "LC", "RC",
+                    "Program", "ExtDefList",
+                    "ExtDef", "Specifier", "ExtDecList", "StructSpecifier",
+                    "VarDec", "FunDec", "VarList", "ParamDec",
+                    "CompSt", "StmtList", "Stmt", "DefList",
+                    "Def", "DecList", "Dec", "Args", "Exp"};
 
 void parseProgram(Node program) {
     parseExtDefList(program->children[0]);
@@ -309,11 +308,13 @@ Type *parseExp(Node exp) {
         if (!strcmp(NDtypes[operator->type], "ASSIGN")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
+            printf("exp = exp: 312\n");
             int lvalue1 = leftmost->number == 1 && !strcmp(NDtypes[leftmost->children[0]->type], "ID");
             int lvalue2 = leftmost->number == 4 && !strcmp(NDtypes[leftmost->children[0]->type], "Exp") &&
-                          !strcmp(NDtypes[leftmost->children[1]->type], "LB");
+                        !strcmp(NDtypes[leftmost->children[1]->type], "LB");
             int lvalue3 = leftmost->number == 3 && !strcmp(NDtypes[leftmost->children[0]->type], "Exp") &&
-                          !strcmp(NDtypes[leftmost->children[1]->type], "DOT");
+                        !strcmp(NDtypes[leftmost->children[1]->type], "DOT");
+            printf("exp = exp: 318\n");
             if (!(lvalue1 || lvalue2 || lvalue3)) {
                 printf("Error type 6 at Line %d: rvalue on the left side of assignment operator\n",
                 leftmost->line);
@@ -421,14 +422,15 @@ Type *parseExp(Node exp) {
     // ID LP RP
     else if(!strcmp(NDtypes[leftmost->type],"ID")){
         Symbol* tmp = findSymbolEntry(leftmost->value);
-        if(exp->number >= 3 && (!strcmp(NDtypes[exp->children[2]->type], "RP") || 
-        (!strcmp(NDtypes[exp->children[2]->type], "Args") && !strcmp(NDtypes[exp->children[3]->type], "RP")))){
+        if(exp->number >= 3){
             if (tmp == NULL){
-                printf("Error type 1 at Line %d: undefined variable: %s\n",
+                printf("Error type 2 at Line %d: undefined function: %s\n",
                 leftmost->line, leftmost->value);
+                return NULL;
             }else if(tmp->type->category != FUNCTION){
-                printf("Error type 11 at Line %d: applying function invocation operator on non-function names %s\n",
-                        leftmost->line, leftmost->value);
+                printf("Error type 11 at Line %d: applying function invocation operator on non-function names: %s\n",
+                leftmost->line, leftmost->value);
+                return NULL;
             }
             Type* tmpFuncType = tmp->type;
             if (exp->number == 4){
@@ -482,6 +484,7 @@ Type *parseExp(Node exp) {
                 printf("Error type 1 at Line %d: undefined variable: %s\n",
                 leftmost->line, leftmost->value);
             }else{
+                // printf("here??? %s\n", tmp->identifier);
                 result = tmp->type;
             }
         }
@@ -533,6 +536,7 @@ void parseStmt(Node stmt, Type * returnValType){
     }else if(!strcmp(NDtypes[leftmost->type],"RETURN")){
         Node exp = stmt->children[1];
         Type* expType = parseExp(exp);
+        // printf("here???\n");
         if(expType == NULL){
             return;
         }

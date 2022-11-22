@@ -8,7 +8,7 @@
     struct node* tmpcld[10];
     int tmpnum = 0;
     enum myYYTYPE{
-        PROGRAm = 46, 
+        PROGRAm = 33, 
         EXTDEFLISt,
         EXTDEf, SPECIFIEr, EXTDECLISt, STRUCTSPECIFIEr,
         VARDEc, FUNDEc, VARLISt, PARAMDEc,
