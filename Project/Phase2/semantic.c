@@ -72,7 +72,7 @@ void parseExtDef(Node extDef) {
             insertSymbolEntry(funName, funDecType);
             parseCompSt(compSt, type);
         }else{
-            printf("Error type 4 at Line %d: function is redefined \"%s\"\n",
+            printf("Error type 4 at Line %d: function is redefined %s\n",
             funDec->line, funSymbol->identifier);
         }
     } else {
@@ -108,12 +108,12 @@ Type *parseSpecifier(Node specifier) {
         if (leftmost->number == 2) { 
             // STRUCT ID
             if (symbol == NULL) {
-                printf("Error type 15-2 at Line %d: struct is used without definition \"%s\"\n",
+                printf("Error type 15-2 at Line %d: struct is used without definition %s\n",
                 _structId->line, identifier);
                 return NULL;
             }
             if (symbol->type->category != STRUCTURE) {
-                printf("Error type 15-3 at Line %d: \"%s\" is not a struct\n",
+                printf("Error type 15-3 at Line %d: %s is not a struct\n",
                 _structId->line, identifier);
                 return NULL;
             }
@@ -121,7 +121,7 @@ Type *parseSpecifier(Node specifier) {
         } else { 
             // STRUCT ID LC DefList RC
             if (symbol != NULL) {
-                printf("Error type 15-1 at Line %d: redefine the same structure type \"%s\"\n",
+                printf("Error type 15-1 at Line %d: redefine the same structure type %s\n",
                 _structId->line, identifier);
             }
             type = (Type *) malloc(sizeof(Type));
@@ -228,7 +228,7 @@ FieldList *parseVarDec(Node varDec, Type *type) {
     field->type = endType;
     field->next = NULL;
     if (symbol != NULL) {
-        printf("Error type 3 at Line %d: variable is redefined in the same scope \"%s\"\n",
+        printf("Error type 3 at Line %d: redefine variable: %s\n",
         tempNode->line, symbol->identifier);
     }else{
         insertSymbolEntry(field->name, field->type);
@@ -384,7 +384,7 @@ Type *parseExp(Node exp) {
                     tmp = tmp->next;
                 }
                 if (tmp == NULL){
-                    printf("Error type 14 at Line %d: accessing an undefined structure member \"%s\".\n", 
+                    printf("Error type 14 at Line %d: accessing an undefined structure member %s\n", 
                     leftmost->line, rightmost->value);
                 }else{
                     result = tmp->type;
@@ -427,7 +427,7 @@ Type *parseExp(Node exp) {
                 printf("Error type 1 at Line %d: undefined variable: %s\n",
                 leftmost->line, leftmost->value);
             }else if(tmp->type->category != FUNCTION){
-                printf("Error type 11 at Line %d: applying function invocation operator on non-function names \"%s\"\n",
+                printf("Error type 11 at Line %d: applying function invocation operator on non-function names %s\n",
                         leftmost->line, leftmost->value);
             }
             Type* tmpFuncType = tmp->type;
