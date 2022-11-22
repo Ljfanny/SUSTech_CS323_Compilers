@@ -1,0 +1,16 @@
+Error type 4 at Line 29: function is redefined function
+Error type 3 at Line 38: redefine variable: wow5Def
+Error type 1 at Line 39: undefined variable: wow6
+Error type 2 at Line 40: undefined function: otherfunction
+Error type 5 at Line 41: unmatching types on both sides of assignment operator
+Error type 9 at Line 42: the function function's arguments mismatch the declared parameters (too few)
+Error type 6 at Line 42: rvalue on the left side of assignment operator
+Error type 5 at Line 43: unmatching types on both sides of assignment operator
+Error type 9 at Line 44: the function function's arguments mismatch the declared parameters (too many)
+Error type 10 at Line 45: applying indexing operator on non-array type variables
+Error type 5 at Line 45: unmatching types on both sides of assignment operator
+Error type 11 at Line 46: applying function invocation operator on non-function names: a8
+Error type 5 at Line 46: unmatching types on both sides of assignment operator
+Error type 12 at Line 47: array indexing with non-integer type expression
+Error type 5 at Line 47: unmatching types on both sides of assignment operator
+Error type 8 at Line 48: the function's return value type mismatches the declared type

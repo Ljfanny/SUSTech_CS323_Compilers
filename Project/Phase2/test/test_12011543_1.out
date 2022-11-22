@@ -1,0 +1,4 @@
+Error type 3 at Line 20: redefine variable: a
+Error type 3 at Line 20: redefine variable: b
+Error type 1 at Line 21: undefined variable: c
+Error type 5 at Line 21: unmatching types on both sides of assignment operator

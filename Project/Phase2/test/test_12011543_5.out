@@ -1,0 +1,2 @@
+Error type 3 at Line 9: redefine variable: n
+Error type 9 at Line 19: the function intPlusOne's arguments mismatch the declared parameters (too many)
