@@ -65,7 +65,6 @@ void parseExtDef(Node extDef) {
         //     return;
         // }
         char* funName = funDecType->structure->name;
-        printf("func name: %s\n", funName);
         Symbol* funSymbol = findSymbolEntry(funName);
         if(funSymbol == NULL){
             insertSymbolEntry(funName, funDecType);
@@ -86,6 +85,7 @@ Type *parseSpecifier(Node specifier) {
     //     return NULL;
     // }
     // Type *type = (Type *) malloc(sizeof(Type));
+    printf("parseSpecifier()...%s...\n", NDtypes[specifier->children[0]->type]);
     Type * type = NULL;
     Node leftmost = specifier->children[0];
     if (!strcmp(NDtypes[leftmost->type], "TYPE")) {
@@ -135,6 +135,7 @@ Type *parseSpecifier(Node specifier) {
 FieldList *parseDefList(Node defList) {
     // DefList -> Def DefList
     //           |NULL
+    printf("parseDefList()......\n");
     if (defList == NULL) {
         return NULL;
     }
@@ -157,6 +158,7 @@ FieldList *parseDef(Node def) {
         // error
         // return NULL;
     // }
+    printf("parseDef()......\n");
     Type *type = parseSpecifier(def->children[0]);
     if (type == NULL) {
         return NULL;
@@ -172,6 +174,7 @@ FieldList *parseDef(Node def) {
 FieldList *parseDecList(Node decList, Type *type) {
     // DecList -> Dec COMMA DecList
     //           |Dec
+    printf("parseDecList()............\n");
     Node dec = decList->children[0];
     FieldList *decFieldList = parseDec(dec, type);
     if (decFieldList == NULL){
@@ -193,6 +196,7 @@ FieldList *parseDecList(Node decList, Type *type) {
 FieldList *parseDec(Node dec, Type *type) {
     //Dec -> VarDec ASSIGN Exp
     //      |VarDec
+    printf("parseDec()............\n");
     Node varDec = dec->children[0];
     FieldList *fieldList = parseVarDec(varDec, type);
     if (dec->number == 3) {
@@ -209,19 +213,22 @@ FieldList *parseDec(Node dec, Type *type) {
 FieldList *parseVarDec(Node varDec, Type *type) {
     //VarDec -> VarDec LB INT RB (array)
     //         |ID
-    Node tempNode = varDec->children[0];
+    printf("parseVarDec().....%s.....\n", NDtypes[varDec->children[0]->type]);
+    Node tempNode = varDec;
     FieldList *field = (FieldList *) malloc(sizeof(FieldList));
     Type *endType = type;
-    while (!strcmp(NDtypes[tempNode->type], "VarDec")) {
+    while (!strcmp(NDtypes[tempNode->type], "VarDec") && tempNode->number == 4) {
         Type *arrayType = (Type *) malloc(sizeof(Type));
         arrayType->category = ARRAY;
         arrayType->array = (Array *) malloc(sizeof(Array));
-        arrayType->array->size = atoi(tempNode->children[2]->value);
+        int sz = atoi(tempNode->children[2]->value);
+        arrayType->array->size = sz;
         arrayType->array->base = endType;
         endType = arrayType;
         tempNode = tempNode->children[0];
     }
     // ID
+    tempNode = tempNode->children[0];
     Symbol *symbol = findSymbolEntry(tempNode->value);
     field->name = tempNode->value;
     field->type = endType;
@@ -308,13 +315,11 @@ Type *parseExp(Node exp) {
         if (!strcmp(NDtypes[operator->type], "ASSIGN")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
-            printf("exp = exp: 312\n");
             int lvalue1 = leftmost->number == 1 && !strcmp(NDtypes[leftmost->children[0]->type], "ID");
             int lvalue2 = leftmost->number == 4 && !strcmp(NDtypes[leftmost->children[0]->type], "Exp") &&
                         !strcmp(NDtypes[leftmost->children[1]->type], "LB");
             int lvalue3 = leftmost->number == 3 && !strcmp(NDtypes[leftmost->children[0]->type], "Exp") &&
                         !strcmp(NDtypes[leftmost->children[1]->type], "DOT");
-            printf("exp = exp: 318\n");
             if (!(lvalue1 || lvalue2 || lvalue3)) {
                 printf("Error type 6 at Line %d: rvalue on the left side of assignment operator\n",
                 leftmost->line);
@@ -398,7 +403,7 @@ Type *parseExp(Node exp) {
     }
     // MINUS Exp
     else if(!strcmp(NDtypes[leftmost->type],"MINUS")){
-        Type *leftmostType = parseExp(leftmost);
+        Type *leftmostType = parseExp(exp->children[1]);
         if (leftmostType->category != PRIMITIVE){
             printf("Error type 7 at Line %d: unmatching operands\n", 
             leftmost->line);
@@ -408,7 +413,7 @@ Type *parseExp(Node exp) {
     }
     // NOT Exp
     else if(!strcmp(NDtypes[leftmost->type],"NOT")){
-        Type *leftmostType = parseExp(leftmost);
+        Type *leftmostType = parseExp(exp->children[1]);
         if (leftmostType->category != PRIMITIVE && leftmostType->primitive != TINT){
             printf("Error type 7 at Line %d: unmatching operands\n",
             leftmost->line);
@@ -484,7 +489,6 @@ Type *parseExp(Node exp) {
                 printf("Error type 1 at Line %d: undefined variable: %s\n",
                 leftmost->line, leftmost->value);
             }else{
-                // printf("here??? %s\n", tmp->identifier);
                 result = tmp->type;
             }
         }
@@ -536,17 +540,16 @@ void parseStmt(Node stmt, Type * returnValType){
     }else if(!strcmp(NDtypes[leftmost->type],"RETURN")){
         Node exp = stmt->children[1];
         Type* expType = parseExp(exp);
-        // printf("here???\n");
         if(expType == NULL){
             return;
         }
         if(!typecmp(expType, returnValType)){
             printf("Error type 8 at Line %d: the function's return value type mismatches the declared type\n",
-                leftmost->line);
+            leftmost->line);
         }
     }else if(!strcmp(NDtypes[leftmost->type],"IF")){
         // |IF LP Exp RP Stmt
-        // |IF LP Exp RP Stmt ELSE Stmt 
+        // |IF LP Exp RP Stmt ELSE Stmt
         Node exp = stmt->children[2];
         Type* expType = parseExp(exp);
         if (expType == NULL){
