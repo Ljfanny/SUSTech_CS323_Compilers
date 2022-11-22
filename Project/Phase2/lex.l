@@ -29,19 +29,6 @@
         Lp, Rp, Lb, Rb,
         Lc, Rc
     };
-    // int yycolumn = 1;
-    int lines = 1;
-    // int charPos = 1;
-    // int spc = 5;
-    // int ter = 33;
-    // int non_ter = 52;
-    // typeA-0, typeB-1
-    // int errorType = -1;
-    // void adjust(void);
-    // #define YY_USER_ACTION 
-    //     yylloc->begin.line = yylloc->end.line = yylineno; \
-    //     yylloc->begin.column = yycolumn; yylloc->end.column = yycolumn+yyleng-1; \
-    //     yycolumn += yyleng;
 %}
 /* %option yylineno */
 %option yylineno
@@ -57,25 +44,12 @@ CHAR '(([ -~·])|(\\x[0-9a-fA-F]{2}))'
 ID {LETTER_}({LETTER_}|{DIGIT}){0,31}
 INT_HEX_ERROR [+-]?0[xX][0-9a-zA-Z]+
 CHAR_ERROR '\\x[0-9a-zA-Z]*'
-/* ID_ERROR [_a-zA-Zs0-9]* */
-/* ID_ERROR = {LETTER_}* */
-
-/* TEST [$@&'|']+ */
-
-/* INT_LEADING0 0{DIGIT}+
-INT_INVALID_HEX 0[xX]{DIGIT_HEX}*[g-zG-Z]+{DIGIT_HEX}*
-CHAR_DOUBLE0S '\\[xX]00'
-CHAR_MORE_HEX '\\[xX]{DIGIT_HEX}{3,}'
-CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
-
-/* ID_INVALID {DIGIT}+{LETTER_}+{DIGIT}* */
-
 %%
 
 "//".* {}
 [/][*][^*]*[*]+([^*/][^*]*[*]+)*[/] {}
 [ \t\r]+ {}
-"\n" {lines++;}
+"\n" {}
 
 "int" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
 "float" {yylval = newNodeNL(TYPe,yylineno,yytext); return TYPE;}
@@ -87,6 +61,7 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 "else" {yylval = newNodeTER(ELSe,yylineno); return ELSE;}
 "while" {yylval = newNodeTER(WHILe,yylineno); return WHILE;}
 "return" {yylval = newNodeTER(RETURn,yylineno); return RETURN;}
+
 "." {yylval = newNodeTER(DOt,yylineno); return DOT;}
 ";" {yylval = newNodeTER(SEMi,yylineno); return SEMI;}
 "," {yylval = newNodeTER(COMMa,yylineno); return COMMA;}
@@ -105,7 +80,7 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 "-" {yylval = newNodeTER(MINUs,yylineno); return MINUS;}
 "*" {yylval = newNodeTER(MUl,yylineno); return MUL;}
 "/" {yylval = newNodeTER(DIv,yylineno); return DIV;}
-"%" {yylval = newNodeTER(MOd,yylineno); return MOD;}
+
 "(" {yylval = newNodeTER(Lp,yylineno); return LP;}
 ")" {yylval = newNodeTER(Rp,yylineno); return RP;}
 "[" {yylval = newNodeTER(Lb,yylineno); return LB;}
@@ -164,27 +139,3 @@ CHAR_INVALID_HEX '\\[xX]{DIGIT_HEX}*[^0-9a-fA-F]+{DIGIT_HEX}*' */
 }
 
 %%
-
-/* int main(int argc, char **argv){
-    char *file_path;
-    if(argc < 2){
-        fprintf(stderr, "Usage: %s <file_path>\n", argv[0]);
-        return EXIT_FAIL;
-    } else if(argc == 2){
-        file_path = argv[1];
-        if(!(yyin = fopen(file_path, "r"))){
-            perror(argv[1]);
-            return EXIT_FAIL;
-        }
-        yylex();
-        return EXIT_OK;
-    } else{
-        fputs("Too many arguments! Expected: 2.\n", stderr);
-        return EXIT_FAIL;
-    }
-} */
-
-/* void adjust(void){
-    EM_tokPos=charPos;
-    charPos+=yyleng;
-} */

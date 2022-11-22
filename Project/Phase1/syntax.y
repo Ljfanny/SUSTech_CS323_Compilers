@@ -51,25 +51,21 @@
 %token INT FLOAT CHAR
 %token ID
 %token TYPE
-/* %token STRUCT IF ELSE WHILE RETURN CONST */
-%token STRUCT IF ELSE WHILE RETURN
+%token STRUCT IF ELSE WHILE RETURN CONST
 %token NOT
 %token SEMI COMMA
-/* %token ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN */
-%token ASSIGN
-/* %token LT LE GT GE NE EQ QUESTION_MARK COLON */
-%token LT LE GT GE NE EQ
+%token ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
+%token LT LE GT GE NE EQ QUESTION_MARK COLON
 %token PLUS MINUS
 %token MUL DIV MOD
-/* %token DOUBLE_PLUS DOUBLE_MINUS */
+%token DOUBLE_PLUS DOUBLE_MINUS
 %token OR
 %token AND
 %token LP RP LB RB DOT
 %token LC RC
 %token ERROR
 
-/* %right ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN */
-%right ASSIGN
+%right ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 %right NOT
 
 %left OR
@@ -133,9 +129,9 @@ Specifier:
     TYPE
     {$$= newNodeNTER(SPECIFIEr, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
-    /* |CONST TYPE
+    |CONST TYPE
     {$$= newNodeNTER(SPECIFIEr, getLine()); tmpnum = 2;
-    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);} */
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
     | StructSpecifier
     {$$= newNodeNTER(SPECIFIEr, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);}
@@ -252,15 +248,14 @@ Stmt: Exp SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
     MISSING_SEMI_ERROR($1);}
+    | IF LP Exp error Stmt
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 4;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $5;
+    setNode($$, tmpcld, tmpnum); MISSING_RP_ERROR($3);}
     | IF LP Exp error Stmt ELSE Stmt 
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 6;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $5;
     tmpcld[4] = $6; tmpcld[5] = $7; setNode($$, tmpcld, tmpnum);
-    MISSING_RP_ERROR($3);}
-    | IF LP Exp error Stmt
-    {$$= newNodeNTER(STMt, getLine()); tmpnum = 4;
-    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $5;
-    setNode($$, tmpcld, tmpnum);
     MISSING_RP_ERROR($3);}
     | WHILE LP Exp error Stmt
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 4;
@@ -309,7 +304,7 @@ Dec: VarDec
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
     setNode($$, tmpcld, tmpnum);}
     /* += -= *= /= %= */
-    /* | VarDec PLUS_ASSIGN Exp
+    | VarDec PLUS_ASSIGN Exp
     {$$= newNodeNTER(DEc, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
     setNode($$, tmpcld, tmpnum);}
@@ -328,7 +323,7 @@ Dec: VarDec
     | VarDec MOD_ASSIGN Exp
     {$$= newNodeNTER(DEc, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
-    setNode($$, tmpcld, tmpnum);} */
+    setNode($$, tmpcld, tmpnum);}
     ;
 
 
@@ -337,7 +332,7 @@ Exp: Exp ASSIGN Exp
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
 
      /* += -= *= /= %= */
-    /* | Exp PLUS_ASSIGN Exp
+    | Exp PLUS_ASSIGN Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
     | Exp MINUS_ASSIGN Exp
@@ -351,7 +346,7 @@ Exp: Exp ASSIGN Exp
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
     | Exp MOD_ASSIGN Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
-    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);} */
+    tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
 
     | Exp AND Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
@@ -378,7 +373,7 @@ Exp: Exp ASSIGN Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}
 
-    /* | Exp AND Exp QUESTION_MARK Exp COLON Exp
+    | Exp AND Exp QUESTION_MARK Exp COLON Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
     tmpcld[5] = $6; tmpcld[6] = $7;
@@ -417,7 +412,7 @@ Exp: Exp ASSIGN Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 7; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; tmpcld[3] = $4; tmpcld[4] = $5;
     tmpcld[5] = $6; tmpcld[6] = $7;
-    setNode($$, tmpcld, tmpnum);} */
+    setNode($$, tmpcld, tmpnum);}
 
     | Exp PLUS Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
@@ -445,20 +440,20 @@ Exp: Exp ASSIGN Exp
     tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
 
      /* DOUBLE_MINUS */
-    /* | DOUBLE_MINUS Exp
+    | DOUBLE_MINUS Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
     tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
     | Exp DOUBLE_MINUS
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
-    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);} */
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
 
     /* DOUBLE_PLUS */
-    /* | DOUBLE_PLUS Exp
+    | DOUBLE_PLUS Exp
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
     tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
     | Exp DOUBLE_PLUS
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 2;
-    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);} */
+    tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);}
 
 
     | ID LP Args RP
