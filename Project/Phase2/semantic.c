@@ -20,6 +20,7 @@ char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID",
                     "Def", "DecList", "Dec", "Args", "Exp"};
 
 void parseProgram(Node program) {
+    initializeScope();
     parseExtDefList(program->children[0]);
 }
 
@@ -42,7 +43,7 @@ void parseExtDef(Node extDef) {
     //     return;
     // }
     Type *type = parseSpecifier(specifier);
-    printf("parseExtDef(): %d\n", type->category);
+    // printf("parseExtDef(): %d\n", type->category);
     if (type == NULL) {
         return;
     }
@@ -59,14 +60,14 @@ void parseExtDef(Node extDef) {
         // TODO: parse FunDec
         Node funDec = extDecList;
         Node compSt = extDef->children[2];
-        printf("extDecList: %s\n", NDtypes[extDecList->type]);
+        // printf("extDecList: %s\n", NDtypes[extDecList->type]);
         Type *funDecType = parseFunDec(funDec, type);
-        printf("%s: %d\n", funDecType->structure->name, funDecType->structure->type->primitive);
+        // printf("%s: %d\n", funDecType->structure->name, funDecType->structure->type->primitive);
         // if (funDecType == NULL) {
         //     return;
         // }
         char* funName = funDecType->structure->name;
-        Symbol* funSymbol = findSymbolEntry(funName);
+        Symbol* funSymbol = findGlobalSymbolEntry(funName);
         if(funSymbol == NULL){
             insertSymbolEntry(funName, funDecType);
             parseCompSt(compSt, funDecType->structure->type);
@@ -86,13 +87,13 @@ Type *parseSpecifier(Node specifier) {
     //     return NULL;
     // }
     // Type *type = (Type *) malloc(sizeof(Type));
-    printf("parseSpecifier()...%s...\n", NDtypes[specifier->children[0]->type]);
+    // printf("parseSpecifier()...%s...\n", NDtypes[specifier->children[0]->type]);
     Type * type = NULL;
     Node leftmost = specifier->children[0];
     if (!strcmp(NDtypes[leftmost->type], "TYPE")) {
         type = (Type *) malloc(sizeof(Type));
         type->category = PRIMITIVE;
-        printf("Specifier: %s\n", leftmost->value);
+        // printf("Specifier: %s\n", leftmost->value);
         if (!strcmp(leftmost->value, "int")) {
             type->primitive = TINT;
             // printf("Specifier: INT\n");
@@ -105,7 +106,7 @@ Type *parseSpecifier(Node specifier) {
         Node _struct = leftmost->children[0];
         Node _structId = leftmost->children[1];
         char *identifier = _structId->value;
-        Symbol *symbol = findSymbolEntry(identifier);
+        Symbol *symbol = findGlobalSymbolEntry(identifier);
         if (leftmost->number == 2) { 
             // STRUCT ID
             if (symbol == NULL) {
@@ -137,7 +138,7 @@ Type *parseSpecifier(Node specifier) {
 FieldList *parseDefList(Node defList) {
     // DefList -> Def DefList
     //           |NULL
-    printf("parseDefList()......\n");
+    // printf("parseDefList()......\n");
     if (defList == NULL) {
         return NULL;
     }
@@ -160,7 +161,7 @@ FieldList *parseDef(Node def) {
         // error
         // return NULL;
     // }
-    printf("parseDef()......\n");
+    // printf("parseDef()......\n");
     Type *type = parseSpecifier(def->children[0]);
     if (type == NULL) {
         return NULL;
@@ -176,7 +177,7 @@ FieldList *parseDef(Node def) {
 FieldList *parseDecList(Node decList, Type *type) {
     // DecList -> Dec COMMA DecList
     //           |Dec
-    printf("parseDecList()............\n");
+    // printf("parseDecList()............\n");
     Node dec = decList->children[0];
     FieldList *decFieldList = parseDec(dec, type);
     if (decFieldList == NULL){
@@ -198,7 +199,7 @@ FieldList *parseDecList(Node decList, Type *type) {
 FieldList *parseDec(Node dec, Type *type) {
     //Dec -> VarDec ASSIGN Exp
     //      |VarDec
-    printf("parseDec()............\n");
+    // printf("parseDec()............\n");
     Node varDec = dec->children[0];
     FieldList *fieldList = parseVarDec(varDec, type);
     if (dec->number == 3) {
@@ -215,7 +216,7 @@ FieldList *parseDec(Node dec, Type *type) {
 FieldList *parseVarDec(Node varDec, Type *type) {
     //VarDec -> VarDec LB INT RB (array)
     //         |ID
-    printf("parseVarDec().....%s.....\n", NDtypes[varDec->children[0]->type]);
+    // printf("parseVarDec().....%s.....\n", NDtypes[varDec->children[0]->type]);
     Node tempNode = varDec;
     FieldList *field = (FieldList *) malloc(sizeof(FieldList));
     Type *endType = type;
@@ -231,7 +232,7 @@ FieldList *parseVarDec(Node varDec, Type *type) {
     }
     // ID
     tempNode = tempNode->children[0];
-    Symbol *symbol = findSymbolEntry(tempNode->value);
+    Symbol *symbol = findLocalSymbolEntry(tempNode->value);
     field->name = tempNode->value;
     field->type = endType;
     field->next = NULL;
@@ -428,7 +429,7 @@ Type *parseExp(Node exp) {
     // ID LP Args RP
     // ID LP RP
     else if(!strcmp(NDtypes[leftmost->type],"ID")){
-        Symbol* tmp = findSymbolEntry(leftmost->value);
+        Symbol* tmp = findGlobalSymbolEntry(leftmost->value);
         if(exp->number >= 3){
             if (tmp == NULL){
                 printf("Error type 2 at Line %d: undefined function: %s\n",
@@ -517,8 +518,10 @@ Type *parseExp(Node exp) {
 
 void parseCompSt(Node compSt, Type* returnValType){
     //CompSt: LC DefList StmtList RC
+    addLinkNode();
     FieldList * defListFieldList = parseDefList(compSt->children[1]);
     parseStmtList(compSt->children[2], returnValType);
+    freeLinkNode();
 }
 
 void parseStmtList(Node stmtList, Type* returnValType){
@@ -548,8 +551,8 @@ void parseStmt(Node stmt, Type * returnValType){
         }else if(expType->category == FUNCTION){
             expType = expType->structure->type;
         }
-        printf("function return type: %d\n", expType->primitive);
-        printf("function return type: %d\n", returnValType->primitive);
+        // printf("function return type: %d\n", expType->primitive);
+        // printf("function return type: %d\n", returnValType->primitive);
         if(!typecmp(expType, returnValType)){
             printf("Error type 8 at Line %d: incompatiable return type\n",
             leftmost->line);
@@ -611,7 +614,7 @@ int typecmp(Type *type1, Type *type2) {
                 type1->array->size == type2->array->size) {
                 return 1;
             }
-        } else if (type1->category == STRUCTURE || type1->category == FUNCTION) {
+        } else if (type1->category == FUNCTION) {
             FieldList *fieldList1 = type1->structure;
             FieldList *fieldList2 = type2->structure;
             while (fieldList1 != NULL && fieldList2 != NULL) {
@@ -625,6 +628,46 @@ int typecmp(Type *type1, Type *type2) {
                 return 1;
             }
             return 0;
+        }else{
+            //bonus: structure -> have the same variables' type
+            FieldList * itm1 = type1->structure;
+            FieldList * itm2 = type2->structure;
+            int cnt1 = 1;
+            int cnt2 = 1;
+            while (itm1 != NULL){
+                itm1 = itm1->next;
+                cnt1++;
+            }
+            while (itm2 != NULL){
+                itm2 = itm2->next;
+                cnt2++;
+            }
+            if (cnt1 != cnt2){
+                return 0;
+            }
+            itm1 = type1->structure;
+            itm2 = NULL;
+            int idx2 = 0;
+            int matches = 0;
+            int * isMatched = (int *)malloc((sizeof(int)) * cnt2);
+            memset(isMatched, 0, cnt2);
+            while (itm1 != NULL){
+                itm2 = type2->structure;
+                idx2 = 0;
+                while (itm2 != NULL){
+                    if(typecmp(itm1->type, itm2->type) && isMatched[idx2] == 0){
+                        isMatched[idx2] = 1;
+                        matches++;
+                        break;
+                    }
+                    itm2 = itm2->next;
+                    idx2++;
+                }
+                itm1 = itm1->next;
+            }
+            if (matches == cnt1){
+                return 1;
+            }
         }
     }
     return 0;

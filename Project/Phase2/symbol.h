@@ -2,7 +2,7 @@
 #define _SYMBOL_TABLE_H
 
 #include "type.h"
-#include "uthash/uthash.h"
+#include "ut/uthash.h"
 
 typedef struct Symbol
 {
@@ -11,12 +11,28 @@ typedef struct Symbol
     UT_hash_handle hh; /*makes the structure hashable*/
 } Symbol;
 
+typedef struct LinkNode
+{
+    int number;
+    Symbol *table;
+    struct LinkNode* prev; 
+    struct LinkNode* next;
+} LinkNode;
+
+void initializeScope();
+
 void insertSymbolEntry(char *identifier, Type* type);
 
-Symbol *findSymbolEntry(const char *identifier);
+Symbol *findGlobalSymbolEntry(const char *identifier);
 
-void freeSymbolEntry(const char *identifier);
+Symbol *findLocalSymbolEntry(const char *identifier);
 
-// void freeSymbolTable();
+void deleteSymbolEntry(const char *identifier);
+
+void freeLinkNode();
+
+void addLinkNode();
+
+void printCurrTable(char* nm);
 
 #endif
