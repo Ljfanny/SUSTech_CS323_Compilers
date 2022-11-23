@@ -335,10 +335,10 @@ Type *parseExp(Node exp) {
         else if (!strcmp(NDtypes[operator->type],"AND") || !strcmp(NDtypes[operator->type],"OR")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
-            if (!typecmp(leftmostType, rightmostType) && leftmostType->category == PRIMITIVE && leftmostType->primitive == TINT){
-                printf("Error type 7 at Line %d: unmatching operands (different types)\n", leftmost->line);
-            }else{
+            if (typecmp(leftmostType, rightmostType) && leftmostType->category == PRIMITIVE && leftmostType->primitive == TINT){
                 result = leftmostType;
+            }else{
+                printf("Error type 7 at Line %d: unmatching operands: AND/OR\n", leftmost->line);
             }
         }
         // Exp LT|LE|GT|GE|NE|EQ|PLUS|MINUS|MUL|DIV Exp
@@ -358,8 +358,8 @@ Type *parseExp(Node exp) {
             // }else{
             // if(!typecmp(leftmostType,rightmostType) && leftmostType->category == PRIMITIVE
             // && (leftmostType->primitive == TINT || leftmostType->primitive == TFLOAT)){
-            if(!typecmp(leftmostType,rightmostType)){
-                printf("Error type 7 at Line %d: unmatching operands\n",
+            if(!typecmp(leftmostType,rightmostType) || leftmostType->category != PRIMITIVE){
+                printf("Error type 7 at Line %d: unmatching operands: LT|LE|GT|GE|NE|EQ|PLUS|MINUS|MUL|DIV\n",
                 leftmost->line);
             }else{
                 result = leftmostType;
