@@ -1,2 +1,353 @@
-Error type 3 at Line 9: redefine variable: n
-Error type 9 at Line 19: the function intPlusOne's arguments mismatch the declared parameters (too many)
+zheshisha
+find global:------------------0------------------
+-------------------------------------------------
+x1
+find local:------------------0------------------
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+-------------------------------------------------
+x2
+find local:------------------0------------------
+index: 0, key(identifier): x1
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+-------------------------------------------------
+x3
+find local:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+-------------------------------------------------
+n
+find local:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+-------------------------------------------------
+intPlusOne
+find global:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+-------------------------------------------------
+add link node:------------------1------------------
+-------------------------------------------------
+n
+find global:------------------1------------------
+-------------------------------------------------
+free link node:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+-------------------------------------------------
+x
+find local:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+-------------------------------------------------
+y
+find local:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+index: 0, key(identifier): y
+-------------------------------------------------
+compare
+find global:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+index: 0, key(identifier): y
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+index: 0, key(identifier): y
+index: 0, key(identifier): compare
+-------------------------------------------------
+add link node:------------------1------------------
+-------------------------------------------------
+x
+find global:------------------1------------------
+-------------------------------------------------
+y
+find global:------------------1------------------
+-------------------------------------------------
+add link node:------------------2------------------
+-------------------------------------------------
+free link node:------------------1------------------
+-------------------------------------------------
+y
+find global:------------------1------------------
+-------------------------------------------------
+x
+find global:------------------1------------------
+-------------------------------------------------
+add link node:------------------2------------------
+-------------------------------------------------
+free link node:------------------1------------------
+-------------------------------------------------
+add link node:------------------2------------------
+-------------------------------------------------
+free link node:------------------1------------------
+-------------------------------------------------
+free link node:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+index: 0, key(identifier): y
+index: 0, key(identifier): compare
+-------------------------------------------------
+n
+find local:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+index: 0, key(identifier): y
+index: 0, key(identifier): compare
+-------------------------------------------------
+Error type 3 at Line 15: redefine variable: n
+test_12011543_5
+find global:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+index: 0, key(identifier): y
+index: 0, key(identifier): compare
+-------------------------------------------------
+insert:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+index: 0, key(identifier): y
+index: 0, key(identifier): compare
+index: 0, key(identifier): test_12011543_5
+-------------------------------------------------
+add link node:------------------1------------------
+-------------------------------------------------
+a
+find local:------------------1------------------
+-------------------------------------------------
+insert:------------------1------------------
+index: 0, key(identifier): a
+-------------------------------------------------
+b
+find local:------------------1------------------
+index: 0, key(identifier): a
+-------------------------------------------------
+insert:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+-------------------------------------------------
+zheshisha
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+-------------------------------------------------
+zss
+find local:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+-------------------------------------------------
+insert:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+-------------------------------------------------
+res
+find local:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+-------------------------------------------------
+insert:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+n
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+add link node:------------------2------------------
+-------------------------------------------------
+res
+find global:------------------2------------------
+-------------------------------------------------
+res
+find global:------------------2------------------
+-------------------------------------------------
+n
+find global:------------------2------------------
+-------------------------------------------------
+n
+find global:------------------2------------------
+-------------------------------------------------
+n
+find global:------------------2------------------
+-------------------------------------------------
+free link node:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+zss
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+res
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+zss
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+intPlusOne
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+zss
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+Error type 5 at Line 26: unmatching types on both sides of assignment operator
+compare
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+a
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+b
+find global:------------------1------------------
+index: 0, key(identifier): a
+index: 0, key(identifier): b
+index: 0, key(identifier): zss
+index: 0, key(identifier): res
+-------------------------------------------------
+Error type 9 at Line 27: the function compare's arguments mismatch the declared parameters (too many)
+free link node:------------------0------------------
+index: 0, key(identifier): x1
+index: 0, key(identifier): x2
+index: 0, key(identifier): x3
+index: 0, key(identifier): zheshisha
+index: 0, key(identifier): n
+index: 0, key(identifier): intPlusOne
+index: 0, key(identifier): x
+index: 0, key(identifier): y
+index: 0, key(identifier): compare
+index: 0, key(identifier): test_12011543_5
+-------------------------------------------------

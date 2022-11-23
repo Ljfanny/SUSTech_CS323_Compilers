@@ -7,6 +7,15 @@ int compare(int x, int y)
   return 5;
   return 6;
 }
+float compare(int x, int y)
+{
+  return 1;
+  return 2;
+  return 3;
+  return 4;
+  return 5;
+  return 6;
+}
 float compare2(int a, int b){
   return 1.0;
   return 2.0;
@@ -17,7 +26,9 @@ float compare2(int a, int b){
 }
 int test_12011543_1()
 {
-  int a, b, c;
+  int a, b, c, k;
+  int f = b + s;
   int d =!!!(a = !!(b = !(c = 0))) ;
+  int r = add(k);
   return compare(7, 8);
 }
