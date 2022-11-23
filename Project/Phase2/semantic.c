@@ -72,7 +72,7 @@ void parseExtDef(Node extDef) {
             insertSymbolEntry(funName, funDecType);
             parseCompSt(compSt, funDecType->structure->type);
         }else{
-            printf("Error type 4 at Line %d: redefine function %s\n",
+            printf("Error type 4 at Line %d: redefine function: %s\n",
             funDec->line, funSymbol->identifier);
         }
     } else {
@@ -110,7 +110,7 @@ Type *parseSpecifier(Node specifier) {
         if (leftmost->number == 2) { 
             // STRUCT ID
             if (symbol == NULL) {
-                printf("Error type 15-2 at Line %d: struct is used without definition %s\n",
+                printf("Error type 15-2 at Line %d: struct is used without definition: %s\n",
                 _structId->line, identifier);
                 return NULL;
             }
@@ -123,7 +123,7 @@ Type *parseSpecifier(Node specifier) {
         } else { 
             // STRUCT ID LC DefList RC
             if (symbol != NULL) {
-                printf("Error type 15-1 at Line %d: redefine the same structure type %s\n",
+                printf("Error type 15-1 at Line %d: redefine the same structure type: %s\n",
                 _structId->line, identifier);
             }
             type = (Type *) malloc(sizeof(Type));
@@ -393,7 +393,7 @@ Type *parseExp(Node exp) {
                     tmp = tmp->next;
                 }
                 if (tmp == NULL){
-                    printf("Error type 14 at Line %d: no such member %s\n", 
+                    printf("Error type 14 at Line %d: no such member: %s\n", 
                     leftmost->line, rightmost->value);
                 }else{
                     result = tmp->type;
