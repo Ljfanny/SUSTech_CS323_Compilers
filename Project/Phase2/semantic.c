@@ -71,7 +71,7 @@ void parseExtDef(Node extDef) {
             insertSymbolEntry(funName, funDecType);
             parseCompSt(compSt, funDecType->structure->type);
         }else{
-            printf("Error type 4 at Line %d: function is redefined %s\n",
+            printf("Error type 4 at Line %d: redefine function %s\n",
             funDec->line, funSymbol->identifier);
         }
     } else {
@@ -205,7 +205,7 @@ FieldList *parseDec(Node dec, Type *type) {
         Node exp = dec->children[2];
         Type *expType = parseExp(exp);
         if (!typecmp(type, expType)) {
-            printf("Error type 5 at Line %d: unmatching types on both sides of assignment operator\n",
+            printf("Error type 5 at Line %d: unmatching type on both sides of assignment \n",
             dec->line);
         }
     }
@@ -320,7 +320,7 @@ Type *parseExp(Node exp) {
                 !strcmp(NDtypes[leftmost->children[1]->type], "DOT"))
             || (leftmost->number == 4 && !strcmp(NDtypes[leftmost->children[0]->type], "Exp") &&
                 !strcmp(NDtypes[leftmost->children[1]->type], "LB")))) {
-                printf("Error type 6 at Line %d: rvalue on the left side of assignment operator\n",
+                printf("Error type 6 at Line %d: left side in assignment is rvalue\n",
                 leftmost->line);
             } else if (!typecmp(leftmostType, rightmostType)) {
                 printf("Error type 5 at Line %d: unmatching types on both sides of assignment operator\n",
@@ -369,7 +369,7 @@ Type *parseExp(Node exp) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
             if (leftmostType->category != ARRAY){
-                printf("Error type 10 at Line %d: applying indexing operator on non-array type variables\n", leftmost->line);
+                printf("Error type 10 at Line %d: indexing on non-array variable\n", leftmost->line);
             }else if(!(rightmostType->category == PRIMITIVE && rightmostType->primitive == TINT)){
                 printf("Error type 12 at Line %d: index by non-integer\n", leftmost->line);
                 // result = leftmostType->array->base;
@@ -381,7 +381,7 @@ Type *parseExp(Node exp) {
             // Exp DOT ID
             Type *leftmostType = parseExp(leftmost);
             if (leftmostType->category != STRUCTURE){
-                printf("Error type 13 at Line %d: accessing member of non-structure variable\n",
+                printf("Error type 13 at Line %d: accessing with non-structure variable\n",
                 leftmost->line);
             }else{
                 FieldList* tmp = leftmostType->structure;
@@ -392,7 +392,7 @@ Type *parseExp(Node exp) {
                     tmp = tmp->next;
                 }
                 if (tmp == NULL){
-                    printf("Error type 14 at Line %d: accessing an undefined structure member %s\n", 
+                    printf("Error type 14 at Line %d: no such member %s\n", 
                     leftmost->line, rightmost->value);
                 }else{
                     result = tmp->type;
@@ -435,7 +435,7 @@ Type *parseExp(Node exp) {
                 leftmost->line, leftmost->value);
                 return NULL;
             }else if(tmp->type->category != FUNCTION){
-                printf("Error type 11 at Line %d: applying function invocation operator on non-function names: %s\n",
+                printf("Error type 11 at Line %d: invoking non-function variable: %s\n",
                 leftmost->line, leftmost->value);
                 return NULL;
             }
