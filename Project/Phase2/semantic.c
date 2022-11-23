@@ -72,7 +72,7 @@ void parseExtDef(Node extDef) {
             insertSymbolEntry(funName, funDecType);
             parseCompSt(compSt, funDecType->structure->type);
         }else{
-            printf("Error type 4 at Line %d: redefine function %s\n",
+            printf("Error type 4 at Line %d: redefine function: %s\n",
             funDec->line, funSymbol->identifier);
         }
     } else {
@@ -110,7 +110,7 @@ Type *parseSpecifier(Node specifier) {
         if (leftmost->number == 2) { 
             // STRUCT ID
             if (symbol == NULL) {
-                printf("Error type 15-2 at Line %d: struct is used without definition %s\n",
+                printf("Error type 15-2 at Line %d: struct is used without definition: %s\n",
                 _structId->line, identifier);
                 return NULL;
             }
@@ -123,7 +123,7 @@ Type *parseSpecifier(Node specifier) {
         } else { 
             // STRUCT ID LC DefList RC
             if (symbol != NULL) {
-                printf("Error type 15-1 at Line %d: redefine the same structure type %s\n",
+                printf("Error type 15-1 at Line %d: redefine the same structure type: %s\n",
                 _structId->line, identifier);
             }
             type = (Type *) malloc(sizeof(Type));
@@ -335,10 +335,10 @@ Type *parseExp(Node exp) {
         else if (!strcmp(NDtypes[operator->type],"AND") || !strcmp(NDtypes[operator->type],"OR")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
-            if (!typecmp(leftmostType, rightmostType) && leftmostType->category == PRIMITIVE && leftmostType->primitive == TINT){
-                printf("Error type 7 at Line %d: unmatching operands (different types)\n", leftmost->line);
-            }else{
+            if (typecmp(leftmostType, rightmostType) && leftmostType->category == PRIMITIVE && leftmostType->primitive == TINT){
                 result = leftmostType;
+            }else{
+                printf("Error type 7 at Line %d: unmatching operands: AND/OR\n", leftmost->line);
             }
         }
         // Exp LT|LE|GT|GE|NE|EQ|PLUS|MINUS|MUL|DIV Exp
@@ -358,8 +358,8 @@ Type *parseExp(Node exp) {
             // }else{
             // if(!typecmp(leftmostType,rightmostType) && leftmostType->category == PRIMITIVE
             // && (leftmostType->primitive == TINT || leftmostType->primitive == TFLOAT)){
-            if(!typecmp(leftmostType,rightmostType)){
-                printf("Error type 7 at Line %d: unmatching operands\n",
+            if(!typecmp(leftmostType,rightmostType) || leftmostType->category != PRIMITIVE){
+                printf("Error type 7 at Line %d: unmatching operands: LT|LE|GT|GE|NE|EQ|PLUS|MINUS|MUL|DIV\n",
                 leftmost->line);
             }else{
                 result = leftmostType;
@@ -393,7 +393,7 @@ Type *parseExp(Node exp) {
                     tmp = tmp->next;
                 }
                 if (tmp == NULL){
-                    printf("Error type 14 at Line %d: no such member %s\n", 
+                    printf("Error type 14 at Line %d: no such member: %s\n", 
                     leftmost->line, rightmost->value);
                 }else{
                     result = tmp->type;

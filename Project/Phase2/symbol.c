@@ -41,7 +41,7 @@ Symbol* findGlobalSymbolEntry(const char *identifier){
         }
         scope = scope->prev;
     }
-    printf("%s\n", identifier);
+    // printf("%s\n", identifier);
     printCurrTable("find global:");
     return symbol;
 }
@@ -51,7 +51,7 @@ Symbol* findLocalSymbolEntry(const char *identifier){
     Symbol *symbol = NULL;
     Symbol *table = currScope->table;
     HASH_FIND_STR(table, identifier, symbol);
-    printf("%s\n", identifier);
+    // printf("%s\n", identifier);
     printCurrTable("find local:");
     return symbol;
 }
@@ -85,12 +85,12 @@ void addLinkNode(){
 }
 
 void printCurrTable(char* nm){
-    printf("%s------------------%d------------------\n", nm, currScope->number);
-    int idx = 0;
-    Symbol* item;
-    Symbol* temp;
-    HASH_ITER(hh, currScope->table, item, temp){
-        printf("index: %d, key(identifier): %s\n", idx, item->identifier);
-    }
-    printf("-------------------------------------------------\n");
+    // printf("%s------------------%d------------------\n", nm, currScope->number);
+    // int idx = 0;
+    // Symbol* item;
+    // Symbol* temp;
+    // HASH_ITER(hh, currScope->table, item, temp){
+    //     printf("index: %d, key(identifier): %s\n", idx, item->identifier);
+    // }
+    // printf("-------------------------------------------------\n");
 }
