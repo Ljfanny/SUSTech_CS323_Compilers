@@ -90,12 +90,12 @@ Type *parseSpecifier(Node specifier) {
         if (leftmost->number == 2) { 
             // STRUCT ID
             if (symbol == NULL) {
-                printf("Error type 15-2 at Line %d: struct is used without definition: %s\n",
+                printf("Error type 17 at Line %d: struct is used without definition: %s\n",
                 _structId->line, identifier);
                 return NULL;
             }
             if (symbol->type->category != STRUCTURE) {
-                printf("Error type 15-3 at Line %d: %s is not a struct\n",
+                printf("Error type 16 at Line %d: %s is not a struct\n",
                 _structId->line, identifier);
                 return NULL;
             }
@@ -103,7 +103,7 @@ Type *parseSpecifier(Node specifier) {
         } else { 
             // STRUCT ID LC DefList RC
             if (symbol != NULL) {
-                printf("Error type 15-1 at Line %d: redefine the same structure type: %s\n",
+                printf("Error type 15 at Line %d: redefine the same structure type: %s\n",
                 _structId->line, identifier);
             }
             type = (Type *) malloc(sizeof(Type));
