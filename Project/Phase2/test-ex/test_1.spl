@@ -1,0 +1,54 @@
+struct Apple
+{
+    int weight;
+    float round;
+};
+
+struct Orange
+{
+    int weight;
+    float round;
+};
+
+int add(int m, int n)
+{
+    int a = 0;
+    while (a < m)
+    {
+        int b = n;
+        a = a + b;
+    }
+    while (1.7)
+    {
+        int b = m;
+        if (b < n)
+        {
+            b = b - 2;
+        }
+    }
+    return m + n;
+}
+
+float foo()
+{
+    struct Apple aa;
+    struct Orange oo;
+    float a = 2.16;
+    return a;
+}
+
+float test(int m)
+{
+    struct Orange oo;
+    int c;
+    c = foo();
+    if (add(2, 3) > 0)
+    {
+        int a = c + 3;
+    }
+    else if (!3.4)
+    {
+        char c = 'z';
+    }
+    return foo();
+}

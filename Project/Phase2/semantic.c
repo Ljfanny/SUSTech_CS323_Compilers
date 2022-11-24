@@ -1,13 +1,11 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
-// #include "node.h"
 #include "semantic.h"
-// #include "type.h"
 #include "symbol.h"
 
 char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID",
-                    "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
+                    "STRUCT", "IF", "WHILE", "ELSE", "RETURN", "BREAK", "CONTINUES",
                     "DOT", "SEMI", "COMMA", "ASSIGN",
                     "LT", "LE", "GT", "GE", "NE", "EQ",
                     "AND", "OR", "NOT",
@@ -39,11 +37,7 @@ void parseExtDef(Node extDef) {
     //          |Specifier SEMI
     //          |Specifier FunDec CompSt
     Node specifier = extDef->children[0];
-    // if (specifier == NULL) {
-    //     return;
-    // }
     Type *type = parseSpecifier(specifier);
-    // printf("parseExtDef(): %d\n", type->category);
     if (type == NULL) {
         return;
     }
@@ -51,26 +45,19 @@ void parseExtDef(Node extDef) {
         return;
     }
     Node extDecList = extDef->children[1];
-    // if (extDef->number == 2 && !strcmp(NDtypes[extDecList->type],"SEMI")) {
-    //     return;
-    // }
     if (!strcmp(NDtypes[extDecList->type], "ExtDecList")) {
         parseExtDecList(extDecList, type);
     } else if (!strcmp(NDtypes[extDecList->type], "FunDec")) {
-        // TODO: parse FunDec
         Node funDec = extDecList;
         Node compSt = extDef->children[2];
-        // printf("extDecList: %s\n", NDtypes[extDecList->type]);
+        addLinkNode();
         Type *funDecType = parseFunDec(funDec, type);
-        // printf("%s: %d\n", funDecType->structure->name, funDecType->structure->type->primitive);
-        // if (funDecType == NULL) {
-        //     return;
-        // }
         char* funName = funDecType->structure->name;
         Symbol* funSymbol = findGlobalSymbolEntry(funName);
         if(funSymbol == NULL){
+            parseCompSt(NULL, compSt, funDecType->structure->type);
+            freeLinkNode();
             insertSymbolEntry(funName, funDecType);
-            parseCompSt(compSt, funDecType->structure->type);
         }else{
             printf("Error type 4 at Line %d: redefine function: %s\n",
             funDec->line, funSymbol->identifier);
@@ -83,20 +70,13 @@ void parseExtDef(Node extDef) {
 Type *parseSpecifier(Node specifier) {
     //Specifier: TYPE
     //          |StructSpecifier
-    // if (!strcmp(NDtypes[specifier->type], "Specifier")) {
-    //     return NULL;
-    // }
-    // Type *type = (Type *) malloc(sizeof(Type));
-    // printf("parseSpecifier()...%s...\n", NDtypes[specifier->children[0]->type]);
     Type * type = NULL;
     Node leftmost = specifier->children[0];
     if (!strcmp(NDtypes[leftmost->type], "TYPE")) {
         type = (Type *) malloc(sizeof(Type));
         type->category = PRIMITIVE;
-        // printf("Specifier: %s\n", leftmost->value);
         if (!strcmp(leftmost->value, "int")) {
             type->primitive = TINT;
-            // printf("Specifier: INT\n");
         } else if (!strcmp(leftmost->value, "float")) {
             type->primitive = TFLOAT;
         } else {
@@ -110,12 +90,12 @@ Type *parseSpecifier(Node specifier) {
         if (leftmost->number == 2) { 
             // STRUCT ID
             if (symbol == NULL) {
-                printf("Error type 15-2 at Line %d: struct is used without definition: %s\n",
+                printf("Error type 17 at Line %d: struct is used without definition: %s\n",
                 _structId->line, identifier);
                 return NULL;
             }
             if (symbol->type->category != STRUCTURE) {
-                printf("Error type 15-3 at Line %d: %s is not a struct\n",
+                printf("Error type 16 at Line %d: %s is not a struct\n",
                 _structId->line, identifier);
                 return NULL;
             }
@@ -123,12 +103,14 @@ Type *parseSpecifier(Node specifier) {
         } else { 
             // STRUCT ID LC DefList RC
             if (symbol != NULL) {
-                printf("Error type 15-1 at Line %d: redefine the same structure type: %s\n",
+                printf("Error type 15 at Line %d: redefine the same structure type: %s\n",
                 _structId->line, identifier);
             }
             type = (Type *) malloc(sizeof(Type));
             type->category = STRUCTURE;
+            addLinkNode();
             type->structure = parseDefList(leftmost->children[3]);
+            freeLinkNode();
             insertSymbolEntry(identifier, type);
         }
     }
@@ -138,7 +120,6 @@ Type *parseSpecifier(Node specifier) {
 FieldList *parseDefList(Node defList) {
     // DefList -> Def DefList
     //           |NULL
-    // printf("parseDefList()......\n");
     if (defList == NULL) {
         return NULL;
     }
@@ -157,11 +138,6 @@ FieldList *parseDefList(Node defList) {
 
 FieldList *parseDef(Node def) {
     // Def: Specifier DecList SEMI
-    // if (def->number != 3){
-        // error
-        // return NULL;
-    // }
-    // printf("parseDef()......\n");
     Type *type = parseSpecifier(def->children[0]);
     if (type == NULL) {
         return NULL;
@@ -177,7 +153,6 @@ FieldList *parseDef(Node def) {
 FieldList *parseDecList(Node decList, Type *type) {
     // DecList -> Dec COMMA DecList
     //           |Dec
-    // printf("parseDecList()............\n");
     Node dec = decList->children[0];
     FieldList *decFieldList = parseDec(dec, type);
     if (decFieldList == NULL){
@@ -199,15 +174,14 @@ FieldList *parseDecList(Node decList, Type *type) {
 FieldList *parseDec(Node dec, Type *type) {
     //Dec -> VarDec ASSIGN Exp
     //      |VarDec
-    // printf("parseDec()............\n");
     Node varDec = dec->children[0];
     FieldList *fieldList = parseVarDec(varDec, type);
     if (dec->number == 3) {
         Node exp = dec->children[2];
         Type *expType = parseExp(exp);
         if (!typecmp(type, expType)) {
-            printf("Error type 5 at Line %d: unmatching type on both sides of assignment \n",
-            dec->line);
+            printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n",
+            exp->line);
         }
     }
     return fieldList;
@@ -216,7 +190,6 @@ FieldList *parseDec(Node dec, Type *type) {
 FieldList *parseVarDec(Node varDec, Type *type) {
     //VarDec -> VarDec LB INT RB (array)
     //         |ID
-    // printf("parseVarDec().....%s.....\n", NDtypes[varDec->children[0]->type]);
     Node tempNode = varDec;
     FieldList *field = (FieldList *) malloc(sizeof(FieldList));
     Type *endType = type;
@@ -284,17 +257,14 @@ FieldList *parseParamDec(Node paramDec) {
 
 Type* parseFunDec(Node funDec, Type *type) {
     // type is function's returning type
-
     // FunDec -> ID LP VarList Rp
     //          |ID LP RP
     Type *funDecType = (Type *) malloc(sizeof(Type));
-    // funDecType->name = funDec->value;
     funDecType->structure = (FieldList *) malloc(sizeof(FieldList));
     Node id = funDec->children[0];
     funDecType->category = FUNCTION;
     funDecType->structure->name = id->value;
     funDecType->structure->type = type;
-    // printf("funDec: %d\n", funDec->number);
     if (funDec->number == 3) {
         // ID LP RP
         funDecType->structure->next = NULL;
@@ -324,7 +294,7 @@ Type *parseExp(Node exp) {
                 printf("Error type 6 at Line %d: left side in assignment is rvalue\n",
                 leftmost->line);
             } else if (!typecmp(leftmostType, rightmostType)) {
-                printf("Error type 5 at Line %d: unmatching types on both sides of assignment operator\n",
+                printf("Error type 5 at Line %d: unmatching types on both sides of assignment\n",
                 leftmost->line);
             } else {
                 result = leftmostType;
@@ -338,7 +308,7 @@ Type *parseExp(Node exp) {
             if (typecmp(leftmostType, rightmostType) && leftmostType->category == PRIMITIVE && leftmostType->primitive == TINT){
                 result = leftmostType;
             }else{
-                printf("Error type 7 at Line %d: unmatching operands: AND/OR\n", leftmost->line);
+                printf("Error type 7 at Line %d: unmatching operands: %s\n", leftmost->line, NDtypes[operator->type]);
             }
         }
         // Exp LT|LE|GT|GE|NE|EQ|PLUS|MINUS|MUL|DIV Exp
@@ -349,22 +319,12 @@ Type *parseExp(Node exp) {
             || !strcmp(NDtypes[operator->type],"MUL") || !strcmp(NDtypes[operator->type],"DIV")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
-            // if (leftmostType == NULL){
-                // printf("Error type 1 at Line %d: undefined variable (leftmost): %s \n",
-                // leftmost->line, leftmost->value);
-            // }else if(rightmostType == NULL){
-                // printf("Error type 1 at Line %d: undefined variable (rightmost): %s \n",
-                // rightmost->line, rightmost->value);
-            // }else{
-            // if(!typecmp(leftmostType,rightmostType) && leftmostType->category == PRIMITIVE
-            // && (leftmostType->primitive == TINT || leftmostType->primitive == TFLOAT)){
             if(!typecmp(leftmostType,rightmostType) || leftmostType->category != PRIMITIVE){
-                printf("Error type 7 at Line %d: unmatching operands: LT|LE|GT|GE|NE|EQ|PLUS|MINUS|MUL|DIV\n",
-                leftmost->line);
+                printf("Error type 7 at Line %d: unmatching operands: %s\n",
+                leftmost->line, NDtypes[operator->type]);
             }else{
                 result = leftmostType;
             }
-            // }
         }else if(!strcmp(NDtypes[operator->type], "LB")){
             //Exp LB Exp RB
             Type *leftmostType = parseExp(leftmost);
@@ -373,8 +333,6 @@ Type *parseExp(Node exp) {
                 printf("Error type 10 at Line %d: indexing on non-array variable\n", leftmost->line);
             }else if(!(rightmostType->category == PRIMITIVE && rightmostType->primitive == TINT)){
                 printf("Error type 12 at Line %d: index by non-integer\n", leftmost->line);
-                // result = leftmostType->array->base;
-                // return NULL;
             }else{
                 result = leftmostType->array->base;
             }
@@ -408,7 +366,7 @@ Type *parseExp(Node exp) {
     else if(!strcmp(NDtypes[leftmost->type],"MINUS")){
         Type *leftmostType = parseExp(exp->children[1]);
         if (leftmostType->category != PRIMITIVE){
-            printf("Error type 7 at Line %d: unmatching operands\n", 
+            printf("Error type 7 at Line %d: unmatching operands: MINUS\n", 
             leftmost->line);
         }else{
             result = leftmostType;
@@ -417,8 +375,8 @@ Type *parseExp(Node exp) {
     // NOT Exp
     else if(!strcmp(NDtypes[leftmost->type],"NOT")){
         Type *leftmostType = parseExp(exp->children[1]);
-        if (leftmostType->category != PRIMITIVE && leftmostType->primitive != TINT){
-            printf("Error type 7 at Line %d: unmatching operands\n",
+        if (leftmostType->category != PRIMITIVE || leftmostType->primitive != TINT){
+            printf("Error type 7 at Line %d: unmatching operands: NOT\n",
             leftmost->line);
         }else{
             result = (Type*)malloc(sizeof(Type));
@@ -445,7 +403,7 @@ Type *parseExp(Node exp) {
                 Node args = exp->children[2];
                 FieldList * tmpFuncVariablesList = tmpFuncType->structure->next;
                 if (tmpFuncVariablesList == NULL){
-                    printf("Error type 9 at Line %d: the function %s's arguments mismatch the declared parameters (too many)\n",
+                    printf("Error type 9 at Line %d: more the function %s's arguments than the declared parameters\n",
                             leftmost->line, leftmost->value);
                 }else{
                     // Args -> Exp COMMA Args
@@ -454,11 +412,10 @@ Type *parseExp(Node exp) {
                     while(1){
                         Type* argsExpType = parseExp(argsExp);
                         if(argsExpType == NULL){
-                            // result = tmpFuncType->structure->type;
                             break;
                         }
                         if (!typecmp(argsExpType, tmpFuncVariablesList->type)){
-                            printf("Error type 9 at Line %d: the function %s's arguments mismatch the declared parameters (type mismatch)\n",
+                            printf("Error type 9 at Line %d: the function %s's arguments mismatch the declared parameters: type\n",
                                     leftmost->line, leftmost->value);
                             break;
                         }else{
@@ -467,11 +424,11 @@ Type *parseExp(Node exp) {
                                 result = tmpFuncType->structure->type;
                                 break;
                             }else if(tmpFuncVariablesList == NULL && args->number == 3){
-                                printf("Error type 9 at Line %d: the function %s's arguments mismatch the declared parameters (too many)\n",
+                                printf("Error type 9 at Line %d: more the function %s's arguments than the declared parameters\n",
                                         leftmost->line, leftmost->value);
                                 break;
                             }else if(tmpFuncVariablesList != NULL && args->number == 1){
-                                printf("Error type 9 at Line %d: the function %s's arguments mismatch the declared parameters (too few)\n",
+                                printf("Error type 9 at Line %d: fewer the function %s's arguments than the declared parameters\n",
                                         leftmost->line, leftmost->value);
                                 break;
                             }
@@ -484,7 +441,7 @@ Type *parseExp(Node exp) {
                 if (tmpFuncType->structure->next == NULL){
                     result = tmpFuncType->structure->type;
                 }else{
-                    printf("Error type 9 at Line %d: the function %s's arguments mismatch the declared parameters (too few)\n",
+                    printf("Error type 9 at Line %d: fewer the function %s's arguments than the declared parameters\n",
                     leftmost->line, leftmost->value);
                 }
             }
@@ -516,33 +473,35 @@ Type *parseExp(Node exp) {
     return result; 
 }
 
-void parseCompSt(Node compSt, Type* returnValType){
+void parseCompSt(Node prev, Node compSt, Type* returnValType){
     //CompSt: LC DefList StmtList RC
-    addLinkNode();
+    // addLinkNode();
     FieldList * defListFieldList = parseDefList(compSt->children[1]);
-    parseStmtList(compSt->children[2], returnValType);
-    freeLinkNode();
+    parseStmtList(prev, compSt->children[2], returnValType);
+    // freeLinkNode();
 }
 
-void parseStmtList(Node stmtList, Type* returnValType){
+void parseStmtList(Node prev, Node stmtList, Type* returnValType){
     // StmtList: Stmt StmtList
     //          |NULL
     if(stmtList == NULL){
         return;
     }
-    parseStmt(stmtList->children[0], returnValType);
-    parseStmtList(stmtList->children[1], returnValType);
+    parseStmt(prev, stmtList->children[0], returnValType);
+    parseStmtList(prev, stmtList->children[1], returnValType);
 }
 
-void parseStmt(Node stmt, Type * returnValType){
+void parseStmt(Node prev, Node stmt, Type * returnValType){
     // Stmt: Exp SEMI
     //      |CompSt
     //      |RETURN Exp SEMI
+    //      |BREAK SEMI
+    //      |CONTINUES SEMI
     Node leftmost = stmt->children[0];
     if (!strcmp(NDtypes[leftmost->type],"Exp")){
         parseExp(leftmost);
     }else if(!strcmp(NDtypes[leftmost->type],"CompSt")){
-        parseCompSt(leftmost, returnValType);
+        parseCompSt(prev, leftmost, returnValType);
     }else if(!strcmp(NDtypes[leftmost->type],"RETURN")){
         Node exp = stmt->children[1];
         Type* expType = parseExp(exp);
@@ -551,8 +510,6 @@ void parseStmt(Node stmt, Type * returnValType){
         }else if(expType->category == FUNCTION){
             expType = expType->structure->type;
         }
-        // printf("function return type: %d\n", expType->primitive);
-        // printf("function return type: %d\n", returnValType->primitive);
         if(!typecmp(expType, returnValType)){
             printf("Error type 8 at Line %d: incompatiable return type\n",
             leftmost->line);
@@ -565,14 +522,16 @@ void parseStmt(Node stmt, Type * returnValType){
         if (expType == NULL){
             return;
         }
-        // TODO: what type of expType is legal?
         if(expType->category != PRIMITIVE || expType->primitive != TINT){
             printf("Error type 7 at Line %d: unmatching operands\n", exp->line);
-        }else{
-            parseStmt(stmt->children[4], returnValType);
-            if (stmt->number == 7){
-                parseStmt(stmt->children[6], returnValType);
-            }
+        }
+        addLinkNode();
+        parseStmt(prev, stmt->children[4], returnValType);
+        freeLinkNode();
+        if (stmt->number == 7){
+            addLinkNode();
+            parseStmt(prev, stmt->children[6], returnValType);
+            freeLinkNode();
         }
     }else if(!strcmp(NDtypes[leftmost->type],"WHILE")){
         // |WHILE LP Exp RP Stmt
@@ -582,9 +541,21 @@ void parseStmt(Node stmt, Type * returnValType){
             return;
         }
         if(expType->category != PRIMITIVE || expType->primitive != TINT){
-            printf("Error type 7 at Line %d: unmatching operands\n", exp->line);
-        }else{
-            parseStmt(stmt->children[4], returnValType);
+            printf("Error type 7 at Line %d: unmatching operands in while()\n", exp->line);
+        }
+        addLinkNode();
+        parseStmt(leftmost, stmt->children[4], returnValType);
+        // printf("%s\n", NDtypes[leftmost->type]);
+        freeLinkNode();
+    }else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
+        //BREAK SEMI
+        if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
+            printf("Error type 18 at Line %d: improper break\n", leftmost->line);
+        }
+    }else if (!strcmp(NDtypes[leftmost->type],"CONTINUES")){
+        //CONTINUES SEMI
+        if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
+            printf("Error type 18 at Line %d: improper continues\n", leftmost->line);
         }
     }
 }

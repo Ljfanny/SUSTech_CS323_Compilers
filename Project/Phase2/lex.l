@@ -7,7 +7,7 @@
     enum ND_TYPE {
         TYPe = 0,
         INt, FLOAt, CHAr, Id,
-        STRUCt, If, WHILe, ELSe, RETURn,
+        STRUCt, If, WHILe, ELSe, RETURn, BREAk, CONTINUEs,
         DOt, SEMi, COMMa, ASSIGn,
         Lt, Le, Gt, Ge, Ne, Eq,
         ANd, Or, NOt,
@@ -46,6 +46,8 @@ CHAR_ERROR '\\x[0-9a-zA-Z]*'
 "else" {yylval = newNodeTER(ELSe,yylineno); return ELSE;}
 "while" {yylval = newNodeTER(WHILe,yylineno); return WHILE;}
 "return" {yylval = newNodeTER(RETURn,yylineno); return RETURN;}
+"break" {yylval = newNodeTER(BREAk,yylineno); return BREAK;}
+"continues" {yylval = newNodeTER(CONTINUEs,yylineno); return CONTINUES;}
 
 "." {yylval = newNodeTER(DOt,yylineno); return DOT;}
 ";" {yylval = newNodeTER(SEMi,yylineno); return SEMI;}
