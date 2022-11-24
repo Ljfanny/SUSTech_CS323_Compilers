@@ -1,11 +1,25 @@
+struct Apple
+{
+  int weight;
+  float round;
+};
+struct Apple
+{
+  int round;
+  float weight;
+};
 int test_12011543_2()
 {
   int a,b;
   int x[12][01][15][43], y[120][115][43];
+  struct Apple aa;
+  aa.weight = aa + 2;
   while(0) {
     if(a) {
       int c = 12011543;
       x[0] = a;
+      12011543 = c;
+      aa.apple = 1;
     } 
     else if (b) {
       int d = a;
@@ -13,6 +27,7 @@ int test_12011543_2()
     }
     else {
       float c = 1.2011543;
+      return c;
     }
   }
   return 0;
