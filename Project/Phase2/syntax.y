@@ -8,7 +8,7 @@
     struct node* tmpcld[10];
     int tmpnum = 0;
     enum myYYTYPE{
-        PROGRAm = 35, 
+        PROGRAm = 37, 
         EXTDEFLISt,
         EXTDEf, SPECIFIEr, EXTDECLISt, STRUCTSPECIFIEr,
         VARDEc, FUNDEc, VARLISt, PARAMDEc,
@@ -46,6 +46,7 @@
 %token MUL DIV MOD
 %token OR
 %token AND
+%token QM COLON
 %token LP RP LB RB DOT
 %token LC RC
 %token ERROR
@@ -346,6 +347,10 @@ Exp: Exp ASSIGN Exp
     {$$ = newNodeNTER(EXp, getLine()); tmpnum = 4;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
     tmpcld[3] = $4; setNode($$, tmpcld, tmpnum);}
+    | Exp QM Exp COLON Exp
+    {$$ = newNodeNTER(EXp, getLine()); tmpnum = 5;
+    tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
+    tmpcld[3] = $4; tmpcld[4] = $5; setNode($$, tmpcld, tmpnum);}
     | Exp DOT ID
     {$$= newNodeNTER(EXp, getLine()); tmpnum = 3; tmpcld[0] = $1;
     tmpcld[1] = $2; tmpcld[2] = $3; setNode($$, tmpcld, tmpnum);}

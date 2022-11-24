@@ -8,7 +8,7 @@
         TYPe = 0,
         INt, FLOAt, CHAr, Id,
         STRUCt, If, WHILe, ELSe, RETURn, BREAk, CONTINUEs,
-        DOt, SEMi, COMMa, ASSIGn,
+        DOt, SEMi, COMMa, ASSIGn, Qm, COLOn,
         Lt, Le, Gt, Ge, Ne, Eq,
         ANd, Or, NOt,
         PLUs, MINUs, MUl, DIv,
@@ -53,6 +53,8 @@ CHAR_ERROR '\\x[0-9a-zA-Z]*'
 ";" {yylval = newNodeTER(SEMi,yylineno); return SEMI;}
 "," {yylval = newNodeTER(COMMa,yylineno); return COMMA;}
 "=" {yylval = newNodeTER(ASSIGn,yylineno); return ASSIGN;}
+"?" {yylval = newNodeTER(Qm,yylineno); return QM;}
+":" {yylval = newNodeTER(COLOn,yylineno); return COLON;}
 
 "<" {yylval = newNodeTER(Lt,yylineno); return LT;}
 "<=" {yylval = newNodeTER(Le,yylineno); return LE;}

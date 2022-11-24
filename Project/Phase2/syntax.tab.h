@@ -74,14 +74,16 @@ extern int yydebug;
     MOD = 284,
     OR = 285,
     AND = 286,
-    LP = 287,
-    RP = 288,
-    LB = 289,
-    RB = 290,
-    DOT = 291,
-    LC = 292,
-    RC = 293,
-    ERROR = 294
+    QM = 287,
+    COLON = 288,
+    LP = 289,
+    RP = 290,
+    LB = 291,
+    RB = 292,
+    DOT = 293,
+    LC = 294,
+    RC = 295,
+    ERROR = 296
   };
 #endif
 

@@ -6,7 +6,7 @@
 
 char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID",
                     "STRUCT", "IF", "WHILE", "ELSE", "RETURN", "BREAK", "CONTINUES",
-                    "DOT", "SEMI", "COMMA", "ASSIGN",
+                    "DOT", "SEMI", "COMMA", "ASSIGN", "QM", "COLON",
                     "LT", "LE", "GT", "GE", "NE", "EQ",
                     "AND", "OR", "NOT",
                     "PLUS", "MINUS", "MUL", "DIV",
@@ -311,19 +311,53 @@ Type *parseExp(Node exp) {
                 printf("Error type 7 at Line %d: unmatching operands: %s\n", leftmost->line, NDtypes[operator->type]);
             }
         }
-        // Exp LT|LE|GT|GE|NE|EQ|PLUS|MINUS|MUL|DIV Exp
+        // Exp LT|LE|GT|GE|NE|EQ Exp
         else if(!strcmp(NDtypes[operator->type],"LT") || !strcmp(NDtypes[operator->type],"LE")
             || !strcmp(NDtypes[operator->type],"GT") || !strcmp(NDtypes[operator->type],"GE") 
-            || !strcmp(NDtypes[operator->type],"NE") || !strcmp(NDtypes[operator->type],"EQ")
-            || !strcmp(NDtypes[operator->type],"PLUS") || !strcmp(NDtypes[operator->type],"MINUS")
-            || !strcmp(NDtypes[operator->type],"MUL") || !strcmp(NDtypes[operator->type],"DIV")) {
+            || !strcmp(NDtypes[operator->type],"NE") || !strcmp(NDtypes[operator->type],"EQ")) {
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
-            if(!typecmp(leftmostType,rightmostType) || leftmostType->category != PRIMITIVE){
+            if( leftmostType == NULL || rightmostType == NULL ||
+            leftmostType->category != PRIMITIVE || rightmostType->category != PRIMITIVE){
                 printf("Error type 7 at Line %d: unmatching operands: %s\n",
                 leftmost->line, NDtypes[operator->type]);
             }else{
-                result = leftmostType;
+                result = (Type*)malloc(sizeof(Type));
+                result->category = PRIMITIVE;
+                result->primitive = TINT;
+            }
+        }
+        // Exp PLUS|MINUS|MUL|DIV Exp
+        else if(!strcmp(NDtypes[operator->type],"PLUS") || !strcmp(NDtypes[operator->type],"MINUS")
+            || !strcmp(NDtypes[operator->type],"MUL") || !strcmp(NDtypes[operator->type],"DIV")) {
+            Type *leftmostType = parseExp(leftmost);
+            Type *rightmostType = parseExp(rightmost);
+            if(leftmostType == NULL || rightmostType == NULL ||
+            leftmostType->category != PRIMITIVE || rightmostType->category != PRIMITIVE){
+                printf("Error type 7 at Line %d: unmatching operands: %s\n",
+                leftmost->line, NDtypes[operator->type]);
+            }else{
+                result = (Type*)malloc(sizeof(Type));
+                result->category = PRIMITIVE;
+                if(leftmostType->primitive == TFLOAT || rightmostType->primitive == TFLOAT){
+                    result->primitive = TFLOAT;
+                }else{
+                    result->primitive = TINT;
+                }
+            }
+        }else if(!strcmp(NDtypes[operator->type],"QM")){
+            // Exp QM Exp COLON Exp
+            Type *leftType = parseExp(leftmost);
+            Type *midType = parseExp(rightmost);
+            Type *rightType = parseExp(exp->children[4]);
+            result = midType;
+            if (leftType == NULL || leftType->category != PRIMITIVE || leftType->primitive != TINT){
+                printf("Error type 7 at Line %d: unmatching operands: ..error.. ? ... : ...\n", leftmost->line);
+                result = NULL;
+            }
+            if (!typecmp(midType, rightType) || midType->category == FUNCTION || midType->category == ARRAY){
+                printf("Error type 7 at Line %d: unmatching operands in sides of \':\'\n", leftmost->line);
+                result = NULL;
             }
         }else if(!strcmp(NDtypes[operator->type], "LB")){
             //Exp LB Exp RB
@@ -415,7 +449,7 @@ Type *parseExp(Node exp) {
                             break;
                         }
                         if (!typecmp(argsExpType, tmpFuncVariablesList->type)){
-                            printf("Error type 9 at Line %d: the function %s's arguments mismatch the declared parameters: type\n",
+                            printf("Error type 9 at Line %d: the function %s's arguments mismatch the declared parameters since type\n",
                                     leftmost->line, leftmost->value);
                             break;
                         }else{
@@ -523,7 +557,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
             return;
         }
         if(expType->category != PRIMITIVE || expType->primitive != TINT){
-            printf("Error type 7 at Line %d: unmatching operands\n", exp->line);
+            printf("Error type 7 at Line %d: unmatching operands in if() or else if()\n", exp->line);
         }
         addLinkNode();
         parseStmt(prev, stmt->children[4], returnValType);
@@ -555,7 +589,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
     }else if (!strcmp(NDtypes[leftmost->type],"CONTINUES")){
         //CONTINUES SEMI
         if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
-            printf("Error type 18 at Line %d: improper continues\n", leftmost->line);
+            printf("Error type 19 at Line %d: improper continues\n", leftmost->line);
         }
     }
 }
@@ -603,8 +637,8 @@ int typecmp(Type *type1, Type *type2) {
             //bonus: structure -> have the same variables' type
             FieldList * itm1 = type1->structure;
             FieldList * itm2 = type2->structure;
-            int cnt1 = 1;
-            int cnt2 = 1;
+            int cnt1 = 0;
+            int cnt2 = 0;
             while (itm1 != NULL){
                 itm1 = itm1->next;
                 cnt1++;
