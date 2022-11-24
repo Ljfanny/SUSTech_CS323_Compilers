@@ -8,7 +8,7 @@
     struct node* tmpcld[10];
     int tmpnum = 0;
     enum myYYTYPE{
-        PROGRAm = 33, 
+        PROGRAm = 35, 
         EXTDEFLISt,
         EXTDEf, SPECIFIEr, EXTDECLISt, STRUCTSPECIFIEr,
         VARDEc, FUNDEc, VARLISt, PARAMDEc,
@@ -37,7 +37,7 @@
 %token INT FLOAT CHAR
 %token ID
 %token TYPE
-%token STRUCT IF ELSE WHILE RETURN
+%token STRUCT IF ELSE WHILE RETURN BREAK CONTINUES
 %token NOT
 %token SEMI COMMA
 %token ASSIGN
@@ -190,6 +190,22 @@ Stmt: Exp SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 3;
     tmpcld[0] = $1; tmpcld[1] = $2; tmpcld[2] = $3;
     setNode($$, tmpcld, tmpnum);}
+    | BREAK SEMI
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2;
+    setNode($$, tmpcld, tmpnum);}
+    | CONTINUES SEMI
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 2;
+    tmpcld[0] = $1; tmpcld[1] = $2;
+    setNode($$, tmpcld, tmpnum);}
+    | BREAK error
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 1;
+    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
+    MISSING_SEMI_ERROR($1);}
+    | CONTINUES error
+    {$$= newNodeNTER(STMt, getLine()); tmpnum = 1;
+    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
+    MISSING_SEMI_ERROR($1);}
     | RETURN Exp error 
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 2;
     tmpcld[0] = $1; tmpcld[1] = $2; setNode($$, tmpcld, tmpnum);

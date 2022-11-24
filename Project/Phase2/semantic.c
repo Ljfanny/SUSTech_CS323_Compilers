@@ -5,7 +5,7 @@
 #include "symbol.h"
 
 char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID",
-                    "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
+                    "STRUCT", "IF", "WHILE", "ELSE", "RETURN", "BREAK", "CONTINUES",
                     "DOT", "SEMI", "COMMA", "ASSIGN",
                     "LT", "LE", "GT", "GE", "NE", "EQ",
                     "AND", "OR", "NOT",
@@ -55,7 +55,7 @@ void parseExtDef(Node extDef) {
         char* funName = funDecType->structure->name;
         Symbol* funSymbol = findGlobalSymbolEntry(funName);
         if(funSymbol == NULL){
-            parseCompSt(compSt, funDecType->structure->type);
+            parseCompSt(NULL, compSt, funDecType->structure->type);
             freeLinkNode();
             insertSymbolEntry(funName, funDecType);
         }else{
@@ -473,33 +473,35 @@ Type *parseExp(Node exp) {
     return result; 
 }
 
-void parseCompSt(Node compSt, Type* returnValType){
+void parseCompSt(Node prev, Node compSt, Type* returnValType){
     //CompSt: LC DefList StmtList RC
     // addLinkNode();
     FieldList * defListFieldList = parseDefList(compSt->children[1]);
-    parseStmtList(compSt->children[2], returnValType);
+    parseStmtList(prev, compSt->children[2], returnValType);
     // freeLinkNode();
 }
 
-void parseStmtList(Node stmtList, Type* returnValType){
+void parseStmtList(Node prev, Node stmtList, Type* returnValType){
     // StmtList: Stmt StmtList
     //          |NULL
     if(stmtList == NULL){
         return;
     }
-    parseStmt(stmtList->children[0], returnValType);
-    parseStmtList(stmtList->children[1], returnValType);
+    parseStmt(prev, stmtList->children[0], returnValType);
+    parseStmtList(prev, stmtList->children[1], returnValType);
 }
 
-void parseStmt(Node stmt, Type * returnValType){
+void parseStmt(Node prev, Node stmt, Type * returnValType){
     // Stmt: Exp SEMI
     //      |CompSt
     //      |RETURN Exp SEMI
+    //      |BREAK SEMI
+    //      |CONTINUES SEMI
     Node leftmost = stmt->children[0];
     if (!strcmp(NDtypes[leftmost->type],"Exp")){
         parseExp(leftmost);
     }else if(!strcmp(NDtypes[leftmost->type],"CompSt")){
-        parseCompSt(leftmost, returnValType);
+        parseCompSt(prev, leftmost, returnValType);
     }else if(!strcmp(NDtypes[leftmost->type],"RETURN")){
         Node exp = stmt->children[1];
         Type* expType = parseExp(exp);
@@ -524,21 +526,13 @@ void parseStmt(Node stmt, Type * returnValType){
             printf("Error type 7 at Line %d: unmatching operands\n", exp->line);
         }
         addLinkNode();
-        parseStmt(stmt->children[4], returnValType);
+        parseStmt(prev, stmt->children[4], returnValType);
         freeLinkNode();
         if (stmt->number == 7){
             addLinkNode();
-            parseStmt(stmt->children[6], returnValType);
+            parseStmt(prev, stmt->children[6], returnValType);
             freeLinkNode();
         }
-        // if(expType->category != PRIMITIVE || expType->primitive != TINT){
-        //     printf("Error type 7 at Line %d: unmatching operands\n", exp->line);
-        // }else{
-        //     parseStmt(stmt->children[4], returnValType);
-        //     if (stmt->number == 7){
-        //         parseStmt(stmt->children[6], returnValType);
-        //     }
-        // }
     }else if(!strcmp(NDtypes[leftmost->type],"WHILE")){
         // |WHILE LP Exp RP Stmt
         Node exp = stmt->children[2];
@@ -550,15 +544,19 @@ void parseStmt(Node stmt, Type * returnValType){
             printf("Error type 7 at Line %d: unmatching operands in while()\n", exp->line);
         }
         addLinkNode();
-        parseStmt(stmt->children[4], returnValType);
+        parseStmt(leftmost, stmt->children[4], returnValType);
+        // printf("%s\n", NDtypes[leftmost->type]);
         freeLinkNode();
-        // if(expType->category != PRIMITIVE || expType->primitive != TINT){
-        //     printf("Error type 7 at Line %d: unmatching operands in while()\n", exp->line);
-        // }else{
-        //     addLinkNode();
-        //     parseStmt(stmt->children[4], returnValType);
-        //     freeLinkNode();
-        // }
+    }else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
+        //BREAK SEMI
+        if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
+            printf("Error type 18 at Line %d: improper break\n", leftmost->line);
+        }
+    }else if (!strcmp(NDtypes[leftmost->type],"CONTINUES")){
+        //CONTINUES SEMI
+        if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
+            printf("Error type 18 at Line %d: improper continues\n", leftmost->line);
+        }
     }
 }
 

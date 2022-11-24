@@ -19,9 +19,9 @@ FieldList *parseVarList(Node varList);
 FieldList *parseParamDec(Node paramDec);
 Type* parseFunDec(Node funDec, Type *type);
 Type *parseExp(Node exp);
-void parseCompSt(Node compSt, Type* returnValType);
-void parseStmtList(Node stmtList, Type* returnValType);
-void parseStmt(Node stmt, Type * returnValType);
+void parseCompSt(Node prev, Node compSt, Type* returnValType);
+void parseStmtList(Node prev, Node stmtList, Type* returnValType);
+void parseStmt(Node prev, Node stmt, Type * returnValType);
 void parseExtDecList(Node extDecList, Type* type);
 int typecmp(Type *type1, Type *type2);
 
