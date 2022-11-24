@@ -3,7 +3,6 @@
 #include "string.h"
 #include "symbol.h"
 
-// Symbol* symbolTable = NULL;
 LinkNode* currScope = NULL;
 
 void initializeScope(){
@@ -24,11 +23,6 @@ void insertSymbolEntry(char* identifier, Type* type){
     /*show hashmap values*/
     printCurrTable("insert:");
 }
-// Symbol* findSymbolEntry(const char *identifier){
-//     Symbol * symbol;
-//     HASH_FIND_STR(symbolTable, identifier, symbol);
-//     return symbol;
-// }
 
 Symbol* findGlobalSymbolEntry(const char *identifier){
     LinkNode *scope = currScope;
@@ -41,7 +35,7 @@ Symbol* findGlobalSymbolEntry(const char *identifier){
         }
         scope = scope->prev;
     }
-    // printf("%s\n", identifier);
+    /*show hashmap values*/
     printCurrTable("find global:");
     return symbol;
 }
@@ -51,7 +45,7 @@ Symbol* findLocalSymbolEntry(const char *identifier){
     Symbol *symbol = NULL;
     Symbol *table = currScope->table;
     HASH_FIND_STR(table, identifier, symbol);
-    // printf("%s\n", identifier);
+    /*show hashmap values*/
     printCurrTable("find local:");
     return symbol;
 }
@@ -71,6 +65,7 @@ void freeLinkNode(){
     currScope = currScope->prev;
     free(currScope->next);
     currScope->next = NULL;
+    /*show hashmap values*/
     printCurrTable("free link node:");
 }
 
@@ -81,6 +76,7 @@ void addLinkNode(){
     newScope->next = NULL;
     currScope->next = newScope;
     currScope = currScope->next;
+    /*show hashmap values*/
     printCurrTable("add link node:");
 }
 

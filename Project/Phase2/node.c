@@ -2,7 +2,6 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
-// #include "syntax.tab.c"
 
 void setNode(struct node *prt, struct node *nds[], int number) {
     prt->number = number;
