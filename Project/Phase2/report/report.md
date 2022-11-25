@@ -8,267 +8,185 @@
 
 ## Basic
 
-//basic有啥好说的吗~感觉贴点代码就超了
+In the basic section, the basic semantic checking requirements are completed. The details processing need to be explained as follows:
+
+1. For type.h file:
+
+   We add a new FUNCTION constant to facilitate the processing and saving of functions.
+
+   ```c
+   typedef struct Type {
+       char* name;
+       /*add a new category--FUNCTION*/
+       enum { PRIMITIVE, ARRAY, STRUCTURE, FUNCTION} category;
+       /*other parts are the same of pdf*/
+   } Type;
+   ```
+
+2. For operators, including +, -, *, /:
+
+   When there are no non-primitive types on either side of the operator symbol, float type will be returned if there is a float type, and int type will be returned if no float type exists.
+
+   For example: 
+
+   ```c
+   /*
+   1. exist a float type: return float type
+      3.4 + 9, 'c' + 8.3, 1.2 + 3.2 
+   2. no float type exists: return int type
+      'a' + 'e', 2 + 5, 'c' + 7
+   */
+   ```
+
+3. For comparison of basic data types:
+
+   According to the characteristics of c language, it allows comparison between basic data types, so SUSTech program language also allows comparison between int, float, char, all will return the legal int type (because C language does not set the boolean constant, in general, 0 is false, non-zero integers are true).
 
 ## Bonus
 
 ### Different scopes
 
-Revoke Assumption 6, thus variables in different scopes can share the same identifier, and variables defined in the outer scope will be shadowed by the inner variables with the same identifier
+Revoke Assumption 6, thus variables in different scopes can share the same identifier, and variables defined in the outer scope will be shadowed by the inner variables with the same identifier when redefining the variables with the same name.
 
-//这个在哪儿实现的呀QAQ
+Furthermore, there are some possible situations will arise in codes:
+
+1. It needs to allow that different functions can have the same names of arguments and variables.
+
+   ```c
+   // codes as below are legical
+   int add(int m, int n) {
+       return m + n;
+   }
+   int minus(int m, int n) {
+       return m - n;
+   }
+   ```
+   
+2. Within a function scope, it needs to allow that defining variables in if/while scope and being invalidated out of scopes.
+
+   ```c
+   // codes as below are legical
+   int foo(int m) {
+       if (m > 20) {
+           int b = 1;
+       }
+       else {
+           int b = 5 + m;
+       }
+       return m;
+   }
+   ```
+   
+3. Child scopes can access variables defined in the parents scopes.
+
+   ```c
+   // codes as below are legical
+   int test(int m, int n) {
+       int a = 0;
+       while (a < m) {
+           int b = n;
+           a = a + b;
+       }
+       return a;
+   }
+   ```
 
 ### Structural equivalence for struct
 
-Revoke Assumption 7, then two struct is equivalent if they have the same number of each attribute
+Revoke Assumption 7, then two struct is equivalent if they have the same number of each attribute.
+
+For instance: struct Apple and struct Orange are equivalent.
 
 ```c
-else{
-    //bonus: structure -> have the same variables' type
-    FieldList * itm1 = type1->structure;
-    FieldList * itm2 = type2->structure;
-    int cnt1 = 0;
-    int cnt2 = 0;
-    while (itm1 != NULL){
-        itm1 = itm1->next;
-        cnt1++;
-    }
-    while (itm2 != NULL){
-        itm2 = itm2->next;
-        cnt2++;
-    }
-    if (cnt1 != cnt2){
-        return 0;
-    }
-    itm1 = type1->structure;
-    itm2 = NULL;
-    int idx2 = 0;
-    int matches = 0;
-    int * isMatched = (int *)malloc((sizeof(int)) * cnt2);
-    memset(isMatched, 0, cnt2);
-    while (itm1 != NULL){
-        itm2 = type2->structure;
-        idx2 = 0;
-        while (itm2 != NULL){
-            if(typecmp(itm1->type, itm2->type) && isMatched[idx2] == 0){
-                isMatched[idx2] = 1;
-                matches++;
-                break;
-            }
-            itm2 = itm2->next;
-            idx2++;
-        }
-        itm1 = itm1->next;
-    }
-    if (matches == cnt1){
-        return 1;
-    }
-}
+struct Apple {
+    float round;
+    int weight;
+};
+
+struct Orange {
+    int weight;
+    float round;
+};
 ```
 
-### Recognization continue and break
+### Recognition of continue and break
 
-in lex.l
+In lex.l:
 
 ```c
 "break" {yylval = newNodeTER(BREAk,yylineno); return BREAK;}
-"continues" {yylval = newNodeTER(CONTINUEs,yylineno); return CONTINUES;}
+"continue" {yylval = newNodeTER(CONTINUe,yylineno); return CONTINUE;}
 ```
 
-in syntax.y
+In syntax.y:
 
 ```c
 Stmt: Exp SEMI
     ...
-    | BREAK SEMI
-    {$$= newNodeNTER(STMt, getLine()); tmpnum = 2;
-    tmpcld[0] = $1; tmpcld[1] = $2;
-    setNode($$, tmpcld, tmpnum);}
-    | CONTINUES SEMI
-    {$$= newNodeNTER(STMt, getLine()); tmpnum = 2;
-    tmpcld[0] = $1; tmpcld[1] = $2;
-    setNode($$, tmpcld, tmpnum);}
-    | BREAK error
-    {$$= newNodeNTER(STMt, getLine()); tmpnum = 1;
-    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
-    MISSING_SEMI_ERROR($1);}
-    | CONTINUES error
-    {$$= newNodeNTER(STMt, getLine()); tmpnum = 1;
-    tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
-    MISSING_SEMI_ERROR($1);}
+    | BREAK SEMI {...}
+    | CONTINUE SEMI {...}
 	...
     ;
 ```
 
-in semantic.c
+In semantic.c file, we need to judge whether break and continue are in while scope or its child scopes.
 
 ```c
-else if(!strcmp(NDtypes[leftmost->type],"WHILE")){
-    // |WHILE LP Exp RP Stmt
-    Node exp = stmt->children[2];
-    Type* expType = parseExp(exp);
-    if (expType == NULL){
-        return;
-    }
-    if(expType->category != PRIMITIVE || expType->primitive != TINT){
-        printf("Error type 7 at Line %d: unmatching operands in while()\n", exp->line);
-    }
-    addLinkNode();
-    parseStmt(leftmost, stmt->children[4], returnValType);
-    // printf("%s\n", NDtypes[leftmost->type]);
-    freeLinkNode();
-}else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
+...
+// the variable "prev" will be passed to determine if break and continue are in the correct scope.
+else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
     //BREAK SEMI
-    if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
-        printf("Error type 18 at Line %d: improper break\n", leftmost->line);
-    }
-}else if (!strcmp(NDtypes[leftmost->type],"CONTINUES")){
-    //CONTINUES SEMI
-    if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
-        printf("Error type 19 at Line %d: improper continues\n", leftmost->line);
-    }
+    ...
+}else if (!strcmp(NDtypes[leftmost->type],"CONTINUE")){
+    //CONTINUE SEMI
+    ...
 }
+...
 ```
 
-### ...? ...: ...
+### ... ? ... : ...
 
-Similar as phase1, we support ternary operator
+Similar as phase1, we support ternary operator:
 
 ```c
+...
 else if(!strcmp(NDtypes[operator->type],"QM")){
     // Exp QM Exp COLON Exp
-    Type *leftType = parseExp(leftmost);
-    Type *midType = parseExp(rightmost);
-    Type *rightType = parseExp(exp->children[4]);
-    result = midType;
-    if (leftType == NULL || leftType->category != PRIMITIVE || leftType->primitive != TINT){
-        printf("Error type 7 at Line %d: unmatching operands: ..error.. ? ... : ...\n", leftmost->line);
-        result = NULL;
-    }
-    if (!typecmp(midType, rightType) || midType->category == FUNCTION || midType->category == ARRAY){
-        printf("Error type 7 at Line %d: unmatching operands in sides of \':\'\n", leftmost->line);
-        result = NULL;
-    }
+    ...
 }
+...
 ```
 
 ### Multidimensional nested array
 
-//这个也不知道在哪
+We can deal with more than one dimensional array.
 
-### Comparison of basic data types
-
-//这个咋描述
+For example,
 
 ```c
-// Exp LT|LE|GT|GE|NE|EQ Exp
-else if(!strcmp(NDtypes[operator->type],"LT") || !strcmp(NDtypes[operator->type],"LE")
-        || !strcmp(NDtypes[operator->type],"GT") || !strcmp(NDtypes[operator->type],"GE")
-        || !strcmp(NDtypes[operator->type],"NE") || !strcmp(NDtypes[operator->type],"EQ")) {
-    Type *leftmostType = parseExp(leftmost);
-    Type *rightmostType = parseExp(rightmost);
-    if( leftmostType == NULL || rightmostType == NULL ||
-       leftmostType->category != PRIMITIVE || rightmostType->category != PRIMITIVE){
-        printf("Error type 7 at Line %d: unmatching operands: %s\n",
-               leftmost->line, NDtypes[operator->type]);
-    }else{
-        result = (Type*)malloc(sizeof(Type));
-        result->category = PRIMITIVE;
-        result->primitive = TINT;
-    }
+// codes as below are legical
+int test()
+{
+    int arr[2][3][4]...[3];
+    return 1;
 }
 ```
 
-### Rules of +-*/
-
-When there are no non-primitive types on either side of the operator symbol, float will be returned if there is a float, and int will be returned if both are int
-
-```c
-// Exp PLUS|MINUS|MUL|DIV Exp
-else if(!strcmp(NDtypes[operator->type],"PLUS") || !strcmp(NDtypes[operator->type],"MINUS")
-        || !strcmp(NDtypes[operator->type],"MUL") || !strcmp(NDtypes[operator->type],"DIV")) {
-    Type *leftmostType = parseExp(leftmost);
-    Type *rightmostType = parseExp(rightmost);
-    if(leftmostType == NULL || rightmostType == NULL
-       || leftmostType->category != PRIMITIVE || rightmostType->category != PRIMITIVE){
-        printf("Error type 7 at Line %d: unmatching operands: %s\n",
-               leftmost->line, NDtypes[operator->type]);
-    }else{
-        result = (Type*)malloc(sizeof(Type));
-        result->category = PRIMITIVE;
-        if(leftmostType->primitive == TFLOAT || rightmostType->primitive == TFLOAT){
-            result->primitive = TFLOAT;
-        }else{
-            result->primitive = TINT
-        }
-    }
-}
-```
-
-### 4 more error types
+## Extra
 
 #### type 16
 
-using a non-structure variable as struct
+For grammar "STRUCT ID", if this ID refers to a non-structure type, then cause that using a non-structure variable as struct.
 
 #### type 17
 
-using struct without defination
-
-```c
-else if (!strcmp(NDtypes[leftmost->type], "StructSpecifier")) {
-    Node _struct = leftmost->children[0];
-    Node _structId = leftmost->children[1];
-    char *identifier = _structId->value;
-    Symbol *symbol = findGlobalSymbolEntry(identifier);
-    if (leftmost->number == 2) { 
-        // STRUCT ID
-        if (symbol == NULL) {
-            printf("Error type 17 at Line %d: struct is used without definition: %s\n",
-                   _structId->line, identifier);
-            return NULL;
-        }
-        if (symbol->type->category != STRUCTURE) {
-            printf("Error type 16 at Line %d: %s is not a struct\n",
-                   _structId->line, identifier);
-            return NULL;
-            }
-        type = symbol->type;
-    } else { 
-        // STRUCT ID LC DefList RC
-        if (symbol != NULL) {
-            printf("Error type 15 at Line %d: redefine the same structure type: %s\n",
-                   _structId->line, identifier);
-        }
-        type = (Type *) malloc(sizeof(Type));
-        type->category = STRUCTURE;
-        addLinkNode();
-        type->structure = parseDefList(leftmost->children[3]);
-        freeLinkNode();
-        insertSymbolEntry(identifier, type);
-    }
-}
-```
+For grammar "STRUCT ID", if this struct isn't defined, then cause that using struct without defination.
 
 #### type 18
 
-using break without loop
+If using key word break in the wrong scopes, then cause using break without loop.
 
 #### type 19
 
-using continues without loop
-
-```c
-else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
-    //BREAK SEMI
-    if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
-        printf("Error type 18 at Line %d: improper break\n", leftmost->line);
-    }
-}else if (!strcmp(NDtypes[leftmost->type],"CONTINUES")){
-    //CONTINUES SEMI
-    if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
-        printf("Error type 19 at Line %d: improper continues\n", leftmost->line);
-    }
-}
-```
+If using key word break in the wrong scopes, then cause using continue without loop.
 

@@ -5,7 +5,7 @@
 #include "symbol.h"
 
 char *NDtypes[] = {"TYPE", "INT", "FLOAT", "CHAR", "ID",
-                    "STRUCT", "IF", "WHILE", "ELSE", "RETURN", "BREAK", "CONTINUES",
+                    "STRUCT", "IF", "WHILE", "ELSE", "RETURN", "BREAK", "CONTINUE",
                     "DOT", "SEMI", "COMMA", "ASSIGN", "QM", "COLON",
                     "LT", "LE", "GT", "GE", "NE", "EQ",
                     "AND", "OR", "NOT",
@@ -530,7 +530,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
     //      |CompSt
     //      |RETURN Exp SEMI
     //      |BREAK SEMI
-    //      |CONTINUES SEMI
+    //      |CONTINUE SEMI
     Node leftmost = stmt->children[0];
     if (!strcmp(NDtypes[leftmost->type],"Exp")){
         parseExp(leftmost);
@@ -586,10 +586,10 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
             printf("Error type 18 at Line %d: improper break\n", leftmost->line);
         }
-    }else if (!strcmp(NDtypes[leftmost->type],"CONTINUES")){
-        //CONTINUES SEMI
+    }else if (!strcmp(NDtypes[leftmost->type],"CONTINUE")){
+        //CONTINUE SEMI
         if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
-            printf("Error type 19 at Line %d: improper continues\n", leftmost->line);
+            printf("Error type 19 at Line %d: improper continue\n", leftmost->line);
         }
     }
 }

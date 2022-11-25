@@ -37,7 +37,7 @@
 %token INT FLOAT CHAR
 %token ID
 %token TYPE
-%token STRUCT IF ELSE WHILE RETURN BREAK CONTINUES
+%token STRUCT IF ELSE WHILE RETURN BREAK CONTINUE
 %token NOT
 %token SEMI COMMA
 %token ASSIGN
@@ -195,7 +195,7 @@ Stmt: Exp SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 2;
     tmpcld[0] = $1; tmpcld[1] = $2;
     setNode($$, tmpcld, tmpnum);}
-    | CONTINUES SEMI
+    | CONTINUE SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 2;
     tmpcld[0] = $1; tmpcld[1] = $2;
     setNode($$, tmpcld, tmpnum);}
@@ -203,7 +203,7 @@ Stmt: Exp SEMI
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
     MISSING_SEMI_ERROR($1);}
-    | CONTINUES error
+    | CONTINUE error
     {$$= newNodeNTER(STMt, getLine()); tmpnum = 1;
     tmpcld[0] = $1; setNode($$, tmpcld, tmpnum);
     MISSING_SEMI_ERROR($1);}
