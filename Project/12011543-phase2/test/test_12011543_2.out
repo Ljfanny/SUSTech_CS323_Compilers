@@ -1,0 +1,10 @@
+Error type 15 at Line 6: redefine the same structure type: Apple
+Error type 7 at Line 16: unmatching operands: PLUS
+Error type 5 at Line 16: unmatching types on both sides of assignment
+Error type 5 at Line 20: unmatching types on both sides of assignment
+Error type 6 at Line 21: left side in assignment is rvalue
+Error type 14 at Line 22: no such member: apple
+Error type 5 at Line 22: unmatching types on both sides of assignment
+Error type 5 at Line 26: unmatching types on both sides of assignment
+Error type 8 at Line 30: incompatiable return type
+Error type 4 at Line 36: redefine function: test_12011543_2
