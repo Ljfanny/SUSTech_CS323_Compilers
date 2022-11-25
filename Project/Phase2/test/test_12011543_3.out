@@ -1,159 +1,17 @@
-test_12011543_3
-find global:------------------0------------------
--------------------------------------------------
-insert:------------------0------------------
-index: 0, key(identifier): test_12011543_3
--------------------------------------------------
-add link node:------------------1------------------
--------------------------------------------------
-abc
-find local:------------------1------------------
--------------------------------------------------
-insert:------------------1------------------
-index: 0, key(identifier): abc
--------------------------------------------------
-a
-find local:------------------1------------------
-index: 0, key(identifier): abc
--------------------------------------------------
-insert:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
--------------------------------------------------
-b
-find local:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
--------------------------------------------------
-insert:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
--------------------------------------------------
-c
-find local:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
--------------------------------------------------
-insert:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
--------------------------------------------------
-d
-find local:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
--------------------------------------------------
-insert:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
--------------------------------------------------
-x
-find local:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
--------------------------------------------------
-insert:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
-a
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
-b
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
-a
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
-c
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
-a
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
-d
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
-a
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
-e
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
 Error type 1 at Line 9: undefined variable: e
-Error type 5 at Line 9: unmatching types on both sides of assignment operator
-e
-find global:------------------1------------------
-index: 0, key(identifier): abc
-index: 0, key(identifier): a
-index: 0, key(identifier): b
-index: 0, key(identifier): c
-index: 0, key(identifier): d
-index: 0, key(identifier): x
--------------------------------------------------
+Error type 5 at Line 9: unmatching types on both sides of assignment
 Error type 1 at Line 10: undefined variable: e
-Segmentation fault
+Error type 10 at Line 10: indexing on non-array variable
+Error type 1 at Line 10: undefined variable: e
+Error type 5 at Line 10: unmatching types on both sides of assignment
+Error type 1 at Line 11: undefined variable: e
+Error type 11 at Line 11: invoking non-function variable: abc
+Error type 5 at Line 11: unmatching types on both sides of assignment
+Error type 1 at Line 12: undefined variable: e
+Error type 12 at Line 12: index by non-integer
+Error type 1 at Line 12: undefined variable: e
+Error type 10 at Line 12: indexing on non-array variable
+Error type 1 at Line 12: undefined variable: e
+Error type 10 at Line 12: indexing on non-array variable
+Error type 1 at Line 12: undefined variable: e
+Error type 10 at Line 12: indexing on non-array variable

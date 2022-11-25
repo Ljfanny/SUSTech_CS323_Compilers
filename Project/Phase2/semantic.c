@@ -364,10 +364,10 @@ Type *parseExp(Node exp) {
             //Exp LB Exp RB
             Type *leftmostType = parseExp(leftmost);
             Type *rightmostType = parseExp(rightmost);
-            if (leftmostType->category != ARRAY){
+            if (leftmostType == NULL || leftmostType->category != ARRAY){
                 printf("Error type 10 at Line %d: indexing on non-array variable\n", leftmost->line);
                 return NULL;
-            }else if(!(rightmostType->category == PRIMITIVE && rightmostType->primitive == TINT)){
+            }else if(rightmostType == NULL || rightmostType->category != PRIMITIVE || rightmostType->primitive != TINT){
                 printf("Error type 12 at Line %d: index by non-integer\n", leftmost->line);
                 return NULL;
             }else{

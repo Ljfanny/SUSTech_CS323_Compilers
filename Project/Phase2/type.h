@@ -4,7 +4,7 @@
 typedef struct Type {
     char* name;
     /*add a new category--FUNCTION*/
-    enum { PRIMITIVE, ARRAY, STRUCTURE, FUNCTION} category;
+    enum { PRIMITIVE, ARRAY, STRUCTURE, FUNCTION } category;
     union {
         enum { TINT, TFLOAT, TCHAR } primitive;
         struct Array *array;
