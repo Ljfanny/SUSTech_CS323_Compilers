@@ -1,17 +1,4 @@
-Error type 1 at Line 9: undefined variable: e
-Error type 5 at Line 9: unmatching types on both sides of assignment
-Error type 1 at Line 10: undefined variable: e
 Error type 10 at Line 10: indexing on non-array variable
-Error type 1 at Line 10: undefined variable: e
 Error type 5 at Line 10: unmatching types on both sides of assignment
-Error type 1 at Line 11: undefined variable: e
 Error type 11 at Line 11: invoking non-function variable: abc
 Error type 5 at Line 11: unmatching types on both sides of assignment
-Error type 1 at Line 12: undefined variable: e
-Error type 12 at Line 12: index by non-integer
-Error type 1 at Line 12: undefined variable: e
-Error type 10 at Line 12: indexing on non-array variable
-Error type 1 at Line 12: undefined variable: e
-Error type 10 at Line 12: indexing on non-array variable
-Error type 1 at Line 12: undefined variable: e
-Error type 10 at Line 12: indexing on non-array variable

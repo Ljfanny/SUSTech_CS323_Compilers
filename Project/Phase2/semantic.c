@@ -59,6 +59,7 @@ void parseExtDef(Node extDef) {
             freeLinkNode();
             insertSymbolEntry(funName, funDecType);
         }else{
+            freeLinkNode();
             printf("Error type 4 at Line %d: redefine function: %s\n",
             funDec->line, funSymbol->identifier);
         }
@@ -168,6 +169,7 @@ FieldList *parseDecList(Node decList, Type *type) {
             tmpDecFieldList->next = parseDec(dec, type);
             tmpDecFieldList = tmpDecFieldList->next;
         }
+        tmpDecFieldList->next = parseDec(_decList->children[0], type);
     }
     return decFieldList;
 }
