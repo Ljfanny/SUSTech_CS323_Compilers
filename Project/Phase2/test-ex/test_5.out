@@ -4,3 +4,4 @@ Error type 5 at Line 13: unmatching type on both sides of assignment
 Error type 1 at Line 14: undefined variable: b
 Error type 7 at Line 14: unmatching operands: NOT
 Error type 5 at Line 14: unmatching type on both sides of assignment
+Error type 4 at Line 19: redefine function: test
