@@ -356,6 +356,15 @@ Type *parseExp(Node exp) {
                 printf("Error type 7 at Line %d: unmatching operands: ..error.. ? ... : ...\n", leftmost->line);
                 result = NULL;
             }
+            if(midType == NULL){
+                printf("Error type 1 at Line %d: undefined variable: %s\n",
+                rightmost->line, rightmost->value);
+                result = NULL;
+            }else if(rightType == NULL){
+                printf("Error type 1 at Line %d: undefined variable: %s\n",
+                exp->children[4]->line, exp->children[4]->value);
+                result = NULL;
+            }
             if (!typecmp(midType, rightType) || midType->category == FUNCTION || midType->category == ARRAY){
                 printf("Error type 7 at Line %d: unmatching operands in sides of \':\'\n", leftmost->line);
                 result = NULL;
@@ -376,7 +385,7 @@ Type *parseExp(Node exp) {
         }else if(!strcmp(NDtypes[operator->type], "DOT")){
             // Exp DOT ID
             Type *leftmostType = parseExp(leftmost);
-            if (leftmostType->category != STRUCTURE){
+            if (leftmostType == NULL || leftmostType->category != STRUCTURE){
                 printf("Error type 13 at Line %d: accessing with non-structure variable\n",
                 leftmost->line);
                 return NULL;
@@ -403,7 +412,7 @@ Type *parseExp(Node exp) {
     // MINUS Exp
     else if(!strcmp(NDtypes[leftmost->type],"MINUS")){
         Type *leftmostType = parseExp(exp->children[1]);
-        if (leftmostType->category != PRIMITIVE){
+        if (leftmostType == NULL || leftmostType->category != PRIMITIVE){
             printf("Error type 7 at Line %d: unmatching operands: MINUS\n", 
             leftmost->line);
         }else{
@@ -413,13 +422,11 @@ Type *parseExp(Node exp) {
     // NOT Exp
     else if(!strcmp(NDtypes[leftmost->type],"NOT")){
         Type *leftmostType = parseExp(exp->children[1]);
-        if (leftmostType->category != PRIMITIVE || leftmostType->primitive != TINT){
+        if (leftmostType == NULL || leftmostType->category != PRIMITIVE || leftmostType->primitive != TINT){
             printf("Error type 7 at Line %d: unmatching operands: NOT\n",
             leftmost->line);
         }else{
-            result = (Type*)malloc(sizeof(Type));
-            result->category = PRIMITIVE;
-            result->primitive = TINT;
+            result = leftmostType;
         }
     }
     // ID LP Args RP
@@ -431,7 +438,7 @@ Type *parseExp(Node exp) {
                 printf("Error type 2 at Line %d: undefined function: %s\n",
                 leftmost->line, leftmost->value);
                 return NULL;
-            }else if(tmp->type->category != FUNCTION){
+            }else if(tmp->type == NULL || tmp->type->category != FUNCTION){
                 printf("Error type 11 at Line %d: invoking non-function variable: %s\n",
                 leftmost->line, leftmost->value);
                 return NULL;
