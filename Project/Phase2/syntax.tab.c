@@ -144,7 +144,7 @@ extern int yydebug;
     WHILE = 266,
     RETURN = 267,
     BREAK = 268,
-    CONTINUES = 269,
+    CONTINUE = 269,
     NOT = 270,
     SEMI = 271,
     COMMA = 272,
@@ -510,7 +510,7 @@ static const yytype_uint16 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "INT", "FLOAT", "CHAR", "ID", "TYPE",
-  "STRUCT", "IF", "ELSE", "WHILE", "RETURN", "BREAK", "CONTINUES", "NOT",
+  "STRUCT", "IF", "ELSE", "WHILE", "RETURN", "BREAK", "CONTINUE", "NOT",
   "SEMI", "COMMA", "ASSIGN", "LT", "LE", "GT", "GE", "NE", "EQ", "PLUS",
   "MINUS", "MUL", "DIV", "MOD", "OR", "AND", "QM", "COLON", "LP", "RP",
   "LB", "RB", "DOT", "LC", "RC", "ERROR", "$accept", "Program",

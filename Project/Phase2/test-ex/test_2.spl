@@ -7,7 +7,7 @@ int add(int m, int n)
         a = a + b;
         if (a == 17)
         {
-            continues;
+            continue;
         }
         if (a > 100)
         {

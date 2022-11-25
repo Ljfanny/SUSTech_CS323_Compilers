@@ -105,6 +105,7 @@ Type *parseSpecifier(Node specifier) {
             if (symbol != NULL) {
                 printf("Error type 15 at Line %d: redefine the same structure type: %s\n",
                 _structId->line, identifier);
+                return NULL;
             }
             type = (Type *) malloc(sizeof(Type));
             type->category = STRUCTURE;
@@ -365,8 +366,10 @@ Type *parseExp(Node exp) {
             Type *rightmostType = parseExp(rightmost);
             if (leftmostType->category != ARRAY){
                 printf("Error type 10 at Line %d: indexing on non-array variable\n", leftmost->line);
+                return NULL;
             }else if(!(rightmostType->category == PRIMITIVE && rightmostType->primitive == TINT)){
                 printf("Error type 12 at Line %d: index by non-integer\n", leftmost->line);
+                return NULL;
             }else{
                 result = leftmostType->array->base;
             }
@@ -376,6 +379,7 @@ Type *parseExp(Node exp) {
             if (leftmostType->category != STRUCTURE){
                 printf("Error type 13 at Line %d: accessing with non-structure variable\n",
                 leftmost->line);
+                return NULL;
             }else{
                 FieldList* tmp = leftmostType->structure;
                 while(tmp != NULL){
@@ -557,7 +561,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
             return;
         }
         if(expType->category != PRIMITIVE || expType->primitive != TINT){
-            printf("Error type 7 at Line %d: unmatching operands in if() or else if()\n", exp->line);
+            printf("Error type 7 at Line %d: unmatching operands in if statement\n", exp->line);
         }
         addLinkNode();
         parseStmt(prev, stmt->children[4], returnValType);
@@ -575,7 +579,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
             return;
         }
         if(expType->category != PRIMITIVE || expType->primitive != TINT){
-            printf("Error type 7 at Line %d: unmatching operands in while()\n", exp->line);
+            printf("Error type 7 at Line %d: unmatching operands in while statement\n", exp->line);
         }
         addLinkNode();
         parseStmt(leftmost, stmt->children[4], returnValType);

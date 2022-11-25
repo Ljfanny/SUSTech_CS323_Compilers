@@ -56,7 +56,7 @@ extern int yydebug;
     WHILE = 266,
     RETURN = 267,
     BREAK = 268,
-    CONTINUES = 269,
+    CONTINUE = 269,
     NOT = 270,
     SEMI = 271,
     COMMA = 272,

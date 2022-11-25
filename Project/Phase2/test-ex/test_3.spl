@@ -2,25 +2,37 @@ struct Apple
 {
     int a;
     float b;
-    int number[10][5][7][10][1000];
+    int number[10][5][7][10];
+};
+
+struct Apple
+{
+    int a;
 };
 
 struct Orange
 {
     float b;
-    int number[10][5][7][10][1000];
+    int number[10][5][7][10];
     int a;
 };
+
+int foo(){
+    return 5;
+}
 
 struct Apple test(int a, int b)
 {
     struct Apple aa;
     struct Apple aaa;
     struct Orange oo;
+    struct Banana bb;
     if ('a' > 'c' || (3.4 < 6 && 'b' > 48) )
     {
         int mn_www123 = 3.4 + 'f';
         float f = 8 + 11.2;
+        break;
+        continue;
     }
     else
     {
