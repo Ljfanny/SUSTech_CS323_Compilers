@@ -6,7 +6,7 @@ int main(){
   int num4[2][3];
   int ff = num3[num0[0]];
   int num5[2][3];
-  // 3 = num0[0];
-  int new_int = num0[num5[0][0]];
+  3 = num0[0];
+  i = num0[num5[0][0]];
   
 }
