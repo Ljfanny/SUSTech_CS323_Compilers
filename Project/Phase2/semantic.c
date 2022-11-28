@@ -129,11 +129,11 @@ FieldList *parseDefList(Node defList) {
     Node _defList = defList->children[1];
     FieldList *defFieldList = parseDef(def);
     FieldList *tmpDefFieldList = defFieldList;
-    while (_defList != NULL) {
+    while (_defList != NULL && tmpDefFieldList != NULL) {
         def = _defList->children[0];
         _defList = _defList->children[1];
         tmpDefFieldList->next = parseDef(def);
-        tmpDefFieldList =tmpDefFieldList->next;
+        tmpDefFieldList = tmpDefFieldList->next;
     }
     return defFieldList;
 }
@@ -208,10 +208,16 @@ FieldList *parseVarDec(Node varDec, Type *type) {
     }
     // ID
     tempNode = tempNode->children[0];
-    Symbol *symbol = findLocalSymbolEntry(tempNode->value);
     field->name = tempNode->value;
     field->type = endType;
     field->next = NULL;
+    Symbol *symbol = findLocalSymbolEntry(tempNode->value);
+    if(symbol == NULL){
+        Symbol *sym = findGlobalSymbolEntry(tempNode->value);
+        if(sym != NULL && sym->type->category == STRUCTURE){
+            symbol = sym;
+        }
+    }
     if (symbol != NULL) {
         printf("Error type 3 at Line %d: redefine variable: %s\n",
         tempNode->line, symbol->identifier);
