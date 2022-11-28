@@ -16,6 +16,6 @@ int test_2(){
     st.characters[1] = 'a';
     st.characters[st.integer2] = 1;
 
-    st.unknown_word = "test_2";
+    st.unknown_word = 't';
     return 0;
 }

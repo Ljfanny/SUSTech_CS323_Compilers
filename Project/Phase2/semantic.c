@@ -129,11 +129,18 @@ FieldList *parseDefList(Node defList) {
     Node _defList = defList->children[1];
     FieldList *defFieldList = parseDef(def);
     FieldList *tmpDefFieldList = defFieldList;
-    while (_defList != NULL && tmpDefFieldList != NULL) {
+    int isOver = 0;
+    while (_defList != NULL) {
         def = _defList->children[0];
         _defList = _defList->children[1];
-        tmpDefFieldList->next = parseDef(def);
-        tmpDefFieldList = tmpDefFieldList->next;
+        FieldList* itemFieldList = parseDef(def);
+        if(itemFieldList == NULL){
+            isOver = 1;
+        }
+        if (!isOver){
+            tmpDefFieldList->next = itemFieldList;
+            tmpDefFieldList = tmpDefFieldList->next;
+        }
     }
     return defFieldList;
 }
