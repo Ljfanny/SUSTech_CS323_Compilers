@@ -245,19 +245,28 @@ FieldList *parseVarList(Node varList) {
     }
     FieldList *tmpFieldList = varFieldList;
     Node _varList = NULL;
+    int isOver = 0;
     if (varList->number == 3) {
         // ParamDec COMMA VarList
         _varList = varList->children[2];
         while (_varList->number == 3 && tmpFieldList != NULL) {
             paramDec = _varList->children[0];
             _varList = _varList->children[2];
-            tmpFieldList->next = parseParamDec(paramDec);
-            tmpFieldList = tmpFieldList->next;
+            FieldList* itemFieldList = parseParamDec(paramDec);
+            if (itemFieldList == NULL){
+                isOver = 1;
+            }
+            if(!isOver){
+                tmpFieldList->next = itemFieldList;
+                tmpFieldList = tmpFieldList->next;
+            }
         }
     }
     // ParamDec
-    paramDec = _varList->children[0];
-    tmpFieldList->next = parseParamDec(paramDec);
+    if (!isOver){
+        paramDec = _varList->children[0];
+        tmpFieldList->next = parseParamDec(paramDec);
+    }
     return varFieldList;
 }
 
