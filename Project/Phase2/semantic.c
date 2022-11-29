@@ -219,12 +219,6 @@ FieldList *parseVarDec(Node varDec, Type *type) {
     field->type = endType;
     field->next = NULL;
     Symbol *symbol = findLocalSymbolEntry(tempNode->value);
-    if(symbol == NULL){
-        Symbol *sym = findGlobalSymbolEntry(tempNode->value);
-        if(sym != NULL && sym->type->category == STRUCTURE){
-            symbol = sym;
-        }
-    }
     if (symbol != NULL) {
         printf("Error type 3 at Line %d: redefine variable: %s\n",
         tempNode->line, symbol->identifier);
