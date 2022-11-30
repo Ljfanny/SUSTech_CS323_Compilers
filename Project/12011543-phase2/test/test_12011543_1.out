@@ -1,6 +1,0 @@
-Error type 4 at Line 10: redefine function: compare
-Error type 1 at Line 30: undefined variable: s
-Error type 7 at Line 30: unmatching operands: PLUS
-Error type 5 at Line 30: unmatching type on both sides of assignment
-Error type 2 at Line 32: undefined function: add
-Error type 5 at Line 32: unmatching type on both sides of assignment

@@ -1,5 +1,0 @@
-Error type 15 at Line 8: redefine the same structure type: Apple
-Error type 17 at Line 29: struct is used without definition: Banana
-Error type 5 at Line 32: unmatching type on both sides of assignment
-Error type 18 at Line 34: improper break
-Error type 19 at Line 35: improper continue
