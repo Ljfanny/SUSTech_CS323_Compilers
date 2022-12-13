@@ -21,12 +21,15 @@ void printTacs(Tac* head){
     head = head->next;
     //preparation: t0 := #0, t1 := #1;
     while (head != NULL){
-        if(head->title == FUNC || head->title ==  READ || head->title ==  WRITE
-        || head->title == LABEL || head->title == GOTO || head->title == RETURN
-        || head->title == PARAM || head->title == ARG || head->title == CALL){
+        if(head->title == FUNC || head->title ==  READ
+        || head->title ==  WRITE || head->title == LABEL
+        || head->title == RETURN || head->title == PARAM
+        || head->title == ARG || head->title == CALL){
             printf("%s %s\n", titles[head->title], head->target);
+        }else if(head->title == GOTO){
+            printf("%s %s:\n", titles[head->title], head->target);
         }else if (head->title == IF){
-            printf("IF %s GOTO %s\n", head->arg1, head->target);
+            printf("IF %s GOTO %s:\n", head->arg1, head->target);
         }else if(head->title == ASS) {
             printf("%s := %s\n", head->target, head->arg1);
         }else if (head->title == OPER){

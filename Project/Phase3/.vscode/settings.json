@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "uthash.h": "c"
+        "uthash.h": "c",
+        "system_error": "c",
+        "type_traits": "c",
+        "xlocnum": "c",
+        "xtr1common": "c"
     }
 }

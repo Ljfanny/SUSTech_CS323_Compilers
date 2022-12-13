@@ -9,7 +9,6 @@
 
 Tac* head = NULL;
 Tac* curTac = NULL;
-char* curCond = NULL;
 int errorCnt, labelCnt, vCnt, tCnt;
 char* NDtypes[] = { "TYPE", "INT", "FLOAT", "CHAR", "ID",
                     "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
@@ -395,22 +394,32 @@ Type *parseExp(Node exp) {
                 result = (Type*)malloc(sizeof(Type));
                 result->category = PRIMITIVE;
                 result->primitive = TINT;
-                // youwenti!!!
-                curCond = findHashmap(leftmost->value)->value;
+                int len = strlen(leftmostType->tag) + strlen(rightmostType->tag);
+                char* oper = NULL;
                 if(!strcmp(NDtypes[operator->type],"LT")){
-                    strcat(curCond, " < ");
+                    len += 3;
+                    oper = " < ";
                 }else if (!strcmp(NDtypes[operator->type],"LE")){
-                    strcat(curCond, " <= ");
+                    len += 4;
+                    oper = " <= ";
                 }else if (!strcmp(NDtypes[operator->type],"GT")){
-                    strcat(curCond, " > ");
+                    len += 3;
+                    oper = " > ";
                 }else if (!strcmp(NDtypes[operator->type],"GE")){
-                    strcat(curCond, " >= ");
+                    len += 4;
+                    oper = " >= ";
                 }else if (!strcmp(NDtypes[operator->type],"NE")){
-                    strcat(curCond, " != ");
+                    len += 4;
+                    oper = " != ";
                 }else{
-                    strcat(curCond, " == ");
+                    len += 4;
+                    oper = " == ";
                 }
-                strcat(curCond, findHashmap(rightmost->value)->value);
+                result->tag = (char*)malloc(sizeof(char) * len);
+                strcat(result->tag, leftmostType->tag);
+                strcat(result->tag, oper);
+                strcat(result->tag, rightmostType->tag);
+                printf("%s\n", result->tag);
             }
         }
         //Exp PLUS|MINUS|MUL|DIV Exp
@@ -751,29 +760,6 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         //|IF LP Exp RP Stmt ELSE Stmt
         Node exp = stmt->children[2];
         Type* expType = parseExp(exp);
-        int trueLabel = labelCnt;
-        int falseLabel = labelCnt + 1;
-        labelCnt += 2;
-        //true condition
-        char trueNum[10];
-        itoa(trueLabel, trueNum, 10);
-        char* trueTarget = "label";
-        strcat(trueTarget, trueNum);
-        curTac->next = newTac(trueTarget, NULL, curCond, NULL);
-        curTac = curTac->next;
-        curTac->title = IF;
-        //false condition
-        char falseNum[10];
-        itoa(falseLabel, falseNum, 10);
-        char* falseTarget = "label";
-        strcat(falseTarget, falseNum);
-        curTac->next = newTac(falseTarget, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = GOTO;
-        //true label
-        curTac->next = newTac(trueTarget, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = LABEL;
         if (expType == NULL){
             return;
         }
@@ -781,10 +767,40 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
             printf("Error type 7 at Line %d: unmatching operands in if statement\n", exp->line);
             errorCnt++;
         }
+        int trueLabel = labelCnt;
+        int falseLabel = labelCnt + 1;
+        int len = 0;
+        labelCnt += 2;
+        //true condition
+        char trueNum[10] = {0};
+        itoa(trueLabel, trueNum, 10);
+        char trueTarget[15] = "label";
+        strcat(trueTarget, trueNum);
+        len = countLength(trueLabel) + 5;
+        char* trueTag = (char*)malloc(sizeof(char) * len);
+        strncpy(trueTag, trueTarget, len);
+        curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
+        curTac = curTac->next;
+        curTac->title = IF;
+        //false condition
+        char falseNum[10] = {0};
+        itoa(falseLabel, falseNum, 10);
+        char falseTarget[15] = "label";
+        strcat(falseTarget, falseNum);
+        len = countLength(falseLabel) + 5;
+        char* falseTag = (char*)malloc(sizeof(char) * len);
+        strncpy(falseTag, falseTarget, len);
+        curTac->next = newTac(falseTag, NULL, NULL, NULL);
+        curTac = curTac->next;
+        curTac->title = GOTO;
+        //true label
+        curTac->next = newTac(trueTag, NULL, NULL, NULL);
+        curTac = curTac->next;
+        curTac->title = LABEL;
         addLinkNode();
         parseStmt(prev, stmt->children[4], returnValType);
         //false label
-        curTac->next = newTac(falseTarget, NULL, NULL, NULL);
+        curTac->next = newTac(falseTag, NULL, NULL, NULL);
         curTac = curTac->next;
         curTac->title = LABEL;
         freeLinkNode();
