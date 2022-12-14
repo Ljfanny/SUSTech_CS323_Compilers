@@ -65,16 +65,15 @@ void parseExtDef(Node extDef) {
     } else if (!strcmp(NDtypes[extDecList->type], "FunDec")) {
         Node funDec = extDecList;
         Node compSt = extDef->children[2];
-        addLinkNode();
         Type *funDecType = parseFunDec(funDec, type);
         char* funName = funDecType->structure->name;
         Symbol* funSymbol = findGlobalSymbolEntry(funName);
         if(funSymbol == NULL){
+            insertSymbolEntry(funName, funDecType);
+            addLinkNode();
             parseCompSt(NULL, compSt, funDecType->structure->type);
             freeLinkNode();
-            insertSymbolEntry(funName, funDecType);
         }else{
-            freeLinkNode();
             printf("Error type 4 at Line %d: redefine function: %s\n",
             funDec->line, funSymbol->identifier);
             errorCnt++;
@@ -203,7 +202,7 @@ FieldList *parseDec(Node dec, Type *type) {
     //Dec: VarDec ASSIGN Exp
     //    |VarDec
     Node varDec = dec->children[0];
-    FieldList *fieldList = parseVarDec(varDec, type);
+    FieldList *fieldList = parseVarDec(0, varDec, type);
     if (dec->number == 3) {
         Node exp = dec->children[2];
         Type *expType = parseExp(exp);
@@ -216,7 +215,7 @@ FieldList *parseDec(Node dec, Type *type) {
     return fieldList;
 }
 
-FieldList *parseVarDec(Node varDec, Type *type) {
+FieldList *parseVarDec(int isFuncParam, Node varDec, Type *type) {
     //VarDec: VarDec LB INT RB (Array)
     //       |ID
     Node tempNode = varDec;
@@ -251,6 +250,11 @@ FieldList *parseVarDec(Node varDec, Type *type) {
         int len = countLength(vCnt) + 1;
         field->type->tag = (char*)malloc(sizeof(char) * len);
         strncpy(field->type->tag, value, len);
+        if(isFuncParam){
+            curTac->next = newTac(field->type->tag, NULL, NULL, NULL);
+            curTac = curTac->next;
+            curTac->title = PARAM;
+        }
         insertHashmap(field->name, field->type->tag);
         insertSymbolEntry(field->name, field->type);
         printf("%s, %s\n", field->name, field->type->tag);
@@ -300,7 +304,7 @@ FieldList *parseParamDec(Node paramDec) {
     Type *type = parseSpecifier(paramDec->children[0]);
     FieldList *paramFieldList = NULL;
     if (type != NULL) {
-        paramFieldList = parseVarDec(paramDec->children[1], type);
+        paramFieldList = parseVarDec(1, paramDec->children[1], type);
     }
     return paramFieldList;
 }
@@ -357,14 +361,6 @@ Type *parseExp(Node exp) {
                 curTac->next = newTac(leftmostType->tag, NULL, rightmostType->tag, NULL);
                 curTac = curTac->next;
                 curTac->title = ASS;
-                // if (!strcmp(NDtypes[rightmost->type], "INT")){
-                //     char* key = strcat("#", rightmost->value);
-                //     Hashmap* integer = findHashmap(key);
-                //     Hashmap* beAssigned = findHashmap(leftmost->value);
-                //     curTac->next = newTac(beAssigned->value, NULL, integer->value, NULL);
-                //     curTac = curTac->next;
-                //     curTac->title = ASS;
-                // }
             }
         }
         //Exp AND Exp
@@ -456,22 +452,16 @@ Type *parseExp(Node exp) {
                 strcat(key, rightmostType->tag);
                 Hashmap* item = findHashmap(key);
                 if(item == NULL){
-                    char tNum[10] = {0};
-                    itoa(tCnt, tNum, 10);
-                    char target[10] = "t";
-                    strcat(target, tNum);
-                    int len = countLength(tCnt) + 1;
-                    result->tag = (char*)malloc(sizeof(char) * len);
-                    strncpy(result->tag, target, len);
+                    result->tag = generateT(tCnt);
                     curTac-> next = newTac(result->tag, oper, leftmostType->tag, rightmostType->tag);
                     curTac = curTac->next;
                     curTac->title = OPER;
                     insertHashmap(key, result->tag);
                     tCnt++;
-                    printf("%s = %s%s%s\n", target, leftmostType->tag, oper, rightmostType->tag);
                 }else{
                     result->tag = item->value;
                 }
+                printf("%s, %s\n", result->tag, key);
             }
         }else if(!strcmp(NDtypes[operator->type],"QM")){
             //Exp QM Exp COLON Exp
@@ -562,13 +552,7 @@ Type *parseExp(Node exp) {
             strcat(key, leftmostType->tag);
             Hashmap* item = findHashmap(key);
             if (item == NULL){
-                char tNum[10] = {0};
-                itoa(tCnt, tNum, 10);
-                char target[10] = "t";
-                strcat(target, tNum);
-                int len = countLength(tCnt) + 1;
-                result->tag = (char*)malloc(sizeof(char) * len);
-                strncpy(result->tag, target, len);
+                result->tag = generateT(tCnt);
                 curTac-> next = newTac(result->tag, "-", "#0", leftmostType->tag);
                 curTac = curTac->next;
                 curTac->title = OPER;
@@ -618,6 +602,9 @@ Type *parseExp(Node exp) {
                     //Args: Exp COMMA Args
                     //     |Exp
                     Node argsExp = args->children[0];
+                    FuncParamLinkNode* fir = (FuncParamLinkNode*)malloc(sizeof(FuncParamLinkNode));
+                    fir->prev = NULL;
+                    fir->next = NULL;
                     while(1){
                         Type* argsExpType = parseExp(argsExp);
                         if(argsExpType == NULL){
@@ -629,9 +616,18 @@ Type *parseExp(Node exp) {
                             errorCnt++;
                             break;
                         }else{
+                            fir->tag = (char*)malloc(sizeof(char) * strlen(argsExpType->tag));
+                            strncpy(fir->tag, argsExpType->tag, strlen(argsExpType->tag));
+                            fir->next = (FuncParamLinkNode*)malloc(sizeof(FuncParamLinkNode));
+                            FuncParamLinkNode* tmp = fir;
+                            fir = fir->next;
+                            fir->prev = tmp;
+                            printf("tag = %s, prev = %p, next = %p\n", tmp->tag, tmp->prev, tmp->next);
                             tmpFuncVariablesList = tmpFuncVariablesList->next;
                             if (tmpFuncVariablesList == NULL && args->number == 1){
-                                result = tmpFuncType->structure->type;
+                                result = (Type*)malloc(sizeof(Type));
+                                deepcopyType(result, tmpFuncType->structure->type);
+                                fir = fir->prev;
                                 break;
                             }else if(tmpFuncVariablesList == NULL && args->number == 3){
                                 printf("Error type 9 at Line %d: more the function %s's arguments than the declared parameters\n",
@@ -648,10 +644,40 @@ Type *parseExp(Node exp) {
                             argsExp = args->children[0];
                         }
                     }
+                    if(!strcmp(tmpFuncType->structure->name, "write")){
+                        curTac->next = newTac(fir->tag, NULL, NULL, NULL);
+                        curTac = curTac->next;
+                        curTac->title = WRITE;
+                    }else{
+                        while (fir != NULL){
+                            curTac->next = newTac(fir->tag, NULL, NULL, NULL);
+                            curTac = curTac->next;
+                            curTac->title = ARG;
+                            fir = fir->prev;
+                        }
+                        result->tag = generateT(tCnt);
+                        int calllen = strlen(tmpFuncType->structure->name) + 5;
+                        char* arg1 = (char*)malloc(sizeof(char)*calllen);
+                        strcat(arg1, "CALL ");
+                        strcat(arg1, tmpFuncType->structure->name);
+                        curTac->next = newTac(result->tag, NULL, arg1, NULL);
+                        curTac = curTac->next;
+                        curTac->title = ASS;
+                        printf("%s, %s\n", result->tag, arg1);
+                        tCnt++;
+                    }
                 }
             }else{
                 if (tmpFuncType->structure->next == NULL){
-                    result = tmpFuncType->structure->type;
+                    result = (Type*)malloc(sizeof(Type));
+                    deepcopyType(result, tmpFuncType->structure->type);
+                    if (!strcmp(tmpFuncType->structure->name, "read")){
+                        result->tag = generateT(tCnt);
+                        curTac->next = newTac(result->tag, NULL, NULL, NULL);
+                        curTac = curTac->next;
+                        curTac->title = READ;
+                        tCnt++;
+                    }
                 }else{
                     printf("Error type 9 at Line %d: fewer the function %s's arguments than the declared parameters\n",
                     leftmost->line, leftmost->value);
@@ -680,13 +706,7 @@ Type *parseExp(Node exp) {
         result->primitive = TINT;
         Hashmap* item = findHashmap(arg1);
         if (item == NULL){
-            char tNum[10] = {0};
-            itoa(tCnt, tNum, 10);
-            char target[10] = "t";
-            strcat(target, tNum);
-            int len = countLength(tCnt) + 1;
-            result->tag = (char*)malloc(sizeof(char) * len);
-            strncpy(result->tag, target, len);
+            result->tag = generateT(tCnt);
             curTac->next = newTac(result->tag, NULL, key, NULL);
             curTac = curTac->next;
             curTac->title = ASS;
@@ -772,24 +792,12 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         int len = 0;
         labelCnt += 2;
         //true condition
-        char trueNum[10] = {0};
-        itoa(trueLabel, trueNum, 10);
-        char trueTarget[15] = "label";
-        strcat(trueTarget, trueNum);
-        len = countLength(trueLabel) + 5;
-        char* trueTag = (char*)malloc(sizeof(char) * len);
-        strncpy(trueTag, trueTarget, len);
+        char* trueTag = generateLabel(trueLabel);
         curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
         curTac = curTac->next;
         curTac->title = IF;
         //false condition
-        char falseNum[10] = {0};
-        itoa(falseLabel, falseNum, 10);
-        char falseTarget[15] = "label";
-        strcat(falseTarget, falseNum);
-        len = countLength(falseLabel) + 5;
-        char* falseTag = (char*)malloc(sizeof(char) * len);
-        strncpy(falseTag, falseTarget, len);
+        char* falseTag = generateLabel(falseLabel);
         curTac->next = newTac(falseTag, NULL, NULL, NULL);
         curTac = curTac->next;
         curTac->title = GOTO;
@@ -813,6 +821,8 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         //|WHILE LP Exp RP Stmt
         Node exp = stmt->children[2];
         Type* expType = parseExp(exp);
+        //TODO: 需要使用的就是Tac这个类，以及curTac这个变量，它是为了把IR指令串起来，最后一起输出~
+        //TODO: 这个expType中的tag就是判断语句，可以看看IF部分，直接生成链表就好
         if (expType == NULL){
             return;
         }
@@ -821,6 +831,9 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
             errorCnt++;
         }
         addLinkNode();
+        //TODO: 此处递归调用在递归前就是LABEL laber? -> 也就是判断语句为true时的地址；
+        //TODO: 递归结束后再输出LABEL label -> false情况下的地址；
+        //这样写完就OK了~
         parseStmt(leftmost, stmt->children[4], returnValType);
         freeLinkNode();
     }else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
@@ -842,7 +855,7 @@ void parseExtDecList(Node extDecList, Type* type){
     //ExtDecList: VarDec 
     //           |VarDec COMMA ExtDecList
     Node varDec = extDecList->children[0];
-    parseVarDec(varDec, type);
+    parseVarDec(0, varDec, type);
     if(extDecList->number == 3){
         parseExtDecList(extDecList->children[2], type);
     }

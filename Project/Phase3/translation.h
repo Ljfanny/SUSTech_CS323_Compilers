@@ -4,6 +4,12 @@
 #include "node.h"
 #include "type.h"
 
+typedef struct FuncParamLinkNode {
+    char* tag;
+    struct FuncParamLinkNode* prev;
+    struct FuncParamLinkNode* next;
+} FuncParamLinkNode;
+
 typedef struct node *Node;
 
 void parseProgram(Node program);
@@ -14,7 +20,7 @@ FieldList *parseDefList(Node defList);
 FieldList *parseDef(Node def);
 FieldList *parseDecList(Node decList, Type *type);
 FieldList *parseDec(Node dec, Type *type);
-FieldList *parseVarDec(Node varDec, Type *type);
+FieldList *parseVarDec(int isFuncParam, Node varDec, Type *type);
 FieldList *parseVarList(Node varList);
 FieldList *parseParamDec(Node paramDec);
 Type* parseFunDec(Node funDec, Type *type);

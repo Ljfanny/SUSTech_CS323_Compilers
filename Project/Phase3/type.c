@@ -4,11 +4,14 @@
 #include "string.h"
 
 void deepcopyType(Type* dest, Type* sour){
-    if (sour->name != NULL){
+    if (sour == NULL){
+        return;
+    }
+    if (sour->name != NULL && strlen(sour->name) > 0){
         dest->name = (char*)malloc(sizeof(char) * strlen(sour->name));
         strncpy(dest->name, sour->name, strlen(sour->name));
     }
-    if (sour->tag != NULL){
+    if (sour->tag != NULL && strlen(sour->tag) > 0){
         dest->tag = (char*)malloc(sizeof(char) * strlen(sour->tag));
         strncpy(dest->tag, sour->tag, strlen(sour->tag));
     }
