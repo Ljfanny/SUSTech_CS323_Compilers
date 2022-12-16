@@ -3,7 +3,7 @@
 
 typedef struct tac
 {
-    enum { FUNC = 0, READ, WRITE, LABEL, GOTO, IF, ASS, OPER, RETURN, PARAM, ARG, DEC } title;
+    enum { FUNC = 0, READ, WRITE, LABEL, GOTO, IF, ASS, OPER, RETURN, PARAM, ARG, DEC, WHILE } title;
     char* target;
     char* op;
     char* arg1;

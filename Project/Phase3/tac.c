@@ -36,6 +36,8 @@ void printTacs(Tac* head){
             printf("%s %s\n", titles[head->title], head->target);
         }else if (head->title == IF){
             printf("IF %s GOTO %s\n", head->arg1, head->target);
+        }else if (head->title == WHILE){
+            printf("WHILE %s GOTO %s\n", head->arg1, head->target);
         }else if(head->title == ASS) {
             printf("%s := %s\n", head->target, head->arg1);
         }else if (head->title == OPER){

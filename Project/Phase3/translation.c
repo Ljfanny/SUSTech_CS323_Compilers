@@ -830,11 +830,33 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
             printf("Error type 7 at Line %d: unmatching operands in while statement\n", exp->line);
             errorCnt++;
         }
+        int trueLabel = labelCnt;
+        int falseLabel = labelCnt + 1;
+        int len = 0;
+        labelCnt += 2;
+
+        char* trueTag = generateLabel(trueLabel);
+        curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
+        curTac = curTac->next;
+        curTac->title = WHILE;
+
+        char* falseTag = generateLabel(falseLabel);
+        curTac->next = newTac(falseTag, NULL, NULL, NULL);
+        curTac = curTac->next;
+        curTac->title = GOTO;
+
+        curTac->next = newTac(trueTag, NULL, NULL, NULL);
+        curTac = curTac->next;
+        curTac->title = LABEL;
         addLinkNode();
+        parseStmt(leftmost, stmt->children[4], returnValType);
+
+        curTac->next = newTac(falseTag, NULL, NULL, NULL);
+        curTac = curTac->next;
+        curTac->title = LABEL;
         //TODO: 此处递归调用在递归前就是LABEL laber? -> 也就是判断语句为true时的地址；
         //TODO: 递归结束后再输出LABEL label -> false情况下的地址；
         //这样写完就OK了~
-        parseStmt(leftmost, stmt->children[4], returnValType);
         freeLinkNode();
     }else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
         //BREAK SEMI
