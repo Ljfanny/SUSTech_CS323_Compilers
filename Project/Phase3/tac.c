@@ -30,7 +30,7 @@ void printTacs(Tac* head){
                 printf("%s %s:\n", titles[head->title], head->target);
             }else{
                 printf("%s %s\n", titles[head->title], head->target);
-                if (head->title == RETURN){ printf("\n"); }
+                if (head->title == RETURN && head->next != NULL){ printf("\n"); }
             }
         }else if(head->title == GOTO){
             printf("%s %s\n", titles[head->title], head->target);
