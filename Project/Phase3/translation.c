@@ -838,7 +838,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         char* trueTag = generateLabel(trueLabel);
         curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
         curTac = curTac->next;
-        curTac->title = WHILE;
+        curTac->title = IF;
 
         char* falseTag = generateLabel(falseLabel);
         curTac->next = newTac(falseTag, NULL, NULL, NULL);
@@ -851,6 +851,10 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         addLinkNode();
         parseStmt(leftmost, stmt->children[4], returnValType);
 
+        curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
+        curTac = curTac->next;
+        curTac->title = IF;
+
         curTac->next = newTac(falseTag, NULL, NULL, NULL);
         curTac = curTac->next;
         curTac->title = LABEL;
@@ -858,6 +862,13 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         //TODO: 递归结束后再输出LABEL label -> false情况下的地址；
         //这样写完就OK了~
         freeLinkNode();
+
+
+
+
+
+
+
     }else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
         //BREAK SEMI
         if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
