@@ -210,6 +210,14 @@ FieldList *parseDec(Node dec, Type *type) {
             printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n",
             exp->line);
             errorCnt++;
+        }else{
+            Hashmap* item = findHashmap(fieldList->name);
+            if (item != NULL)
+            {
+                curTac->next = newTac(item->value, NULL, expType->tag, NULL);
+                curTac = curTac->next;
+                curTac->title = ASS;
+            }
         }
     }
     return fieldList;
