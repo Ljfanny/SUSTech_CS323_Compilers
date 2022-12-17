@@ -1,0 +1,13 @@
+FUNCTION main :
+t0 := #0
+v0 := t0
+t1 := #1
+LABEL label0 :
+IF v0 < t1 GOTO label1
+GOTO label2
+LABEL label1 :
+t2 := v0 + t1
+v0 := t2
+GOTO label0
+LABEL label2 :
+RETURN v0
