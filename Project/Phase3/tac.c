@@ -41,7 +41,7 @@ void printTacs(Tac* head){
         }else if (head->title == OPER){
             printf("%s := %s %s %s\n", head->target, head->arg1, head->op, head->arg2);
         }else if(head->title == DEC){
-            
+            printf("%s %s %s\n", titles[head->title], head->arg1, head->arg2);
         }
         head = head->next;
     }
@@ -55,6 +55,17 @@ char* generateT(int t){
     int len = countLength(t) + 1;
     char* tag = (char*)malloc(sizeof(char) * len);
     strncpy(tag, target, len);
+    return tag;
+}
+
+char* generateV(int v){
+    char num[10] = {0};
+    itoa(v, num, 10);
+    char value[10] = "v";
+    strcat(value, num);
+    int len = countLength(v) + 1;
+    char* tag = (char*)malloc(sizeof(char) * len);
+    strncpy(tag, value, len);
     return tag;
 }
 

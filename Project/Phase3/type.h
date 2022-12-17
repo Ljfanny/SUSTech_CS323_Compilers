@@ -2,8 +2,9 @@
 #define _TYPE_DEFINITION
 
 typedef struct Type {
-    char* name;
+    int dec;
     char* tag;
+    char* name;
     enum { PRIMITIVE, ARRAY, STRUCTURE, FUNCTION } category;
     union {
         enum { TINT, TFLOAT, TCHAR } primitive;
@@ -23,8 +24,10 @@ typedef struct FieldList {
     struct FieldList *next;
 } FieldList;
 
-void deepcopyType(Type* dest, Type* sour);
+int deepcopyType(Type* dest, Type* sour);
 
-void deepcopyFieldList(FieldList* dest, FieldList* sour);
+int deepcopyFieldList(FieldList* dest, FieldList* sour);
+
+int deepcopyArray(Array* dest, Array* sour);
 
 #endif

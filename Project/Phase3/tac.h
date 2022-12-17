@@ -15,6 +15,8 @@ Tac * newTac(char* target, char* op, char* arg1, char* arg2);
 
 void printTacs(Tac* head);
 
+char* generateV(int v);
+
 char* generateT(int t);
 
 char* generateLabel(int lbl);

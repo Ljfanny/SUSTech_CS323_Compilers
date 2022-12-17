@@ -1,16 +1,29 @@
+struct Operands
+{
+    int o0;
+    int o1;
+    int o2;
+};
+
+struct Test{
+    int ttttt;
+    struct Operands oo;
+};
+
+int add(struct Operands temp)
+{
+    return (temp.o1 + temp.o2);
+}
+
 int main()
 {
-    int a, b, c;
-    int final = 0;
-    int n = 0;
-    int y;
-    y = -10;
-    a = 5;
-    b = a * a * (a + 2);
-    c = b / a + 1;
-    final = a + b - c * 3 + (b / a - 4);
-    if (n > 0) a = 0;
-    else if (n < 0) a = 1;
-    else a = 2;
-    return -10;
+    int n;
+    struct Operands op;
+    struct Test tt;
+    op.o1 = 1;
+    op.o2 = 2;
+    n = add(op);
+    write(n);
+    tt.oo.o2 = 4;
+    return 0;
 }

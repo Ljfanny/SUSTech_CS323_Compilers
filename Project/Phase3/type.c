@@ -3,9 +3,9 @@
 #include "stdlib.h"
 #include "string.h"
 
-void deepcopyType(Type* dest, Type* sour){
+int deepcopyType(Type* dest, Type* sour){
     if (sour == NULL){
-        return;
+        return 0;
     }
     if (sour->name != NULL && strlen(sour->name) > 0){
         dest->name = (char*)malloc(sizeof(char) * strlen(sour->name));
@@ -16,26 +16,59 @@ void deepcopyType(Type* dest, Type* sour){
         strncpy(dest->tag, sour->tag, strlen(sour->tag));
     }
     dest->category = sour->category;
+    dest->dec = sour->dec;
     if (dest->category == PRIMITIVE){
         dest->primitive = sour->primitive;
     }else if (dest->category == ARRAY){
         dest->array = (Array*)malloc(sizeof(Array));
-        dest->array->base = (Type*)malloc(sizeof(Type));
-        deepcopyType(dest->array->base, sour->array->base);
-        dest->array->size = sour->array->size;
+        int success = deepcopyArray(dest->array, sour->array);
+        if (!success){
+            free(dest->array);
+            dest->array = NULL;
+        }
     }else{
         dest->structure = (FieldList*)malloc(sizeof(FieldList));
-        deepcopyFieldList(dest->structure, sour->structure);
+        int success = deepcopyFieldList(dest->structure, sour->structure);
+        if (!success){
+            free(dest->structure);
+            dest->structure = NULL;
+        }
     }
+    return 1;
 }
 
-void deepcopyFieldList(FieldList* dest, FieldList* sour){
-    if (sour->name != NULL){
+int deepcopyFieldList(FieldList* dest, FieldList* sour){
+    if (sour == NULL){
+        return 0;
+    }
+    if (sour->name != NULL && strlen(sour->name) > 0){
         dest->name = (char*)malloc(sizeof(char) * strlen(sour->name));
         strncpy(dest->name, sour->name, strlen(sour->name));
     }
     dest->type = (Type*)malloc(sizeof(Type));
-    deepcopyType(dest->type, sour->type);
+    int success1 = deepcopyType(dest->type, sour->type);
+    if (!success1){
+        free(dest->type);
+        dest->type = NULL;
+    }
     dest->next = (FieldList*)malloc(sizeof(FieldList));
-    deepcopyFieldList(dest->next, sour->next);
+    int success2 = deepcopyFieldList(dest->next, sour->next);
+    if (!success2){
+        free(dest->next);
+        dest->next = NULL;
+    }
+    return 1;
+}
+
+int deepcopyArray(Array* dest, Array* sour){
+    if (sour == NULL){
+        return 0;
+    }
+    dest->size = sour->size;
+    dest->base = (Type*)malloc(sizeof(Type));
+    int success = deepcopyType(dest->base, sour->base);     
+    if (!success){
+        free(dest->base);
+        dest->base = NULL;
+    }
 }
