@@ -283,7 +283,7 @@ FieldList *parseVarDec(int isStructDef, int isFuncParam, Node varDec, Type *type
                 curTac = curTac->next;
                 curTac->title = PARAM;
             }else{
-                if (type->category == STRUCTURE || type->category == ARRAY){
+                if (type->category == STRUCTURE || field->type->category == ARRAY){
                     int len = countLength(field->type->dec);
                     char* arg2 = (char*)malloc(sizeof(char)*len);
                     itoa(field->type->dec, arg2, 10);
