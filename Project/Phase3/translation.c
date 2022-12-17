@@ -405,9 +405,13 @@ Type *parseExp(int isAss, Node exp) {
                 if (itml != NULL){
                     target = itml->value;
                 }
-                curTac->next = newTac(target, NULL, rightmostType->tag, NULL);
-                curTac = curTac->next;
-                curTac->title = ASS;
+                if (curTac->arg1 != NULL && curTac->arg2 != NULL && (!strcmp(target, curTac->arg1) || !strcmp(target, curTac->arg2))){
+                    curTac->target = target;
+                }else{
+                    curTac->next = newTac(target, NULL, rightmostType->tag, NULL);
+                    curTac = curTac->next;
+                    curTac->title = ASS;
+                }
             }
         }
         //Exp AND Exp
@@ -550,26 +554,36 @@ Type *parseExp(int isAss, Node exp) {
                 errorCnt++;
                 return NULL;
             }else{
-                int unit = leftmostType->array->base->dec;
-                // t? := unit * INT
-                char* decs = generateT(tCnt);
-                tCnt++;
-                char num[10] = {0};
-                char mrk[10] = "#";
-                int len = countLength(unit) + 1;
-                itoa(unit, num, 10);
-                strcat(mrk, num);
-                char* ost = (char*)malloc(sizeof(char)*len);
-                strncpy(ost, mrk, len);
-                curTac->next = newTac(decs, "*", rightmostType->tag, ost);
-                curTac = curTac->next;
-                curTac->title = OPER;
-                // t? := addr + decs
-                char* addr = generateT(tCnt);
-                tCnt++;
-                curTac->next = newTac(addr, "+", leftmostType->tag, decs);
-                curTac = curTac->next;
-                curTac->title = OPER;
+                char* addr = NULL;
+                if (rightmostType->tag[1] != '0'){
+                    int unit = leftmostType->array->base->dec;
+                    char* decs = NULL;
+                    char num[10] = {0};
+                    char mrk[10] = "#";
+                    int len = countLength(unit) + 1;
+                    itoa(unit, num, 10);
+                    strcat(mrk, num);
+                    char* ost = (char*)malloc(sizeof(char) * len);
+                    strncpy(ost, mrk, len);
+                    if (rightmostType->tag[1] == '1' && rightmostType->tag[2] == '\0'){
+                        decs = ost;
+                    }else{
+                        // t? := unit * INT
+                        decs = generateT(tCnt);
+                        tCnt++;
+                        curTac->next = newTac(decs, "*", rightmostType->tag, ost);
+                        curTac = curTac->next;
+                        curTac->title = OPER;
+                    }
+                    // t? := addr + decs
+                    addr = generateT(tCnt);
+                    tCnt++;
+                    curTac->next = newTac(addr, "+", leftmostType->tag, decs);
+                    curTac = curTac->next;
+                    curTac->title = OPER;
+                }else{
+                    addr = leftmostType->tag;
+                }
                 // t? := *addr
                 if(leftmostType->array->base->category == ARRAY){
                     leftmostType->array->base->tag = addr;
@@ -835,26 +849,26 @@ Type *parseExp(int isAss, Node exp) {
         }
     }else if(!strcmp(NDtypes[leftmost->type], "INT")){
         //INT
-        char arg1[10] = "#";
-        strcat(arg1, leftmost->value);
-        char* key = (char*)malloc(sizeof(char) * (strlen(leftmost->value) + 1));
-        strncpy(key, arg1, (strlen(leftmost->value) + 1));
+        char num[10] = "#";
+        strcat(num, leftmost->value);
         result = (Type*)malloc(sizeof(Type));
         result->category = PRIMITIVE;
         result->primitive = TINT;
-        Hashmap* item = findHashmap(arg1);
-        if (item == NULL){
-            result->tag = generateT(tCnt);
-            curTac->next = newTac(result->tag, NULL, key, NULL);
-            curTac = curTac->next;
-            curTac->title = ASS;
-            insertHashmap(key, result->tag);
-            printf("%s, %s\n", arg1, result->tag);
-            tCnt++;
-        }else{
-            result->tag = item->value;
-            printf("%s, %s\n", arg1, result->tag);
-        }
+        result->tag = (char*)malloc(sizeof(char) * (strlen(leftmost->value) + 1));
+        strncpy(result->tag, num, (strlen(leftmost->value) + 1));
+        // Hashmap* item = findHashmap(arg1);
+        // if (item == NULL){
+        //     result->tag = generateT(tCnt);
+        //     curTac->next = newTac(result->tag, NULL, key, NULL);
+        //     curTac = curTac->next;
+        //     curTac->title = ASS;
+        //     insertHashmap(key, result->tag);
+        //     printf("%s, %s\n", arg1, result->tag);
+        //     tCnt++;
+        // }else{
+        //     result->tag = item->value;
+        //     printf("%s, %s\n", arg1, result->tag);
+        // }
     }else if(!strcmp(NDtypes[leftmost->type], "FLOAT")){
         //FLOAT
         result = (Type*)malloc(sizeof(Type));

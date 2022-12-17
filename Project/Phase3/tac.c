@@ -20,33 +20,34 @@ Tac * newTac(char* target, char* op, char* arg1, char* arg2){
 
 void printTacs(Tac* head){
     head = head->next;
-    int line = 1;
+    int lines = 0;
     //preparation: t0 := #0, t1 := #1;
     while (head != NULL){
         if(head->title == FUNC || head->title ==  READ
         || head->title ==  WRITE || head->title == LABEL
         || head->title == RETURN || head->title == PARAM
         || head->title == ARG){
-            if(head->title == LABEL){
-                printf("%d %s %s:\n", line, titles[head->title], head->target);
+            if(head->title == LABEL || head->title == FUNC){
+                if(head->title == FUNC) { printf("\n"); }
+                printf("%s %s :\n", titles[head->title], head->target);
             }else{
-                printf("%d %s %s\n", line, titles[head->title], head->target);
-                if (head->title == RETURN && head->next != NULL){ printf("\n"); }
+                printf("%s %s\n", titles[head->title], head->target);
             }
         }else if(head->title == GOTO){
-            printf("%d %s %s\n", line, titles[head->title], head->target);
+            printf("%s %s\n", titles[head->title], head->target);
         }else if (head->title == IF){
-            printf("%d IF %s GOTO %s\n", line, head->arg1, head->target);
+            printf("IF %s GOTO %s\n", head->arg1, head->target);
         }else if(head->title == ASS) {
-            printf("%d %s := %s\n", line, head->target, head->arg1);
+            printf("%s := %s\n", head->target, head->arg1);
         }else if (head->title == OPER){
-            printf("%d %s := %s %s %s\n", line, head->target, head->arg1, head->op, head->arg2);
+            printf("%s := %s %s %s\n", head->target, head->arg1, head->op, head->arg2);
         }else if(head->title == DEC){
-            printf("%d %s %s %s\n", line, titles[head->title], head->arg1, head->arg2);
+            printf("%s %s %s\n", titles[head->title], head->arg1, head->arg2);
         }
+        lines++;
         head = head->next;
-        line++;
     }
+    printf("Total lines: %d\n", lines);
 }
 
 char* generateT(int t){
