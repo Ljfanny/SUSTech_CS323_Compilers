@@ -966,10 +966,18 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
             printf("Error type 7 at Line %d: unmatching operands in while statement\n", exp->line);
             errorCnt++;
         }
-        int trueLabel = labelCnt;
-        int falseLabel = labelCnt + 1;
+
+        int firstLabel = labelCnt;
+        int trueLabel = labelCnt + 1;
+        int falseLabel = labelCnt + 2;
         int len = 0;
-        labelCnt += 2;
+        labelCnt += 3;
+        //先来个标签
+
+        char* firstTag = generateLabel(firstLabel);
+        curTac->next = newTac(firstTag, NULL, NULL, NULL);
+        curTac = curTac->next;
+        curTac->title = LABEL;
 
         char* trueTag = generateLabel(trueLabel);
         curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
@@ -987,9 +995,9 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         addLinkNode();
         parseStmt(leftmost, stmt->children[4], returnValType);
 
-        curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
+        curTac->next = newTac(firstTag, NULL, NULL, NULL);
         curTac = curTac->next;
-        curTac->title = IF;
+        curTac->title = GOTO;
 
         curTac->next = newTac(falseTag, NULL, NULL, NULL);
         curTac = curTac->next;
