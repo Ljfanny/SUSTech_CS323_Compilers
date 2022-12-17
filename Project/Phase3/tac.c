@@ -20,6 +20,7 @@ Tac * newTac(char* target, char* op, char* arg1, char* arg2){
 
 void printTacs(Tac* head){
     head = head->next;
+    int line = 1;
     //preparation: t0 := #0, t1 := #1;
     while (head != NULL){
         if(head->title == FUNC || head->title ==  READ
@@ -27,23 +28,24 @@ void printTacs(Tac* head){
         || head->title == RETURN || head->title == PARAM
         || head->title == ARG){
             if(head->title == LABEL){
-                printf("%s %s:\n", titles[head->title], head->target);
+                printf("%d %s %s:\n", line, titles[head->title], head->target);
             }else{
-                printf("%s %s\n", titles[head->title], head->target);
+                printf("%d %s %s\n", line, titles[head->title], head->target);
                 if (head->title == RETURN && head->next != NULL){ printf("\n"); }
             }
         }else if(head->title == GOTO){
-            printf("%s %s\n", titles[head->title], head->target);
+            printf("%d %s %s\n", line, titles[head->title], head->target);
         }else if (head->title == IF){
-            printf("IF %s GOTO %s\n", head->arg1, head->target);
+            printf("%d IF %s GOTO %s\n", line, head->arg1, head->target);
         }else if(head->title == ASS) {
-            printf("%s := %s\n", head->target, head->arg1);
+            printf("%d %s := %s\n", line, head->target, head->arg1);
         }else if (head->title == OPER){
-            printf("%s := %s %s %s\n", head->target, head->arg1, head->op, head->arg2);
+            printf("%d %s := %s %s %s\n", line, head->target, head->arg1, head->op, head->arg2);
         }else if(head->title == DEC){
-            printf("%s %s %s\n", titles[head->title], head->arg1, head->arg2);
+            printf("%d %s %s %s\n", line, titles[head->title], head->arg1, head->arg2);
         }
         head = head->next;
+        line++;
     }
 }
 
