@@ -12,6 +12,15 @@ struct Test{
 
 int add(struct Operands temp)
 {
+    int aaa[3][4][5];
+    int a, b, c;
+    a = (1 > 0) ? b : c;
+    c = 10;
+    aaa[1][2][3] = 2;
+    while(--c)
+    {
+        write(c);
+    }
     return (temp.o1 + temp.o2);
 }
 

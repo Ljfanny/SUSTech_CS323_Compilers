@@ -28,13 +28,18 @@ void printTacs(Tac* head){
         || head->title == RETURN || head->title == PARAM
         || head->title == ARG){
             if(head->title == LABEL || head->title == FUNC){
-                if(head->title == FUNC) { printf("\n"); }
+                if(head->title == FUNC && lines > 0) { printf("\n"); }
                 printf("%s %s :\n", titles[head->title], head->target);
             }else{
                 printf("%s %s\n", titles[head->title], head->target);
             }
         }else if(head->title == GOTO){
             printf("%s %s\n", titles[head->title], head->target);
+            while (head != NULL && head->title == GOTO) {
+                head = head->next;
+            }
+            lines++;
+            continue;
         }else if (head->title == IF){
             printf("IF %s GOTO %s\n", head->arg1, head->target);
         }else if(head->title == ASS) {

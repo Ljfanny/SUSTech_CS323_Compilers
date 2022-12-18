@@ -15,7 +15,8 @@ char* NDtypes[] = { "TYPE", "INT", "FLOAT", "CHAR", "ID",
                     "BREAK", "CONTINUE",
                     "DOT", "SEMI", "COMMA", "ASSIGN", "QM", "COLON",
                     "LT", "LE", "GT", "GE", "NE", "EQ",
-                    "AND", "OR", "NOT", "PLUS", "MINUS", "MUL", "DIV",
+                    "AND", "OR", "NOT", "DMINUS",
+                    "PLUS", "MINUS", "MUL", "DIV",
                     "LP", "RP", "LB", "RB", "LC", "RC",
                     "Program", "ExtDefList", "ExtDef", "Specifier",
                     "ExtDecList", "StructSpecifier",
@@ -71,7 +72,7 @@ void parseExtDef(Node extDef) {
         if(funSymbol == NULL){
             insertSymbolEntry(funName, funDecType);
             addLinkNode();
-            parseCompSt(NULL, compSt, funDecType->structure->type);
+            parseCompSt(NULL, compSt, funDecType->structure->type, NULL, NULL);
             freeLinkNode();
         }else{
             printf("Error type 4 at Line %d: redefine function: %s\n",
@@ -117,7 +118,6 @@ Type *parseSpecifier(Node specifier) {
                 return NULL;
             }
             type = symbol->type;
-            //printf("%s\n", type->name);
         } 
         //STRUCT ID LC DefList RC
         else {
@@ -221,8 +221,7 @@ FieldList *parseDec(int isStructDef, Node dec, Type *type) {
             errorCnt++;
         }else{
             Hashmap* item = findHashmap(fieldList->name);
-            if (item != NULL)
-            {
+            if (item != NULL) {
                 curTac->next = newTac(item->value, NULL, expType->tag, NULL);
                 curTac = curTac->next;
                 curTac->title = ASS;
@@ -268,7 +267,6 @@ FieldList *parseVarDec(int isStructDef, int isFuncParam, Node varDec, Type *type
     field->type = endType;
     field->next = NULL;
     Symbol *symbol = findLocalSymbolEntry(tempNode->value);
-    //printf("%s\n", tempNode->value);
     if (symbol != NULL) {
         printf("Error type 3 at Line %d: redefine variable: %s\n",
         tempNode->line, symbol->identifier);
@@ -466,7 +464,6 @@ Type *parseExp(int isAss, Node exp) {
                 strcat(result->tag, leftmostType->tag);
                 strcat(result->tag, oper);
                 strcat(result->tag, rightmostType->tag);
-                printf("%s\n", result->tag);
             }
         }
         //Exp PLUS|MINUS|MUL|DIV Exp
@@ -512,34 +509,80 @@ Type *parseExp(int isAss, Node exp) {
                 }else{
                     result->tag = item->value;
                 }
-                printf("%s, %s\n", result->tag, key);
             }
+        }else if(!strcmp(NDtypes[operator->type],"DMINUS")){
+            //Exp DMINUS
+            Type* expType = parseExp(0, leftmost);
+            if (expType == NULL || expType->category != PRIMITIVE || expType->primitive != TINT){
+                errorCnt++;
+            }else{
+                curTac->next = newTac(expType->tag, "-", expType->tag, "#1");
+                curTac = curTac->next;
+                curTac->title = OPER;
+                result = (Type*)malloc(sizeof(Type));
+                deepcopyType(result, expType);
+                char* oper = " > ";
+                char* numb = "#0";
+                int len = strlen(expType->tag) + 5;
+                result->tag = (char*)malloc(sizeof(char) * len);
+                strcat(result->tag, expType->tag);
+                strcat(result->tag, oper);
+                strcat(result->tag, numb);
+            }          
         }else if(!strcmp(NDtypes[operator->type],"QM")){
             //Exp QM Exp COLON Exp
             Type *leftType = parseExp(0, leftmost);
             Type *midType = parseExp(0, rightmost);
             Type *rightType = parseExp(0, exp->children[4]);
-            result = midType;
+            result = NULL;
             if (leftType == NULL || leftType->category != PRIMITIVE || leftType->primitive != TINT){
                 printf("Error type 7 at Line %d: unmatching operands: ..error.. ? ... : ...\n", leftmost->line);
                 errorCnt++;
-                result = NULL;
             }
             if(midType == NULL){
                 printf("Error type 1 at Line %d: undefined variable: %s\n",
                 rightmost->line, rightmost->value);
                 errorCnt++;
-                result = NULL;
             }else if(rightType == NULL){
                 printf("Error type 1 at Line %d: undefined variable: %s\n",
                 exp->children[4]->line, exp->children[4]->value);
                 errorCnt++;
-                result = NULL;
             }
             if (!typecmp(midType, rightType) || midType->category == FUNCTION || midType->category == ARRAY){
                 printf("Error type 7 at Line %d: unmatching operands in sides of \':\'\n", leftmost->line);
                 errorCnt++;
-                result = NULL;
+            }else{
+                result = (Type*)malloc(sizeof(Type));
+                deepcopyType(result, midType);
+                int trueLabel = labelCnt;
+                int falseLabel = labelCnt + 1;
+                int len = 0;
+                labelCnt += 2;
+                //true condition
+                char* trueTag = generateLabel(trueLabel);
+                curTac->next = newTac(trueTag, NULL, leftType->tag, NULL);
+                curTac = curTac->next;
+                curTac->title = IF;
+                //false condition
+                char* falseTag = generateLabel(falseLabel);
+                curTac->next = newTac(falseTag, NULL, NULL, NULL);
+                curTac = curTac->next;
+                curTac->title = GOTO;
+                //true label
+                result->tag = generateT(tCnt); tCnt++;
+                curTac->next = newTac(trueTag, NULL, NULL, NULL);
+                curTac = curTac->next;
+                curTac->title = LABEL;
+                curTac->next = newTac(result->tag, NULL, midType->tag, NULL);
+                curTac = curTac->next;
+                curTac->title = ASS;
+                //false label
+                curTac->next = newTac(falseTag, NULL, NULL, NULL);
+                curTac = curTac->next;
+                curTac->title = LABEL;
+                curTac->next = newTac(result->tag, NULL, rightType->tag, NULL);
+                curTac = curTac->next;
+                curTac->title = ASS;
             }
         }else if(!strcmp(NDtypes[operator->type], "LB")){
             //Exp LB Exp RB
@@ -709,6 +752,26 @@ Type *parseExp(int isAss, Node exp) {
             }
         }
     }
+    //DMINUS Exp
+    else if (!strcmp(NDtypes[leftmost->type],"DMINUS")) {
+        Type* expType = parseExp(0, exp->children[1]);
+        if (expType == NULL || expType->category != PRIMITIVE || expType->primitive != TINT){
+            errorCnt++;
+        }else{
+            curTac->next = newTac(expType->tag, "-", expType->tag, "#1");
+            curTac = curTac->next;
+            curTac->title = OPER;
+            result = (Type*)malloc(sizeof(Type));
+            deepcopyType(result, expType);
+            char* oper = " > ";
+            char* numb = "#0";
+            int len = strlen(expType->tag) + 5;
+            result->tag = (char*)malloc(sizeof(char) * len);
+            strcat(result->tag, expType->tag);
+            strcat(result->tag, oper);
+            strcat(result->tag, numb);
+        }    
+    }
     //NOT Exp
     else if(!strcmp(NDtypes[leftmost->type],"NOT")){
         Type *leftmostType = parseExp(0, exp->children[1]);
@@ -856,19 +919,6 @@ Type *parseExp(int isAss, Node exp) {
         result->primitive = TINT;
         result->tag = (char*)malloc(sizeof(char) * (strlen(leftmost->value) + 1));
         strncpy(result->tag, num, (strlen(leftmost->value) + 1));
-        // Hashmap* item = findHashmap(arg1);
-        // if (item == NULL){
-        //     result->tag = generateT(tCnt);
-        //     curTac->next = newTac(result->tag, NULL, key, NULL);
-        //     curTac = curTac->next;
-        //     curTac->title = ASS;
-        //     insertHashmap(key, result->tag);
-        //     printf("%s, %s\n", arg1, result->tag);
-        //     tCnt++;
-        // }else{
-        //     result->tag = item->value;
-        //     printf("%s, %s\n", arg1, result->tag);
-        // }
     }else if(!strcmp(NDtypes[leftmost->type], "FLOAT")){
         //FLOAT
         result = (Type*)malloc(sizeof(Type));
@@ -883,23 +933,23 @@ Type *parseExp(int isAss, Node exp) {
     return result; 
 }
 
-void parseCompSt(Node prev, Node compSt, Type* returnValType){
+void parseCompSt(Node prev, Node compSt, Type* returnValType, char* ttag, char* ftag){
     //CompSt: LC DefList StmtList RC
     FieldList * defListFieldList = parseDefList(0, compSt->children[1], NULL);
-    parseStmtList(prev, compSt->children[2], returnValType);
+    parseStmtList(prev, compSt->children[2], returnValType, ttag, ftag);
 }
 
-void parseStmtList(Node prev, Node stmtList, Type* returnValType){
+void parseStmtList(Node prev, Node stmtList, Type* returnValType, char* ttag, char* ftag){
     //StmtList: Stmt StmtList
     //         |NULL
     if(stmtList == NULL){
         return;
     }
-    parseStmt(prev, stmtList->children[0], returnValType);
-    parseStmtList(prev, stmtList->children[1], returnValType);
+    parseStmt(prev, stmtList->children[0], returnValType, ttag, ftag);
+    parseStmtList(prev, stmtList->children[1], returnValType, ttag, ftag);
 }
 
-void parseStmt(Node prev, Node stmt, Type * returnValType){
+void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* ftag){
     //Stmt: Exp SEMI
     //     |CompSt
     //     |RETURN Exp SEMI
@@ -909,7 +959,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
     if (!strcmp(NDtypes[leftmost->type],"Exp")){
         parseExp(0, leftmost);
     }else if(!strcmp(NDtypes[leftmost->type],"CompSt")){
-        parseCompSt(prev, leftmost, returnValType);
+        parseCompSt(prev, leftmost, returnValType, ttag, ftag);
     }else if(!strcmp(NDtypes[leftmost->type],"RETURN")){
         Node exp = stmt->children[1];
         Type* expType = parseExp(0, exp);
@@ -958,7 +1008,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         curTac = curTac->next;
         curTac->title = LABEL;
         addLinkNode();
-        parseStmt(prev, stmt->children[4], returnValType);
+        parseStmt(prev, stmt->children[4], returnValType, ttag, ftag);
         //false label
         curTac->next = newTac(falseTag, NULL, NULL, NULL);
         curTac = curTac->next;
@@ -966,53 +1016,43 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         freeLinkNode();
         if (stmt->number == 7){
             addLinkNode();
-            parseStmt(prev, stmt->children[6], returnValType);
+            parseStmt(prev, stmt->children[6], returnValType, ttag, ftag);
             freeLinkNode();
         }
     }else if(!strcmp(NDtypes[leftmost->type],"WHILE")){
         //|WHILE LP Exp RP Stmt
         Node exp = stmt->children[2];
-        Type* expType = parseExp(0, exp);
-        if (expType == NULL){
-            return;
-        }
-        if(expType->category != PRIMITIVE || expType->primitive != TINT){
-            printf("Error type 7 at Line %d: unmatching operands in while statement\n", exp->line);
-            errorCnt++;
-        }
-
         int firstLabel = labelCnt;
         int trueLabel = labelCnt + 1;
         int falseLabel = labelCnt + 2;
         int len = 0;
         labelCnt += 3;
-        //先来个标签
-
         char* firstTag = generateLabel(firstLabel);
         curTac->next = newTac(firstTag, NULL, NULL, NULL);
         curTac = curTac->next;
         curTac->title = LABEL;
-
+        Type* expType = parseExp(0, exp);
+        if (expType == NULL) return;
+        if(expType->category != PRIMITIVE || expType->primitive != TINT){
+            printf("Error type 7 at Line %d: unmatching operands in while statement\n", exp->line);
+            errorCnt++;
+        }
         char* trueTag = generateLabel(trueLabel);
         curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
         curTac = curTac->next;
         curTac->title = IF;
-
         char* falseTag = generateLabel(falseLabel);
         curTac->next = newTac(falseTag, NULL, NULL, NULL);
         curTac = curTac->next;
         curTac->title = GOTO;
-
         curTac->next = newTac(trueTag, NULL, NULL, NULL);
         curTac = curTac->next;
         curTac->title = LABEL;
         addLinkNode();
-        parseStmt(leftmost, stmt->children[4], returnValType);
-
+        parseStmt(leftmost, stmt->children[4], returnValType, firstTag, falseTag);
         curTac->next = newTac(firstTag, NULL, NULL, NULL);
         curTac = curTac->next;
         curTac->title = GOTO;
-
         curTac->next = newTac(falseTag, NULL, NULL, NULL);
         curTac = curTac->next;
         curTac->title = LABEL;
@@ -1022,12 +1062,20 @@ void parseStmt(Node prev, Node stmt, Type * returnValType){
         if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
             printf("Error type 18 at Line %d: improper break\n", leftmost->line);
             errorCnt++;
+        }else{
+            curTac->next = newTac(ftag, NULL, NULL, NULL);
+            curTac = curTac->next;
+            curTac->title = GOTO;
         }
     }else if (!strcmp(NDtypes[leftmost->type],"CONTINUE")){
         //CONTINUE SEMI
         if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
             printf("Error type 19 at Line %d: improper continue\n", leftmost->line);
             errorCnt++;
+        }else{
+            curTac->next = newTac(ttag, NULL, NULL, NULL);
+            curTac = curTac->next;
+            curTac->title = GOTO;
         }
     }
 }
@@ -1142,29 +1190,29 @@ void addWriteFunc(){
     insertSymbolEntry("write", writeFunc);
 }
 
-char* itoa(int num,char* str,int radix)
+char* itoa(int num, char* str, int radix)
 {
-    char index[]="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    char index[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     unsigned unum;
-    int i=0,j,k;
-    if(radix==10&&num<0){
-        unum=(unsigned)-num;
-        str[i++]='-';
+    int i = 0, j, k;
+    if(radix == 10 && num < 0){
+        unum = (unsigned)-num;
+        str[i++] = '-';
     }
-    else unum=(unsigned)num;
+    else unum = (unsigned)num;
     do{
-        str[i++]=index[unum%(unsigned)radix];
-        unum/=radix;
+        str[i++] = index[unum%(unsigned)radix];
+        unum /= radix;
  
     }while(unum);
-    str[i]='\0';
-    if(str[0]=='-') k=1;
-    else k=0;
+    str[i] = '\0';
+    if(str[0] == '-') k = 1;
+    else k = 0;
     char temp;
-    for(j=k;j<=(i-1)/2;j++){
-        temp=str[j];
-        str[j]=str[i-1+k-j];
-        str[i-1+k-j]=temp;
+    for(j = k;j <= (i - 1) / 2;j++){
+        temp = str[j];
+        str[j] = str[i - 1 + k - j];
+        str[i - 1 + k - j] = temp;
     }
     return str;
 }

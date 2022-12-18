@@ -10,7 +10,7 @@
         STRUCt, If, WHILe, ELSe, RETURn, BREAk, CONTINUe,
         DOt, SEMi, COMMa, ASSIGn, Qm, COLOn,
         Lt, Le, Gt, Ge, Ne, Eq,
-        ANd, Or, NOt,
+        ANd, Or, NOt, DMINUs,
         PLUs, MINUs, MUl, DIv,
         Lp, Rp, Lb, Rb, Lc, Rc
     };
@@ -65,6 +65,7 @@ CHAR_ERROR '\\x[0-9a-zA-Z]*'
 "&&" {yylval = newNodeTER(ANd,yylineno); return AND;}
 "||" {yylval = newNodeTER(Or,yylineno); return OR;}
 "!" {yylval = newNodeTER(NOt,yylineno); return NOT;}
+"--" {yylval = newNodeTER(DMINUs,yylineno); return DMINUS;}
 "+" {yylval = newNodeTER(PLUs,yylineno); return PLUS;}
 "-" {yylval = newNodeTER(MINUs,yylineno); return MINUS;}
 "*" {yylval = newNodeTER(MUl,yylineno); return MUL;}
