@@ -15,20 +15,17 @@ t3 := #1 + v5
 t4 := t3 - v5
 v6 := t4
 LABEL label0 :
-t5 := v6 - v6
-t6 := t5 + #90
-t7 := t6 - #89
-t8 := t7 + #1
-t9 := t8 - #2
-IF v5 > t9 GOTO label1
+t5 := #0 + #90
+t6 := t5 - #89
+t7 := t6 + #1
+t8 := t7 - #2
+IF v5 > t8 GOTO label1
 GOTO label2
 LABEL label1 :
 v6 := v6 * v4
-t11 := #2 * #1
-t12 := t11 * v5
-t13 := #1 * v5
-t14 := t12 - t13
-v5 := t14 - #1
+t10 := #2 * v5
+t11 := t10 - v5
+v5 := t11 - #1
 GOTO label0
 LABEL label2 :
 RETURN v6
@@ -39,8 +36,8 @@ v8 := #0
 IF v7 < #0 GOTO label3
 GOTO label4
 LABEL label3 :
-t16 := #0 - #1
-RETURN t16
+t13 := #0 - #1
+RETURN t13
 LABEL label4 :
 LABEL label5 :
 IF v7 > #0 GOTO label6
@@ -56,11 +53,11 @@ RETURN v8
 
 FUNC isNarcissistic :
 PARAM v9
-t21 := #1 + v9
-t22 := t21 - #1
-ARG t22
-t23 := CALL getNumDigits
-v10 := t23
+t18 := #1 + v9
+t19 := t18 - #1
+ARG t19
+t20 := CALL getNumDigits
+v10 := t20
 v11 := #0
 v12 := v9
 LABEL label8 :
@@ -70,12 +67,12 @@ LABEL label9 :
 ARG #10
 ARG v12
 v13 := CALL mod
-t25 := v12 - v13
-v12 := t25 / #10
+t22 := v12 - v13
+v12 := t22 / #10
 ARG v10
 ARG v13
-t27 := CALL power
-v11 := v11 + t27
+t24 := CALL power
+v11 := v11 + t24
 GOTO label8
 LABEL label10 :
 IF v11 == v9 GOTO label11
@@ -93,8 +90,8 @@ IF v15 < #500 GOTO label14
 GOTO label15
 LABEL label14 :
 ARG v15
-t29 := CALL isNarcissistic
-IF t29 == #1 GOTO label16
+t26 := CALL isNarcissistic
+IF t26 == #1 GOTO label16
 GOTO label17
 LABEL label16 :
 WRITE v15
@@ -105,4 +102,4 @@ GOTO label13
 LABEL label15 :
 WRITE v14
 RETURN v14
-Total lines: 103
+Total lines: 100

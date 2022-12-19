@@ -531,6 +531,26 @@ Type *parseExp(int isAss, Node exp) {
                 }else{
                     irop = "/";
                 }
+                if (irop[0] == '*'){
+                    if (!strcmp(rightmostType->tag, "#1")){
+                        result->tag = (char*)malloc(sizeof(char)*strlen(leftmostType->tag));
+                        strcpy(result->tag, leftmostType->tag);
+                        return result;
+                    }else if (!strcmp(leftmostType->tag, "#1")){
+                        result->tag = (char*)malloc(sizeof(char)*strlen(rightmostType->tag));
+                        strcpy(result->tag, rightmostType->tag);
+                        return result;
+                    }
+                }else if (irop[0] == '/'){
+                    if (!strcmp(rightmostType->tag, "#1")){
+                        result->tag = (char*)malloc(sizeof(char)*strlen(leftmostType->tag));
+                        strcpy(result->tag, leftmostType->tag);
+                        return result;
+                    }
+                }else if (irop[0] == '-' && !strcmp(leftmostType->tag, rightmostType->tag)){
+                    result->tag = "#0";
+                    return result;
+                }
                 result->tag = generateT(tCnt);
                 curTac-> next = newTac(result->tag, irop, leftmostType->tag, rightmostType->tag);
                 curTac = curTac->next;
