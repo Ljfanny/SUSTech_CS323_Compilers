@@ -9,6 +9,8 @@
 
 Tac* head = NULL;
 Tac* curTac = NULL;
+char* onetag;
+char* zerotag;
 int errorCnt, labelCnt, vCnt, tCnt;
 char* NDtypes[] = { "TYPE", "INT", "FLOAT", "CHAR", "ID",
                     "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
@@ -29,6 +31,8 @@ void parseProgram(Node program) {
     labelCnt = 0;
     vCnt = 0;
     tCnt = 0;
+    onetag = NULL;
+    zerotag = NULL;
     initializeScope();
     //initializeHashmap();
     addReadFunc();
@@ -228,9 +232,6 @@ FieldList *parseDec(int isStructDef, Node dec, Type *type) {
             }
         }
     }
-    if (isStructDef){
-        fieldList->type->dec = type->dec;
-    }
     return fieldList;
 }
 
@@ -296,7 +297,6 @@ FieldList *parseVarDec(int isStructDef, int isFuncParam, Node varDec, Type *type
                 }
             }
             insertHashmap(field->name, field->type->tag);
-            //printf("%s, %s\n", field->name, field->type->tag);
         }    
         insertSymbolEntry(field->name, field->type);
     }
@@ -308,7 +308,6 @@ FieldList *parseVarList(Node varList) {
     //        |ParamDec
     Node paramDec = varList->children[0];
     FieldList *varFieldList = parseParamDec(paramDec);
-    //ParamDec
     if (varList->number == 1){
         return varFieldList;
     }
@@ -376,7 +375,6 @@ Type* parseFunDec(Node funDec, Type *type) {
 Type *parseExp(int isAss, Node exp) {
     Node leftmost = exp->children[0];
     Type *result = NULL;
-    //leftmost is Exp
     if (!strcmp(NDtypes[leftmost->type], "Exp")) {
         Node operator = exp->children[1];
         Node rightmost = exp->children[2];
@@ -403,7 +401,7 @@ Type *parseExp(int isAss, Node exp) {
                 if (itml != NULL){
                     target = itml->value;
                 }
-                if (curTac->arg1 != NULL && curTac->arg2 != NULL && (!strcmp(target, curTac->arg1) || !strcmp(target, curTac->arg2))){
+                if (!strcmp(curTac->target, rightmostType->tag)){
                     curTac->target = target;
                 }else{
                     curTac->next = newTac(target, NULL, rightmostType->tag, NULL);
@@ -418,7 +416,59 @@ Type *parseExp(int isAss, Node exp) {
             Type *leftmostType = parseExp(0, leftmost);
             Type *rightmostType = parseExp(0, rightmost);
             if (typecmp(leftmostType, rightmostType) && leftmostType->category == PRIMITIVE && leftmostType->primitive == TINT){
-                result = leftmostType;
+                result = (Type*)malloc(sizeof(Type));
+                result->category = PRIMITIVE;
+                result->primitive = TINT;
+                int isAnd = !strcmp(NDtypes[operator->type],"AND")? 1 : 0;
+                if (isAnd){
+                    int otagll = labelCnt;
+                    int ztagl = labelCnt + 1;
+                    int otagrl = labelCnt + 2;
+                    labelCnt += 3;
+                    char* tmpTag = generateLabel(otagll);
+                    char* otag = generateLabel(otagrl);
+                    char* ztag = generateLabel(ztagl);
+                    curTac->next = newTac(tmpTag, NULL, leftmostType->tag, NULL);
+                    curTac = curTac->next; curTac->title = IF;
+                    curTac->next = newTac(ztag, NULL, NULL, NULL);
+                    curTac = curTac->next; curTac->title = GOTO;
+                    curTac->next = newTac(tmpTag, NULL, NULL, NULL);
+                    curTac = curTac->next; curTac->title = LABEL;
+                    curTac->next = newTac(otag, NULL, rightmostType->tag, NULL);
+                    curTac = curTac->next; curTac->title = IF;
+                    curTac->next = newTac(ztag, NULL, NULL, NULL);
+                    curTac = curTac->next; curTac->title = GOTO;
+                    if(onetag != NULL) free(onetag);
+                    if(zerotag != NULL) free(zerotag);
+                    onetag = (char*)malloc(sizeof(char) * strlen(otag));
+                    strcpy(onetag, otag);
+                    zerotag = (char*)malloc(sizeof(char) * strlen(ztag));
+                    strcpy(zerotag, ztag);
+                }else{
+                    int otagl = labelCnt;
+                    int ztagll = labelCnt + 1;
+                    int ztagrl = labelCnt + 2;
+                    labelCnt += 3;
+                    char* tmpTag = generateLabel(ztagll);
+                    char* otag = generateLabel(otagl);
+                    char* ztag = generateLabel(ztagrl);
+                    curTac->next = newTac(otag, NULL, leftmostType->tag, NULL);
+                    curTac = curTac->next; curTac->title = IF;
+                    curTac->next = newTac(tmpTag, NULL, NULL, NULL);
+                    curTac = curTac->next; curTac->title = GOTO;
+                    curTac->next = newTac(tmpTag, NULL, NULL, NULL);
+                    curTac = curTac->next; curTac->title = LABEL;
+                    curTac->next = newTac(otag, NULL, rightmostType->tag, NULL);
+                    curTac = curTac->next; curTac->title = IF;
+                    curTac->next = newTac(ztag, NULL, NULL, NULL);
+                    curTac = curTac->next; curTac->title = GOTO;
+                    if(onetag != NULL) free(onetag);
+                    if(zerotag != NULL) free(zerotag);
+                    onetag = (char*)malloc(sizeof(char) * strlen(otag));
+                    strcpy(onetag, otag);
+                    zerotag = (char*)malloc(sizeof(char) * strlen(ztag));
+                    strcpy(zerotag, ztag);
+                }
             }else{
                 printf("Error type 7 at Line %d: unmatching operands: %s\n", leftmost->line, NDtypes[operator->type]);
                 errorCnt++;
@@ -441,25 +491,12 @@ Type *parseExp(int isAss, Node exp) {
                 result->primitive = TINT;
                 int len = strlen(leftmostType->tag) + strlen(rightmostType->tag);
                 char* oper = NULL;
-                if(!strcmp(NDtypes[operator->type],"LT")){
-                    len += 3;
-                    oper = " < ";
-                }else if (!strcmp(NDtypes[operator->type],"LE")){
-                    len += 4;
-                    oper = " <= ";
-                }else if (!strcmp(NDtypes[operator->type],"GT")){
-                    len += 3;
-                    oper = " > ";
-                }else if (!strcmp(NDtypes[operator->type],"GE")){
-                    len += 4;
-                    oper = " >= ";
-                }else if (!strcmp(NDtypes[operator->type],"NE")){
-                    len += 4;
-                    oper = " != ";
-                }else{
-                    len += 4;
-                    oper = " == ";
-                }
+                if(!strcmp(NDtypes[operator->type],"LT")){ len += 3; oper = " < ";
+                }else if (!strcmp(NDtypes[operator->type],"LE")){ len += 4; oper = " <= ";
+                }else if (!strcmp(NDtypes[operator->type],"GT")){ len += 3; oper = " > ";
+                }else if (!strcmp(NDtypes[operator->type],"GE")){ len += 4; oper = " >= ";
+                }else if (!strcmp(NDtypes[operator->type],"NE")){ len += 4; oper = " != ";
+                }else{ len += 4; oper = " == "; }
                 result->tag = (char*)malloc(sizeof(char) * len);
                 strcat(result->tag, leftmostType->tag);
                 strcat(result->tag, oper);
@@ -484,31 +521,21 @@ Type *parseExp(int isAss, Node exp) {
                 }else{
                     result->primitive = TINT;
                 }
-                char* oper = NULL;
+                char* irop = NULL;
                 if (!strcmp(NDtypes[operator->type],"PLUS")){
-                    oper = "+";
+                    irop = "+";
                 }else if (!strcmp(NDtypes[operator->type],"MINUS")){
-                    oper =  "-";
+                    irop = "-";
                 }else if (!strcmp(NDtypes[operator->type],"MUL")){
-                    oper = "*";
+                    irop = "*";
                 }else{
-                    oper = "/";
+                    irop = "/";
                 }
-                char* key = (char*)malloc(sizeof(char) * (strlen(leftmostType->tag) + strlen(rightmostType->tag) + 1));
-                strcat(key, leftmostType->tag);
-                strcat(key, oper);
-                strcat(key, rightmostType->tag);
-                Hashmap* item = findHashmap(key);
-                if(item == NULL){
-                    result->tag = generateT(tCnt);
-                    curTac-> next = newTac(result->tag, oper, leftmostType->tag, rightmostType->tag);
-                    curTac = curTac->next;
-                    curTac->title = OPER;
-                    insertHashmap(key, result->tag);
-                    tCnt++;
-                }else{
-                    result->tag = item->value;
-                }
+                result->tag = generateT(tCnt);
+                curTac-> next = newTac(result->tag, irop, leftmostType->tag, rightmostType->tag);
+                curTac = curTac->next;
+                curTac->title = OPER;
+                tCnt++;
             }
         }else if(!strcmp(NDtypes[operator->type],"DMINUS")){
             //Exp DMINUS
@@ -586,8 +613,8 @@ Type *parseExp(int isAss, Node exp) {
             }
         }else if(!strcmp(NDtypes[operator->type], "LB")){
             //Exp LB Exp RB
-            Type *leftmostType = parseExp(0, leftmost);
-            Type *rightmostType = parseExp(0, rightmost);
+            Type *leftmostType = parseExp(isAss, leftmost);
+            Type *rightmostType = parseExp(isAss, rightmost);
             if (leftmostType == NULL || leftmostType->category != ARRAY){
                 printf("Error type 10 at Line %d: indexing on non-array variable\n", leftmost->line);
                 errorCnt++;
@@ -597,8 +624,11 @@ Type *parseExp(int isAss, Node exp) {
                 errorCnt++;
                 return NULL;
             }else{
+                result = (Type*)malloc(sizeof(Type));
+                deepcopyType(result, leftmostType->array->base);
                 char* addr = NULL;
-                if (rightmostType->tag[1] != '0'){
+                if ((rightmostType->tag[0] == '#' && rightmostType->tag[1] != '0')
+                || rightmostType->tag[0] == 'v'){
                     int unit = leftmostType->array->base->dec;
                     char* decs = NULL;
                     char num[10] = {0};
@@ -608,7 +638,9 @@ Type *parseExp(int isAss, Node exp) {
                     strcat(mrk, num);
                     char* ost = (char*)malloc(sizeof(char) * len);
                     strncpy(ost, mrk, len);
-                    if (rightmostType->tag[1] == '1' && rightmostType->tag[2] == '\0'){
+                    if (rightmostType->tag[0] == '#' 
+                    && rightmostType->tag[1] == '1'
+                    && rightmostType->tag[2] == '\0'){
                         decs = ost;
                     }else{
                         // t? := unit * INT
@@ -628,26 +660,25 @@ Type *parseExp(int isAss, Node exp) {
                     addr = leftmostType->tag;
                 }
                 // t? := *addr
-                if(leftmostType->array->base->category == ARRAY){
-                    leftmostType->array->base->tag = addr;
+                if(result->category == ARRAY || result->category == STRUCTURE){
+                    result->tag = addr;
                 }else{
-                    leftmostType->array->base->tag = generateT(tCnt);
+                    result->tag = generateT(tCnt);
                     tCnt++;
                     char* val = (char*)malloc(sizeof(char)*(strlen(addr) + 1));
                     strcat(val, "*");
                     strcat(val, addr);
-                    insertHashmap(leftmostType->array->base->tag, val);
+                    insertHashmap(result->tag, val);
                     if (!isAss) {
-                        curTac->next = newTac(leftmostType->array->base->tag, NULL, val, NULL);
+                        curTac->next = newTac(result->tag, NULL, val, NULL);
                         curTac = curTac->next;
                         curTac->title = ASS;
                     }
                 }
-                result = leftmostType->array->base;
             }
         }else if(!strcmp(NDtypes[operator->type], "DOT")){
             //Exp DOT ID
-            Type *leftmostType = parseExp(0, leftmost);
+            Type *leftmostType = parseExp(isAss, leftmost);
             if (leftmostType == NULL || leftmostType->category != STRUCTURE){
                 printf("Error type 13 at Line %d: accessing with non-structure variable\n",
                 leftmost->line);
@@ -660,6 +691,8 @@ Type *parseExp(int isAss, Node exp) {
                 while(tmp != NULL){
                     if(!strcmp(tmp->name, rightmost->value)){
                         isError = 1;
+                        result = (Type*)malloc(sizeof(Type));
+                        deepcopyType(result, tmp->type);
                         char* addr = NULL;
                         if (tmp->type->tag == NULL || strlen(tmp->type->tag) == 0){
                             if (offset > 0){
@@ -688,17 +721,17 @@ Type *parseExp(int isAss, Node exp) {
                                 addr = leftmostType->tag;
                             }
                             // t? := *addr
-                            if (tmp->type->category == STRUCTURE){
-                                tmp->type->tag = addr;
+                            if (tmp->type->category == STRUCTURE || tmp->type->category == ARRAY){
+                                result->tag = addr;
                             }else{
-                                tmp->type->tag = generateT(tCnt);
+                                result->tag = generateT(tCnt);
                                 tCnt++;
                                 char* val = (char*)malloc(sizeof(char)*(strlen(addr) + 1));
                                 strcat(val, "*");
                                 strcat(val, addr);
-                                insertHashmap(tmp->type->tag, val);
+                                insertHashmap(result->tag, val);
                                 if (!isAss) {
-                                    curTac->next = newTac(tmp->type->tag, NULL, val, NULL);
+                                    curTac->next = newTac(result->tag, NULL, val, NULL);
                                     curTac = curTac->next;
                                     curTac->title = ASS;
                                 }
@@ -707,15 +740,12 @@ Type *parseExp(int isAss, Node exp) {
                         break;
                     }
                     offset += tmp->type->dec;
-                    printf("offset: %d\n", offset);
                     tmp = tmp->next;
                 }
                 if (!isError){
                     printf("Error type 14 at Line %d: no such member: %s\n", 
                     leftmost->line, rightmost->value);
                     errorCnt++;
-                }else{
-                    result = tmp->type;
                 }
             }
         }
@@ -780,7 +810,28 @@ Type *parseExp(int isAss, Node exp) {
             leftmost->line);
             errorCnt++;
         }else{
-            result = leftmostType;
+            result = (Type*)malloc(sizeof(Type));
+            result->category = PRIMITIVE;
+            result->primitive = TINT;
+            int len = strlen(leftmostType->tag);
+            result->tag = (char*)malloc(sizeof(char) * len);
+            for (size_t i = 0; i < len; i++){
+                if (!strncmp(leftmostType->tag + i, "!=", 2)){
+                    result->tag[i] = '=';
+                    result->tag[i + 1] = '=';
+                    i++;
+                }else if (!strncmp(leftmostType->tag + i, "==", 2)){
+                    result->tag[i] = '!';
+                    result->tag[i + 1] = '=';
+                    i++;
+                }else if (!strncmp(leftmostType->tag + i, ">", 1)){
+                    result->tag[i] = '<';
+                }else if (!strncmp(leftmostType->tag + i, "<", 1)){
+                    result->tag[i] = '>';
+                }else{
+                    result->tag[i] = leftmostType->tag[i];
+                }
+            }
         }
     }
     //ID LP Args RP
@@ -858,13 +909,11 @@ Type *parseExp(int isAss, Node exp) {
                     }
                     if(!strcmp(tmpFuncType->structure->name, "write")){
                         curTac->next = newTac(fir->tag, NULL, NULL, NULL);
-                        curTac = curTac->next;
-                        curTac->title = WRITE;
+                        curTac = curTac->next; curTac->title = WRITE;
                     }else{
                         while (fir != NULL){
                             curTac->next = newTac(fir->tag, NULL, NULL, NULL);
-                            curTac = curTac->next;
-                            curTac->title = ARG;
+                            curTac = curTac->next; curTac->title = ARG;
                             fir = fir->prev;
                         }
                         result->tag = generateT(tCnt);
@@ -875,7 +924,6 @@ Type *parseExp(int isAss, Node exp) {
                         curTac->next = newTac(result->tag, NULL, arg1, NULL);
                         curTac = curTac->next;
                         curTac->title = ASS;
-                        printf("%s, %s\n", result->tag, arg1);
                         tCnt++;
                     }
                 }
@@ -982,38 +1030,48 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
         //|IF LP Exp RP Stmt ELSE Stmt
         Node exp = stmt->children[2];
         Type* expType = parseExp(0, exp);
-        if (expType == NULL){
-            return;
-        }
+        if (expType == NULL) return;
         if(expType->category != PRIMITIVE || expType->primitive != TINT){
             printf("Error type 7 at Line %d: unmatching operands in if statement\n", exp->line);
             errorCnt++;
         }
-        int trueLabel = labelCnt;
-        int falseLabel = labelCnt + 1;
-        int len = 0;
-        labelCnt += 2;
-        //true condition
-        char* trueTag = generateLabel(trueLabel);
-        curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
-        curTac = curTac->next;
-        curTac->title = IF;
-        //false condition
-        char* falseTag = generateLabel(falseLabel);
-        curTac->next = newTac(falseTag, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = GOTO;
-        //true label
-        curTac->next = newTac(trueTag, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = LABEL;
-        addLinkNode();
-        parseStmt(prev, stmt->children[4], returnValType, ttag, ftag);
-        //false label
-        curTac->next = newTac(falseTag, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = LABEL;
-        freeLinkNode();
+        if (expType->tag != NULL && strlen(expType->tag) > 0) {
+            int trueLabel = labelCnt;
+            int falseLabel = labelCnt + 1;
+            int len = 0;
+            labelCnt += 2;
+            //true condition
+            char* trueTag = generateLabel(trueLabel);
+            curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
+            curTac = curTac->next; curTac->title = IF;
+            //false condition
+            char* falseTag = generateLabel(falseLabel);
+            curTac->next = newTac(falseTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = GOTO;
+            //true label
+            curTac->next = newTac(trueTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            addLinkNode();
+            parseStmt(prev, stmt->children[4], returnValType, ttag, ftag);
+            //false label
+            curTac->next = newTac(falseTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            freeLinkNode();
+        }else{
+            //true label
+            char* otag = (char*)malloc(sizeof(char) * strlen(onetag));
+            char* ztag = (char*)malloc(sizeof(char) * strlen(zerotag));
+            strcpy(otag, onetag);
+            strcpy(ztag, zerotag);
+            curTac->next = newTac(otag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            addLinkNode();
+            parseStmt(prev, stmt->children[4], returnValType, ttag, ftag);
+            //false label
+            curTac->next = newTac(ztag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            freeLinkNode();
+        }
         if (stmt->number == 7){
             addLinkNode();
             parseStmt(prev, stmt->children[6], returnValType, ttag, ftag);
@@ -1029,34 +1087,50 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
         labelCnt += 3;
         char* firstTag = generateLabel(firstLabel);
         curTac->next = newTac(firstTag, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = LABEL;
+        curTac = curTac->next; curTac->title = LABEL;
         Type* expType = parseExp(0, exp);
         if (expType == NULL) return;
         if(expType->category != PRIMITIVE || expType->primitive != TINT){
             printf("Error type 7 at Line %d: unmatching operands in while statement\n", exp->line);
             errorCnt++;
         }
-        char* trueTag = generateLabel(trueLabel);
-        curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
-        curTac = curTac->next;
-        curTac->title = IF;
-        char* falseTag = generateLabel(falseLabel);
-        curTac->next = newTac(falseTag, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = GOTO;
-        curTac->next = newTac(trueTag, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = LABEL;
-        addLinkNode();
-        parseStmt(leftmost, stmt->children[4], returnValType, firstTag, falseTag);
-        curTac->next = newTac(firstTag, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = GOTO;
-        curTac->next = newTac(falseTag, NULL, NULL, NULL);
-        curTac = curTac->next;
-        curTac->title = LABEL;
-        freeLinkNode();
+        if (expType->tag != NULL && strlen(expType->tag) > 0) {
+            //true condition
+            char* trueTag = generateLabel(trueLabel);
+            curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
+            curTac = curTac->next; curTac->title = IF;
+            //false condition
+            char* falseTag = generateLabel(falseLabel);
+            curTac->next = newTac(falseTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = GOTO;
+            //true label
+            curTac->next = newTac(trueTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            addLinkNode();
+            parseStmt(leftmost, stmt->children[4], returnValType, firstTag, falseTag);
+            curTac->next = newTac(firstTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = GOTO;
+            //false label
+            curTac->next = newTac(falseTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            freeLinkNode();
+        }else{
+            //true label
+            char* otag = (char*)malloc(sizeof(char) * strlen(onetag));
+            char* ztag = (char*)malloc(sizeof(char) * strlen(zerotag));
+            strcpy(otag, onetag);
+            strcpy(ztag, zerotag);
+            curTac->next = newTac(otag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            addLinkNode();
+            parseStmt(prev, stmt->children[4], returnValType, ttag, ftag);
+            curTac->next = newTac(firstTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = GOTO;
+            //false label
+            curTac->next = newTac(ztag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            freeLinkNode();
+        }        
     }else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
         //BREAK SEMI
         if (prev == NULL || strcmp(NDtypes[prev->type],"WHILE")){
@@ -1064,8 +1138,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
             errorCnt++;
         }else{
             curTac->next = newTac(ftag, NULL, NULL, NULL);
-            curTac = curTac->next;
-            curTac->title = GOTO;
+            curTac = curTac->next; curTac->title = GOTO;
         }
     }else if (!strcmp(NDtypes[leftmost->type],"CONTINUE")){
         //CONTINUE SEMI
@@ -1074,8 +1147,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
             errorCnt++;
         }else{
             curTac->next = newTac(ttag, NULL, NULL, NULL);
-            curTac = curTac->next;
-            curTac->title = GOTO;
+            curTac = curTac->next; curTac->title = GOTO;
         }
     }
 }

@@ -1,0 +1,37 @@
+FUNC mod :
+PARAM v0
+PARAM v1
+t0 := v0 / v1
+t1 := t0 * v1
+t2 := v0 - t1
+RETURN t2
+
+FUNC DigitSum :
+PARAM v2
+IF v2 == #0 GOTO label0
+GOTO label1
+LABEL label0 :
+RETURN #0
+LABEL label1 :
+ARG #10
+ARG v2
+t3 := CALL mod
+t4 := v2 / #10
+ARG t4
+t5 := CALL DigitSum
+t6 := t3 + t5
+RETURN t6
+
+FUNC main :
+READ v3
+IF v3 < #0 GOTO label2
+GOTO label3
+LABEL label2 :
+t8 := #0 - #1
+WRITE t8
+LABEL label3 :
+ARG v3
+t9 := CALL DigitSum
+WRITE t9
+RETURN #0
+Total lines: 34

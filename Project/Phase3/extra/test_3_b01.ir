@@ -1,0 +1,68 @@
+FUNC Joseph :
+PARAM v0
+PARAM v1
+DEC v2 400
+v3 := #1
+v4 := #0
+v5 := #0
+v6 := #0
+LABEL label0 :
+IF v3 <= v0 GOTO label1
+GOTO label2
+LABEL label1 :
+t0 := v3 * #4
+t1 := &v2 + t0
+*t1 := #1
+v3 := v3 + #1
+GOTO label0
+LABEL label2 :
+v3 := #1
+LABEL label3 :
+IF v3 <= v0 GOTO label4
+GOTO label5
+LABEL label4 :
+t4 := v3 * #4
+t5 := &v2 + t4
+t6 := *t5
+IF t6 == #1 GOTO label6
+GOTO label7
+LABEL label6 :
+t7 := v3 * #4
+t8 := &v2 + t7
+t9 := *t8
+v4 := v4 + t9
+IF v4 == v1 GOTO label8
+GOTO label9
+LABEL label8 :
+WRITE v3
+v4 := #0
+t11 := v3 * #4
+t12 := &v2 + t11
+*t12 := #0
+v5 := v5 + #1
+LABEL label9 :
+IF v5 == v0 GOTO label10
+GOTO label11
+LABEL label10 :
+v6 := v3
+RETURN #0
+LABEL label11 :
+LABEL label7 :
+IF v3 == v0 GOTO label12
+GOTO label13
+LABEL label12 :
+v3 := #0
+LABEL label13 :
+v3 := v3 + #1
+GOTO label3
+LABEL label5 :
+RETURN #0
+
+FUNC main :
+READ v7
+READ v8
+ARG v8
+ARG v7
+t18 := CALL Joseph
+RETURN #0
+Total lines: 66

@@ -1,0 +1,41 @@
+FUNC add :
+PARAM v0
+t0 := *v0
+t1 := v0 + #4
+t2 := *t1
+t3 := t0 + t2
+RETURN t3
+
+FUNC main :
+DEC v1 8
+DEC v2 8
+v3 := #0
+v4 := #0
+LABEL label0 :
+IF v3 < #2 GOTO label1
+GOTO label2
+LABEL label1 :
+LABEL label3 :
+IF v4 < #2 GOTO label4
+GOTO label5
+LABEL label4 :
+t4 := v4 * #4
+t5 := &v1 + t4
+*t5 := v3 + v4
+v4 := v4 + #1
+GOTO label3
+LABEL label5 :
+t9 := v3 * #4
+t10 := &v2 + t9
+ARG &v1
+*t10 := CALL add
+t13 := v3 * #4
+t14 := &v2 + t13
+t15 := *t14
+WRITE t15
+v3 := v3 + #1
+v4 := #0
+GOTO label0
+LABEL label2 :
+RETURN #0
+Total lines: 39

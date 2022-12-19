@@ -1,0 +1,68 @@
+FUNC gcd1 :
+PARAM v0
+PARAM v1
+t0 := v0 / v1
+t1 := t0 * v1
+v3 := v0 - t1
+LABEL label0 :
+IF v3 != #0 GOTO label1
+GOTO label2
+LABEL label1 :
+v0 := v1
+v1 := v3
+t3 := v0 / v1
+t4 := t3 * v1
+v3 := v0 - t4
+GOTO label0
+LABEL label2 :
+v2 := v1
+RETURN v2
+
+FUNC gcd2 :
+PARAM v4
+PARAM v5
+v6 := #0
+IF v4 > v5 GOTO label3
+GOTO label4
+LABEL label3 :
+t6 := v4 / v5
+t7 := t6 * v5
+v6 := v4 - t7
+IF v6 == #0 GOTO label5
+GOTO label6
+LABEL label5 :
+RETURN v5
+LABEL label6 :
+ARG v6
+ARG v5
+t9 := CALL gcd2
+RETURN t9
+LABEL label4 :
+t10 := v5 / v4
+t11 := t10 * v4
+v6 := v5 - t11
+IF v6 == #0 GOTO label7
+GOTO label8
+LABEL label7 :
+RETURN v4
+LABEL label8 :
+ARG v6
+ARG v4
+t13 := CALL gcd2
+RETURN t13
+
+FUNC main :
+READ t14
+v7 := t14
+READ t15
+v8 := t15
+ARG v8
+ARG v7
+t16 := CALL gcd1
+WRITE t16
+ARG v8
+ARG v7
+t17 := CALL gcd2
+WRITE t17
+RETURN #0
+Total lines: 65

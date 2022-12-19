@@ -1,0 +1,16 @@
+FUNC main :
+READ v0
+IF v0 > #0 GOTO label0
+GOTO label1
+LABEL label0 :
+WRITE #1
+LABEL label1 :
+IF v0 < #0 GOTO label2
+GOTO label3
+LABEL label2 :
+t1 := #0 - #1
+WRITE t1
+LABEL label3 :
+WRITE #0
+RETURN #0
+Total lines: 15

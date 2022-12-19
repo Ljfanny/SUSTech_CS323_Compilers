@@ -1,0 +1,25 @@
+FUNC fact :
+PARAM v0
+IF v0 == #1 GOTO label0
+GOTO label1
+LABEL label0 :
+RETURN v0
+LABEL label1 :
+t0 := v0 - #1
+ARG t0
+t1 := CALL fact
+t2 := v0 * t1
+RETURN t2
+
+FUNC main :
+READ v1
+IF v1 > #1 GOTO label2
+GOTO label3
+LABEL label2 :
+ARG v1
+v2 := CALL fact
+LABEL label3 :
+v2 := #1
+WRITE v2
+RETURN #0
+Total lines: 23

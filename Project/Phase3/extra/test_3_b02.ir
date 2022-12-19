@@ -1,0 +1,125 @@
+FUNC Swap :
+PARAM v0
+PARAM v1
+PARAM v2
+t0 := v1 * #4
+t1 := v0 + t0
+v3 := *t1
+t3 := v1 * #4
+t4 := v0 + t3
+t6 := v2 * #4
+t7 := v0 + t6
+*t4 := *t7
+t9 := v2 * #4
+t10 := v0 + t9
+*t10 := v3
+RETURN #0
+
+FUNC Partition :
+PARAM v4
+PARAM v5
+PARAM v6
+t12 := v5 * #4
+t13 := v4 + t12
+t14 := *t13
+v7 := t14
+LABEL label0 :
+IF v5 < v6 GOTO label1
+GOTO label2
+LABEL label1 :
+LABEL label3 :
+t15 := v6 * #4
+t16 := v4 + t15
+t17 := *t16
+IF v5 < v6 GOTO label6
+GOTO label7
+LABEL label6 :
+IF t17 >= v7 GOTO label8
+GOTO label7
+LABEL label8 :
+v6 := v6 - #1
+GOTO label3
+LABEL label7 :
+ARG v6
+ARG v5
+ARG v4
+t19 := CALL Swap
+LABEL label9 :
+t20 := v5 * #4
+t21 := v4 + t20
+t22 := *t21
+IF v5 < v6 GOTO label12
+GOTO label13
+LABEL label12 :
+IF t22 <= v7 GOTO label14
+GOTO label13
+LABEL label14 :
+v5 := v5 + #1
+GOTO label9
+LABEL label13 :
+ARG v6
+ARG v5
+ARG v4
+t24 := CALL Swap
+GOTO label0
+LABEL label2 :
+RETURN v5
+
+FUNC QuickSort :
+PARAM v8
+PARAM v9
+PARAM v10
+IF v9 < v10 GOTO label15
+GOTO label16
+LABEL label15 :
+ARG v10
+ARG v9
+ARG v8
+t25 := CALL Partition
+v11 := t25
+t26 := v11 - #1
+ARG t26
+ARG v9
+ARG v8
+t27 := CALL QuickSort
+t28 := v11 + #1
+ARG v10
+ARG t28
+ARG v8
+t29 := CALL QuickSort
+LABEL label16 :
+RETURN #0
+
+FUNC main :
+v12 := #8
+DEC v13 32
+v14 := #0
+LABEL label17 :
+IF v14 < v12 GOTO label18
+GOTO label19
+LABEL label18 :
+t30 := v14 * #4
+t31 := &v13 + t30
+READ *t31
+v14 := v14 + #1
+GOTO label17
+LABEL label19 :
+t35 := v12 - #1
+ARG t35
+ARG #0
+ARG &v13
+t36 := CALL QuickSort
+v14 := #0
+LABEL label20 :
+IF v14 < v12 GOTO label21
+GOTO label22
+LABEL label21 :
+t37 := v14 * #4
+t38 := &v13 + t37
+t39 := *t38
+WRITE t39
+v14 := v14 + #1
+GOTO label20
+LABEL label22 :
+RETURN #0
+Total lines: 121

@@ -1,0 +1,108 @@
+FUNC mod :
+PARAM v0
+PARAM v1
+t0 := v0 / v1
+t1 := t0 * v1
+t2 := v0 - t1
+v2 := t2
+v3 := v2
+RETURN v2
+
+FUNC power :
+PARAM v4
+PARAM v5
+t3 := #1 + v5
+t4 := t3 - v5
+v6 := t4
+LABEL label0 :
+t5 := v6 - v6
+t6 := t5 + #90
+t7 := t6 - #89
+t8 := t7 + #1
+t9 := t8 - #2
+IF v5 > t9 GOTO label1
+GOTO label2
+LABEL label1 :
+v6 := v6 * v4
+t11 := #2 * #1
+t12 := t11 * v5
+t13 := #1 * v5
+t14 := t12 - t13
+v5 := t14 - #1
+GOTO label0
+LABEL label2 :
+RETURN v6
+
+FUNC getNumDigits :
+PARAM v7
+v8 := #0
+IF v7 < #0 GOTO label3
+GOTO label4
+LABEL label3 :
+t16 := #0 - #1
+RETURN t16
+LABEL label4 :
+LABEL label5 :
+IF v7 > #0 GOTO label6
+GOTO label7
+LABEL label6 :
+v7 := v7 / #10
+v8 := v8 + #2
+v8 := v8 + #2
+v8 := v8 - #3
+GOTO label5
+LABEL label7 :
+RETURN v8
+
+FUNC isNarcissistic :
+PARAM v9
+t21 := #1 + v9
+t22 := t21 - #1
+ARG t22
+t23 := CALL getNumDigits
+v10 := t23
+v11 := #0
+v12 := v9
+LABEL label8 :
+IF v12 > #0 GOTO label9
+GOTO label10
+LABEL label9 :
+ARG #10
+ARG v12
+v13 := CALL mod
+t25 := v12 - v13
+v12 := t25 / #10
+ARG v10
+ARG v13
+t27 := CALL power
+v11 := v11 + t27
+GOTO label8
+LABEL label10 :
+IF v11 == v9 GOTO label11
+GOTO label12
+LABEL label11 :
+RETURN #1
+LABEL label12 :
+RETURN #0
+
+FUNC main :
+v14 := #0
+v15 := #300
+LABEL label13 :
+IF v15 < #500 GOTO label14
+GOTO label15
+LABEL label14 :
+ARG v15
+t29 := CALL isNarcissistic
+IF t29 == #1 GOTO label16
+GOTO label17
+LABEL label16 :
+WRITE v15
+v14 := v14 + #1
+LABEL label17 :
+v15 := v15 + #1
+GOTO label13
+LABEL label15 :
+WRITE v14
+RETURN v14
+Total lines: 103

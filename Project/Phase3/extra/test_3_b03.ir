@@ -1,0 +1,71 @@
+FUNC calculate_avg :
+PARAM v0
+v1 := #0
+v2 := #0
+LABEL label0 :
+IF v2 < #10 GOTO label1
+GOTO label2
+LABEL label1 :
+t0 := v0 + #4
+t1 := v2 * #12
+t2 := t0 + t1
+t3 := t2 + #4
+t4 := *t3
+v1 := v1 + t4
+v2 := v2 + #1
+GOTO label0
+LABEL label2 :
+t7 := v0 + #124
+*t7 := v1 / #10
+t10 := v0 + #124
+t11 := *t10
+RETURN t11
+
+FUNC main :
+DEC v3 640
+v4 := #0
+v6 := #0
+LABEL label3 :
+IF v4 < #5 GOTO label4
+GOTO label5
+LABEL label4 :
+v5 := #0
+t12 := v4 * #128
+t13 := &v3 + t12
+*t13 := v4
+LABEL label6 :
+IF v5 < #10 GOTO label7
+GOTO label8
+LABEL label7 :
+t15 := v4 * #128
+t16 := &v3 + t15
+t17 := t16 + #4
+t18 := v5 * #12
+t19 := t17 + t18
+t20 := t19 + #4
+t22 := v4 * #100
+t23 := #3000 + t22
+t24 := v5 * #150
+*t20 := t23 + t24
+v5 := v5 + #1
+GOTO label6
+LABEL label8 :
+t27 := v4 * #128
+t28 := &v3 + t27
+t29 := t28 + #124
+t31 := v4 * #128
+t32 := &v3 + t31
+ARG t32
+*t29 := CALL calculate_avg
+t34 := v4 * #128
+t35 := &v3 + t34
+t36 := t35 + #124
+t37 := *t36
+v6 := v6 + t37
+v4 := v4 + #1
+GOTO label3
+LABEL label5 :
+v6 := v6 / #5
+WRITE v6
+RETURN #0
+Total lines: 69
