@@ -14,8 +14,8 @@ char* zerotag;
 int errorCnt, labelCnt, vCnt, tCnt;
 char* NDtypes[] = { "TYPE", "INT", "FLOAT", "CHAR", "ID",
                     "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
-                    "BREAK", "CONTINUE",
-                    "DOT", "SEMI", "COMMA", "ASSIGN", "QM", "COLON",
+                    "BREAK", "CONTINUE", "DOT", "SEMI",
+                    "COMMA", "ASSIGN", "QM", "COLON",
                     "LT", "LE", "GT", "GE", "NE", "EQ",
                     "AND", "OR", "NOT", "DMINUS",
                     "PLUS", "MINUS", "MUL", "DIV",
