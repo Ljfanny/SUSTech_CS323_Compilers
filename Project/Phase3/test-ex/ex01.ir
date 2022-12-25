@@ -1,0 +1,10 @@
+FUNCTION main :
+READ v0
+READ v1
+IF v0 == v1 GOTO label0
+GOTO label1
+LABEL label0 :
+t2 := #1
+LABEL label1 :
+v2 := #0
+RETURN #0

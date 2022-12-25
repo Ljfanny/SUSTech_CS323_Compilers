@@ -5,7 +5,7 @@
 #include "hashmap.h"
 #include "translation.h"
 
-char* titles[] = {"FUNC", "READ", "WRITE", "LABEL", "GOTO",
+char* titles[] = {"FUNCTION", "READ", "WRITE", "LABEL", "GOTO",
                 "IF", "ASS", "OPER", "RETURN", "PARAM", "ARG", "DEC"};
 
 Tac * newTac(char* target, char* op, char* arg1, char* arg2){
@@ -52,7 +52,7 @@ void printTacs(Tac* head){
         lines++;
         head = head->next;
     }
-    printf("Total lines: %d", lines);
+    //printf("Total lines: %d", lines);
 }
 
 char* generateT(int t){

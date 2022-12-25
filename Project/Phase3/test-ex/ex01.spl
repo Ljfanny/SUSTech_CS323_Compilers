@@ -1,0 +1,8 @@
+int main()
+{
+    int m, n, j;
+    m = read();
+    n = read();
+    j = (m==n)? 1: 0;
+    return 0;
+}

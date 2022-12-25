@@ -1,0 +1,17 @@
+struct Apple
+{
+    int a;
+    int number[10][5][7][10];
+};
+
+int add(int a, int b){
+    return a + b;
+}
+
+int main()
+{
+    struct Apple aa;
+    aa.a = 15;
+    aa.number[0][2][3][4] = add(aa.a, aa.a);
+    return 0;
+}

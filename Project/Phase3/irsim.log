@@ -1,64 +1,63 @@
-[DEBUG] 2022-12-17 21:00:12,751 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[ERROR] 2022-12-17 21:00:12,751 (irsim.py 581): Line 1 does not belong to any function:
-FUNC main
-[ERROR] 2022-12-17 21:00:12,751 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
-[DEBUG] 2022-12-17 21:01:05,408 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[ERROR] 2022-12-17 21:01:05,408 (irsim.py 581): Line 1 does not belong to any function:
-FUNC main
-[ERROR] 2022-12-17 21:01:05,408 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
-[DEBUG] 2022-12-17 21:01:37,394 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test01.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[INFO] 2022-12-17 21:01:37,395 (irsim.py 567): File loaded successfully
-[INFO] 2022-12-17 21:02:37,833 (irsim.py 567): KeyboardInterrupt raised, quit program
-[DEBUG] 2022-12-17 21:02:39,920 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[INFO] 2022-12-17 21:02:39,921 (irsim.py 567): File loaded successfully
-[INFO] 2022-12-17 21:03:30,490 (irsim.py 567): Program has exited gracefully
-[INFO] 2022-12-17 21:03:30,490 (irsim.py 567): Total instructions = 3798
-[WARNING] 2022-12-17 21:03:30,649 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[INFO] 2022-12-17 21:18:09,873 (irsim.py 567): KeyboardInterrupt raised, quit program
-[DEBUG] 2022-12-17 21:21:20,483 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[ERROR] 2022-12-17 21:21:20,483 (irsim.py 581): Syntax error at line 1:
-FUNCTION main:
-[ERROR] 2022-12-17 21:21:20,483 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
-[DEBUG] 2022-12-17 21:21:34,865 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[ERROR] 2022-12-17 21:21:34,865 (irsim.py 581): Syntax error at line 16:
-LABEL label4:
-[ERROR] 2022-12-17 21:21:34,865 (irsim.py 581): Undefined label at line 11: GOTO label2
-[ERROR] 2022-12-17 21:21:34,865 (irsim.py 581): Loading failed
-[DEBUG] 2022-12-17 21:22:01,135 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[ERROR] 2022-12-17 21:22:01,136 (irsim.py 581): Syntax error at line 16:
-LABEL label4:
-[ERROR] 2022-12-17 21:22:01,136 (irsim.py 581): Undefined label at line 11: GOTO label2
-[ERROR] 2022-12-17 21:22:01,136 (irsim.py 581): Loading failed
-[DEBUG] 2022-12-17 21:23:44,926 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[ERROR] 2022-12-17 21:23:44,926 (irsim.py 581): Syntax error at line 16:
-LABEL label4:
-[ERROR] 2022-12-17 21:23:44,926 (irsim.py 581): Undefined label at line 11: GOTO label2
-[ERROR] 2022-12-17 21:23:44,926 (irsim.py 581): Loading failed
-[DEBUG] 2022-12-17 21:24:52,000 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[INFO] 2022-12-17 21:24:52,000 (irsim.py 567): File loaded successfully
-[INFO] 2022-12-17 21:24:57,356 (irsim.py 567): KeyboardInterrupt raised, quit program
-[DEBUG] 2022-12-17 21:25:12,822 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test04.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[INFO] 2022-12-17 21:25:12,823 (irsim.py 567): File loaded successfully
-[INFO] 2022-12-17 21:25:19,172 (irsim.py 567): KeyboardInterrupt raised, quit program
-[DEBUG] 2022-12-17 21:29:22,997 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[INFO] 2022-12-17 21:29:22,998 (irsim.py 567): File loaded successfully
-[INFO] 2022-12-17 21:29:27,068 (irsim.py 567): Program has exited gracefully
-[INFO] 2022-12-17 21:29:27,068 (irsim.py 567): Total instructions = 12
-[WARNING] 2022-12-17 21:29:29,636 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[WARNING] 2022-12-17 21:29:29,905 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[WARNING] 2022-12-17 21:29:30,199 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[WARNING] 2022-12-17 21:29:30,749 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[INFO] 2022-12-17 21:29:34,000 (irsim.py 567): Program has exited gracefully
-[INFO] 2022-12-17 21:29:34,000 (irsim.py 567): Total instructions = 24
-[INFO] 2022-12-17 21:29:36,683 (irsim.py 567): Program has exited gracefully
-[INFO] 2022-12-17 21:29:36,683 (irsim.py 567): Total instructions = 36
-[WARNING] 2022-12-17 21:29:37,051 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[WARNING] 2022-12-17 21:29:37,203 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[WARNING] 2022-12-17 21:29:37,399 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[WARNING] 2022-12-17 21:29:37,550 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[WARNING] 2022-12-17 21:29:37,750 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
-[DEBUG] 2022-12-17 21:31:00,126 (irsim.py 620): Parsed arguments: {'irpath': 'sample/1.ir', 'inputs': '', 'logpath': 'irsim.log'}
-[INFO] 2022-12-17 21:31:00,127 (irsim.py 567): File loaded successfully
-[INFO] 2022-12-17 21:31:05,404 (irsim.py 567): Program has exited gracefully
-[INFO] 2022-12-17 21:31:05,404 (irsim.py 567): Total instructions = 3798
-[WARNING] 2022-12-17 21:31:05,654 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
+[DEBUG] 2022-12-23 19:46:55,809 (irsim.py 620): Parsed arguments: {'irpath': 'ex01.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[DEBUG] 2022-12-23 19:47:06,772 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex01.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 19:47:06,772 (irsim.py 581): Line 1 does not belong to any function:
+FUNC main :
+[ERROR] 2022-12-23 19:47:06,772 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 19:47:36,707 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex02.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 19:47:36,710 (irsim.py 581): Line 1 does not belong to any function:
+FUNC main :
+[ERROR] 2022-12-23 19:47:36,710 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 19:47:40,322 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex03.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 19:47:40,322 (irsim.py 581): Line 1 does not belong to any function:
+FUNC main :
+[ERROR] 2022-12-23 19:47:40,322 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 19:48:19,316 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex01.ir', 'inputs': '1,2', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 19:48:19,316 (irsim.py 581): Line 1 does not belong to any function:
+FUNC main :
+[ERROR] 2022-12-23 19:48:19,316 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 19:49:42,591 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test01.ir', 'inputs': '1', 'logpath': 'irsim.log'}
+[INFO] 2022-12-23 19:49:42,591 (irsim.py 567): File loaded successfully
+[INFO] 2022-12-23 19:49:46,822 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2022-12-23 19:50:00,883 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex01.ir', 'inputs': '1,2', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 19:50:00,884 (irsim.py 581): Line 1 does not belong to any function:
+FUNC main :
+[ERROR] 2022-12-23 19:50:00,884 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 19:51:25,413 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex01.ir', 'inputs': '1,2', 'logpath': 'irsim.log'}
+[INFO] 2022-12-23 19:51:25,414 (irsim.py 567): File loaded successfully
+[INFO] 2022-12-23 19:54:28,585 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2022-12-23 19:54:36,303 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex02.ir', 'inputs': '1,2', 'logpath': 'irsim.log'}
+[INFO] 2022-12-23 19:54:36,304 (irsim.py 567): File loaded successfully
+[INFO] 2022-12-23 19:54:39,595 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2022-12-23 19:54:49,769 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex03.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 19:54:49,770 (irsim.py 581): Line 1 does not belong to any function:
+FUNC main :
+[ERROR] 2022-12-23 19:54:49,770 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 19:54:56,198 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex03.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2022-12-23 19:54:56,198 (irsim.py 567): File loaded successfully
+[INFO] 2022-12-23 19:54:59,201 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2022-12-23 19:55:27,479 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex05.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 19:55:27,479 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 19:55:45,784 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex04.ir', 'inputs': '1,2', 'logpath': 'irsim.log'}
+[INFO] 2022-12-23 19:55:45,784 (irsim.py 567): File loaded successfully
+[INFO] 2022-12-23 19:55:47,164 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2022-12-23 19:57:34,875 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex05.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 19:57:34,875 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 20:03:01,610 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex05.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 20:03:01,610 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 20:03:13,304 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex05.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 20:03:13,305 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 20:06:42,517 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex05.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 20:06:42,517 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 20:07:13,766 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex05.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-23 20:07:13,766 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-23 20:08:08,002 (irsim.py 620): Parsed arguments: {'irpath': 'test-ex/ex05.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2022-12-23 20:08:08,002 (irsim.py 567): File loaded successfully
+[INFO] 2022-12-23 20:08:12,801 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2022-12-24 23:33:54,639 (irsim.py 620): Parsed arguments: {'irpath': 'test/test_3_r03.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2022-12-24 23:33:54,640 (irsim.py 581): Line 1 does not belong to any function:
+FUNC main :
+[ERROR] 2022-12-24 23:33:54,640 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2022-12-24 23:34:44,993 (irsim.py 620): Parsed arguments: {'irpath': 'test/test_3_r03.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2022-12-24 23:34:44,994 (irsim.py 567): File loaded successfully
+[INFO] 2022-12-24 23:34:47,706 (irsim.py 567): Program has exited gracefully
+[INFO] 2022-12-24 23:34:47,706 (irsim.py 567): Total instructions = 3685

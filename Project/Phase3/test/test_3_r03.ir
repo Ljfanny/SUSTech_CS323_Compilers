@@ -1,4 +1,4 @@
-FUNC main :
+FUNCTION main :
 v0 := #30
 v1 := #0
 v2 := #1
@@ -32,4 +32,3 @@ v3 := v3 + #1
 GOTO label0
 LABEL label2 :
 RETURN #0
-Total lines: 34
