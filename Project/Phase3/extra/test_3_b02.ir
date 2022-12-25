@@ -9,7 +9,8 @@ t3 := v1 * #4
 t4 := v0 + t3
 t6 := v2 * #4
 t7 := v0 + t6
-*t4 := *t7
+t8 := *t7
+*t4 := t8
 t9 := v2 * #4
 t10 := v0 + t9
 *t10 := v3
@@ -100,7 +101,8 @@ GOTO label19
 LABEL label18 :
 t30 := v14 * #4
 t31 := &v13 + t30
-READ *t31
+READ t33
+*t31 := t33
 v14 := v14 + #1
 GOTO label17
 LABEL label19 :

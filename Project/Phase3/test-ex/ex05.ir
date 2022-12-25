@@ -21,5 +21,6 @@ t13 := &v2
 t14 := *t13
 ARG t14
 ARG t12
-*t9 := CALL add
+t15 := CALL add
+*t9 := t15
 RETURN #0

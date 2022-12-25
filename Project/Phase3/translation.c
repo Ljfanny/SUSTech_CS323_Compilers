@@ -402,11 +402,13 @@ Type *parseExp(int isAss, Node exp) {
                     target = itml->value;
                 }
                 if (!strcmp(curTac->target, rightmostType->tag)){
-                    curTac->target = target;
+                    if (target[0] == '*'){
+                        curTac->next = newTac(target, NULL, rightmostType->tag, NULL);
+                        curTac = curTac->next; curTac->title = ASS;
+                    }else curTac->target = target;
                 }else{
                     curTac->next = newTac(target, NULL, rightmostType->tag, NULL);
-                    curTac = curTac->next;
-                    curTac->title = ASS;
+                    curTac = curTac->next; curTac->title = ASS;
                 }
             }
         }

@@ -1,4 +1,4 @@
-Project Phase 3 Report
+# Project Phase 3 Report
 
 | SID      | Name   | Rate |
 | -------- | ------ | ---- |
@@ -10,7 +10,7 @@ Project Phase 3 Report
 
 In the intermediate representation generation section, we use tac class to generate IR code, including v, t variable and label. Based on semantic analysis, we use tac to connect them in series.
 
-As for tac.h
+As for tac.h:
 
 ```c
 #ifndef _TAC
@@ -39,7 +39,7 @@ char* generateLabel(int lbl);
 #endif
 ```
 
-For translation.h
+For translation.h:
 
 ```c
 #ifndef _SEMANTIC_ANALYSIS
