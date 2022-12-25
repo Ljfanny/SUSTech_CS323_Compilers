@@ -13,12 +13,14 @@ RETURN t2
 
 FUNCTION main :
 READ v1
-IF v1 > #1 GOTO label2
-GOTO label3
-LABEL label2 :
+IF v1 > #1 GOTO label3
+GOTO label4
+LABEL label3 :
 ARG v1
 v2 := CALL fact
-LABEL label3 :
+GOTO label5
+LABEL label4 :
 v2 := #1
+LABEL label5 :
 WRITE v2
 RETURN #0
