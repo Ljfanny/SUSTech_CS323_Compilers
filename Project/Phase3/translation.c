@@ -11,7 +11,9 @@ Tac* head = NULL;
 Tac* curTac = NULL;
 char* onetag;
 char* zerotag;
-int errorCnt, labelCnt, vCnt, tCnt;
+// used in if-else block
+char* endTag;
+int errorCnt, labelCnt, vCnt, tCnt, isEndTagDef;
 char* NDtypes[] = { "TYPE", "INT", "FLOAT", "CHAR", "ID",
                     "STRUCT", "IF", "WHILE", "ELSE", "RETURN",
                     "BREAK", "CONTINUE", "DOT", "SEMI",
@@ -33,6 +35,8 @@ void parseProgram(Node program) {
     tCnt = 0;
     onetag = NULL;
     zerotag = NULL;
+    endTag = NULL;
+    isEndTagDef = 0;
     initializeScope();
     //initializeHashmap();
     addReadFunc();
@@ -1111,14 +1115,14 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
             curTac = curTac->next; curTac->title = LABEL;
             addLinkNode();
             parseStmt(prev, stmt->children[4], returnValType, ttag, ftag);
-            //false label
-            curTac->next = newTac(falseTag, NULL, NULL, NULL);
-            curTac = curTac->next; curTac->title = LABEL;
             freeLinkNode();
         }
         if (stmt->number == 7){
-            char* endTag = generateLabel(labelCnt);
-            labelCnt++;
+            if (!isEndTagDef) {
+                endTag = generateLabel(labelCnt);
+                labelCnt++;
+                isEndTagDef++;
+            }
             curTac->next = newTac(endTag, NULL, NULL, NULL);
             curTac = curTac->next; curTac->title = GOTO;
             //false label
@@ -1127,8 +1131,10 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
             addLinkNode();
             parseStmt(prev, stmt->children[6], returnValType, ttag, ftag);
             freeLinkNode();
-            curTac->next = newTac(endTag, NULL, NULL, NULL);
-            curTac = curTac->next; curTac->title = LABEL;
+            if (!isEndTagDef) {
+                curTac->next = newTac(endTag, NULL, NULL, NULL);
+                curTac = curTac->next; curTac->title = LABEL;
+            }else isEndTagDef--;
         }else{
             //false label
             curTac->next = newTac(falseTag, NULL, NULL, NULL);
