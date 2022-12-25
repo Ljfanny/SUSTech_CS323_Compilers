@@ -15,60 +15,74 @@ IF v0 == #2 GOTO label4
 GOTO label5
 LABEL label4 :
 WRITE #29
+GOTO label6
 LABEL label5 :
 t6 := v0 / #2
 t7 := t6 * #2
-IF v0 == t7 GOTO label6
-GOTO label7
-LABEL label6 :
-WRITE #30
+IF v0 == t7 GOTO label7
+GOTO label8
 LABEL label7 :
-WRITE #31
-LABEL label3 :
-IF v0 == #2 GOTO label8
-GOTO label9
+WRITE #30
+GOTO label6
 LABEL label8 :
-WRITE #28
-LABEL label9 :
-t8 := v0 / #2
-t9 := t8 * #2
-IF v0 == t9 GOTO label10
+WRITE #31
+LABEL label6 :
+GOTO label9
+LABEL label3 :
+IF v0 == #2 GOTO label10
 GOTO label11
 LABEL label10 :
-WRITE #30
+WRITE #28
+GOTO label9
 LABEL label11 :
+t8 := v0 / #2
+t9 := t8 * #2
+IF v0 == t9 GOTO label12
+GOTO label13
+LABEL label12 :
+WRITE #30
+GOTO label9
+LABEL label13 :
 WRITE #31
+LABEL label9 :
+GOTO label14
 LABEL label1 :
 t10 := v1 / #4
 t11 := t10 * #4
-IF v1 == t11 GOTO label12
-GOTO label13
-LABEL label12 :
-IF v0 == #2 GOTO label14
-GOTO label15
-LABEL label14 :
-WRITE #29
+IF v1 == t11 GOTO label15
+GOTO label16
 LABEL label15 :
+IF v0 == #2 GOTO label17
+GOTO label18
+LABEL label17 :
+WRITE #29
+GOTO label14
+LABEL label18 :
 t12 := v0 / #2
 t13 := t12 * #2
-IF v0 == t13 GOTO label16
-GOTO label17
-LABEL label16 :
-WRITE #30
-LABEL label17 :
-WRITE #31
-LABEL label13 :
-IF v0 == #2 GOTO label18
-GOTO label19
-LABEL label18 :
-WRITE #28
+IF v0 == t13 GOTO label19
+GOTO label20
 LABEL label19 :
+WRITE #30
+GOTO label14
+LABEL label20 :
+WRITE #31
+GOTO label14
+LABEL label16 :
+IF v0 == #2 GOTO label21
+GOTO label22
+LABEL label21 :
+WRITE #28
+GOTO label14
+LABEL label22 :
 t14 := v0 / #2
 t15 := t14 * #2
-IF v0 == t15 GOTO label20
-GOTO label21
-LABEL label20 :
+IF v0 == t15 GOTO label23
+GOTO label24
+LABEL label23 :
 WRITE #30
-LABEL label21 :
+GOTO label14
+LABEL label24 :
 WRITE #31
+LABEL label14 :
 RETURN #0

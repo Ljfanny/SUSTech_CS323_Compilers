@@ -29,8 +29,10 @@ GOTO label3
 LABEL label2 :
 t8 := #0 - #1
 WRITE t8
+GOTO label4
 LABEL label3 :
 ARG v3
 t9 := CALL DigitSum
 WRITE t9
+LABEL label4 :
 RETURN #0

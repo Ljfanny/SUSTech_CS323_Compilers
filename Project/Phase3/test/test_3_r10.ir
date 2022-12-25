@@ -11,9 +11,8 @@ GOTO label4
 LABEL label3 :
 t1 := #0 - #1
 WRITE t1
-GOTO label5
+GOTO label2
 LABEL label4 :
 WRITE #0
-LABEL label5 :
 LABEL label2 :
 RETURN #0

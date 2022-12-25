@@ -81,20 +81,20 @@ RETURN #0
 FUNCTION main :
 v14 := #0
 v15 := #300
-LABEL label13 :
-IF v15 < #500 GOTO label14
-GOTO label15
 LABEL label14 :
+IF v15 < #500 GOTO label15
+GOTO label16
+LABEL label15 :
 ARG v15
 t22 := CALL isNarcissistic
-IF t22 == #1 GOTO label16
-GOTO label17
-LABEL label16 :
+IF t22 == #1 GOTO label17
+GOTO label18
+LABEL label17 :
 WRITE v15
 v14 := v14 + #1
-LABEL label17 :
+LABEL label18 :
 v15 := v15 + #1
-GOTO label13
-LABEL label15 :
+GOTO label14
+LABEL label16 :
 WRITE v14
 RETURN v14

@@ -41,11 +41,11 @@ LABEL label4 :
 t10 := v5 / v4
 t11 := t10 * v4
 v6 := v5 - t11
-IF v6 == #0 GOTO label7
-GOTO label8
-LABEL label7 :
+IF v6 == #0 GOTO label9
+GOTO label10
+LABEL label9 :
 RETURN v4
-LABEL label8 :
+LABEL label10 :
 ARG v6
 ARG v4
 t13 := CALL gcd2
