@@ -533,31 +533,55 @@ Type *parseExp(int isAss, Node exp) {
                 }else{
                     irop = "/";
                 }
-                if (irop[0] == '*'){
-                    if (!strcmp(rightmostType->tag, "#1")){
-                        result->tag = (char*)malloc(sizeof(char)*strlen(leftmostType->tag));
-                        strcpy(result->tag, leftmostType->tag);
-                        return result;
-                    }else if (!strcmp(leftmostType->tag, "#1")){
-                        result->tag = (char*)malloc(sizeof(char)*strlen(rightmostType->tag));
-                        strcpy(result->tag, rightmostType->tag);
+                if (leftmostType->tag[0] == '#' && rightmostType->tag[0] == '#') {
+                    char lf[10];
+                    char rg[10];
+                    for (size_t i = 1; i < strlen(leftmostType->tag); i++) {
+                        lf[i - 1] = leftmostType->tag[i];
+                    }
+                    for (size_t i = 1; i < strlen(rightmostType->tag); i++) {
+                        rg[i - 1] = rightmostType->tag[i];
+                    }
+                    int left = atoi(lf);
+                    int right = atoi(rg);
+                    int res = 0;
+                    if (irop[0] == '+') res = left + right;
+                    else if (irop[0] == '-') res = left - right;
+                    else if (irop[0] == '*') res = left * right;
+                    else res = left / right;
+                    int len = countLength(res) + 1;
+                    char tmp[10] = {0};
+                    itoa(res, tmp, 10);
+                    result->tag = (char*)malloc(sizeof(char) * len);
+                    strcat(result->tag, "#");
+                    strcat(result->tag, tmp);
+                }else{
+                    if (irop[0] == '*'){
+                        if (!strcmp(rightmostType->tag, "#1")){
+                            result->tag = (char*)malloc(sizeof(char)*strlen(leftmostType->tag));
+                            strcpy(result->tag, leftmostType->tag);
+                            return result;
+                        }else if (!strcmp(leftmostType->tag, "#1")){
+                            result->tag = (char*)malloc(sizeof(char)*strlen(rightmostType->tag));
+                            strcpy(result->tag, rightmostType->tag);
+                            return result;
+                        }
+                    }else if (irop[0] == '/'){
+                        if (!strcmp(rightmostType->tag, "#1")){
+                            result->tag = (char*)malloc(sizeof(char)*strlen(leftmostType->tag));
+                            strcpy(result->tag, leftmostType->tag);
+                            return result;
+                        }
+                    }else if (irop[0] == '-' && !strcmp(leftmostType->tag, rightmostType->tag)){
+                        result->tag = "#0";
                         return result;
                     }
-                }else if (irop[0] == '/'){
-                    if (!strcmp(rightmostType->tag, "#1")){
-                        result->tag = (char*)malloc(sizeof(char)*strlen(leftmostType->tag));
-                        strcpy(result->tag, leftmostType->tag);
-                        return result;
-                    }
-                }else if (irop[0] == '-' && !strcmp(leftmostType->tag, rightmostType->tag)){
-                    result->tag = "#0";
-                    return result;
+                    result->tag = generateT(tCnt);
+                    curTac-> next = newTac(result->tag, irop, leftmostType->tag, rightmostType->tag);
+                    curTac = curTac->next;
+                    curTac->title = OPER;
+                    tCnt++;
                 }
-                result->tag = generateT(tCnt);
-                curTac-> next = newTac(result->tag, irop, leftmostType->tag, rightmostType->tag);
-                curTac = curTac->next;
-                curTac->title = OPER;
-                tCnt++;
             }
         }else if(!strcmp(NDtypes[operator->type],"DMINUS")){
             //Exp DMINUS

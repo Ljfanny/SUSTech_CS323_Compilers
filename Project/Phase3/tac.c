@@ -52,7 +52,6 @@ void printTacs(Tac* head){
         lines++;
         head = head->next;
     }
-    //printf("Total lines: %d", lines);
 }
 
 char* generateT(int t){
