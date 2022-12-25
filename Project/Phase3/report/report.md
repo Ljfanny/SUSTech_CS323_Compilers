@@ -10,6 +10,29 @@
 
 In the intermediate representation generation section, we use tac class to generate IR code, including v, t variable and label. Based on semantic analysis, we use tac to connect them in series.
 
+### Test
+
+We can pass all the tests.
+
+### Optimization
+
+In the process of implementation, the following aspects were optimized.
+
+1. Numbers can be used directly as a variables.
+
+2. Subtracting two identical numbers directly assigns the result to 0.
+3. Any number plus or minus zero is itself.
+4. 1 multiplied by any number and any number divided by 1 is itself.
+5. Self-increment and self-decrement do not use additional temporary variables.
+6. *The address of the first element of an array or the first variable of a structure is the starting address of the array or structure.
+
+Several of the following attempted optimization strategies are incorrect.
+
+1. A number multiplied by a number and divided by the same number does not necessarily equal itself.
+2. Since it is not possible to ensure whether a variable has been modified again, the same operation on the same variable cannot use the previously computed result.
+
+What is listed above is roughly the entirety of the optimization.
+
 As for tac.h:
 
 ```c
@@ -39,100 +62,45 @@ char* generateLabel(int lbl);
 #endif
 ```
 
-For translation.h:
-
-```c
-#ifndef _SEMANTIC_ANALYSIS
-#define _SEMANTIC_ANALYSIS
-
-#include "node.h"
-#include "type.h"
-
-typedef struct FuncParamLinkNode {
-    char* tag;
-    struct FuncParamLinkNode* prev;
-    struct FuncParamLinkNode* next;
-} FuncParamLinkNode;
-
-typedef struct node *Node;
-
-...
-
-#endif
-```
-
 ## Bonus
 
-### multi-dimensional array
+We can pass all bonus part tests in GitHub. Since these tests are complicate enough and some of our group members are sick, we write relatively simple extra tests which can cover all bonus parts we writed.
 
-in translation.c
+### Multi-dimensional array
 
-```c
-FieldList *parseVarDec(int isStructDef, int isFuncParam, Node varDec, Type *type) {
-    //VarDec: VarDec LB INT RB (Array)
-    //       |ID
-    ...
-}
-```
+We can handle one-dimensional and even multi-dimensional nested arrays, including INT arrays as well as custom structure arrays.
 
-in test
+In test:
 
-![1671685364761](images/1671685364761.png)
+<img src="images/1671685364761.png" alt="1671685364761" style="zoom:67%;" />
 
-### structure
+### Structure
 
-in translation.c
+We can handle structure. Structure variables can appear in the program, and they can be declared as function parameters. The internal member variables of a structure can be either arrays or basic data types, in this case INT.
 
-```c
-else if (!strcmp(NDtypes[leftmost->type], "StructSpecifier")) {
-    //STRUCT ID
-    ...
-    //STRUCT ID LC DefList RC
-    ...
-}
-```
+In test:
 
-in test
+<img src="images/1671685469445.png" alt="1671685469445" style="zoom:67%;" />
 
-![1671685469445](images/1671685469445.png)
+### Continue & Break
 
-### continue and break
+We can handle continue and break instructions, which can jump correctly when encountered in the while loop.
 
-in translation.c
+In test:
 
-```c
-else if (!strcmp(NDtypes[leftmost->type],"BREAK")){
-    //BREAK SEMI
-    ...
-}
-    }else if (!strcmp(NDtypes[leftmost->type],"CONTINUE")){
-    //CONTINUE SEMI
-    ...
-}
-```
+<img src="images/1671685504729.png" alt="1671685504729" style="zoom:67%;" />
 
-in test
+### while(T--/--T)
 
-![1671685504729](images/1671685504729.png)
+We can handle while(T--){} block, where the loop body will execute T times for any non-negative integer T, and the loop terminates when T reaches zero.
 
-### --
+In test:
 
-in translation.c
+<img src="images/1671685427785.png" alt="1671685427785" style="zoom:67%;" />
 
-```c
-else if (!strcmp(NDtypes[leftmost->type],"DMINUS")) {
-    //DMINUS Exp
-    ...
-}
-```
+### Ternary operator(... ? ... : ...)
 
-in test
-
-![1671685427785](images/1671685427785.png)
-
-### Ternary operator(...? ...: ...)
-
-in translation.c
+In translation.c:
 
 ```c
 else if(!strcmp(NDtypes[operator->type],"QM")){
@@ -141,6 +109,6 @@ else if(!strcmp(NDtypes[operator->type],"QM")){
 }
 ```
 
-in test
+In test:
 
-![1671685535739](images/1671685535739.png)
+<img src="images/1671685535739.png" alt="1671685535739" style="zoom:67%;" />
