@@ -67,22 +67,23 @@ WRITE #30
 GOTO label14
 LABEL label20 :
 WRITE #31
-GOTO label14
+LABEL label14 :
+GOTO label21
 LABEL label16 :
-IF v0 == #2 GOTO label21
-GOTO label22
-LABEL label21 :
-WRITE #28
-GOTO label14
+IF v0 == #2 GOTO label22
+GOTO label23
 LABEL label22 :
+WRITE #28
+GOTO label21
+LABEL label23 :
 t14 := v0 / #2
 t15 := t14 * #2
-IF v0 == t15 GOTO label23
-GOTO label24
-LABEL label23 :
-WRITE #30
-GOTO label14
+IF v0 == t15 GOTO label24
+GOTO label25
 LABEL label24 :
+WRITE #30
+GOTO label21
+LABEL label25 :
 WRITE #31
-LABEL label14 :
+LABEL label21 :
 RETURN #0

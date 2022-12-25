@@ -1122,7 +1122,7 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
                 endTag = generateLabel(labelCnt);
                 labelCnt++;
                 isEndTagDef++;
-            }else isEndTagDef++;
+            }
             if(curTac->title != RETURN){
                 curTac->next = newTac(endTag, NULL, NULL, NULL);
                 curTac = curTac->next; curTac->title = GOTO;
@@ -1133,13 +1133,13 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
             addLinkNode();
             parseStmt(prev, stmt->children[6], returnValType, ttag, ftag);
             freeLinkNode();
-            if (isEndTagDef == 1) {
+            if (isEndTagDef) {
                 isEndTagDef--;
                 if (curTac->title != RETURN) {
                     curTac->next = newTac(endTag, NULL, NULL, NULL);
                     curTac = curTac->next; curTac->title = LABEL;
                 }
-            }else isEndTagDef--;
+            }
         }else{
             //false label
             curTac->next = newTac(falseTag, NULL, NULL, NULL);
