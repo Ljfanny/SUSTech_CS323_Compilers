@@ -1081,20 +1081,32 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
             printf("Error type 7 at Line %d: unmatching operands in if statement\n", exp->line);
             errorCnt++;
         }
+        char* trueTag = NULL;
+        char* falseTag = NULL;
         if (expType->tag != NULL && strlen(expType->tag) > 0) {
             int trueLabel = labelCnt;
             int falseLabel = labelCnt + 1;
-            int len = 0;
             labelCnt += 2;
             //true condition
-            char* trueTag = generateLabel(trueLabel);
+            trueTag = generateLabel(trueLabel);
             curTac->next = newTac(trueTag, NULL, expType->tag, NULL);
             curTac = curTac->next; curTac->title = IF;
             //false condition
-            char* falseTag = generateLabel(falseLabel);
+            falseTag = generateLabel(falseLabel);
             curTac->next = newTac(falseTag, NULL, NULL, NULL);
             curTac = curTac->next; curTac->title = GOTO;
             //true label
+            curTac->next = newTac(trueTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+            addLinkNode();
+            parseStmt(prev, stmt->children[4], returnValType, ttag, ftag);
+            freeLinkNode();
+        }else{
+            //true label
+            trueTag = (char*)malloc(sizeof(char) * strlen(onetag));
+            falseTag = (char*)malloc(sizeof(char) * strlen(zerotag));
+            strcpy(trueTag, onetag);
+            strcpy(falseTag, zerotag);
             curTac->next = newTac(trueTag, NULL, NULL, NULL);
             curTac = curTac->next; curTac->title = LABEL;
             addLinkNode();
@@ -1103,25 +1115,24 @@ void parseStmt(Node prev, Node stmt, Type * returnValType, char* ttag, char* fta
             curTac->next = newTac(falseTag, NULL, NULL, NULL);
             curTac = curTac->next; curTac->title = LABEL;
             freeLinkNode();
-        }else{
-            //true label
-            char* otag = (char*)malloc(sizeof(char) * strlen(onetag));
-            char* ztag = (char*)malloc(sizeof(char) * strlen(zerotag));
-            strcpy(otag, onetag);
-            strcpy(ztag, zerotag);
-            curTac->next = newTac(otag, NULL, NULL, NULL);
-            curTac = curTac->next; curTac->title = LABEL;
-            addLinkNode();
-            parseStmt(prev, stmt->children[4], returnValType, ttag, ftag);
-            //false label
-            curTac->next = newTac(ztag, NULL, NULL, NULL);
-            curTac = curTac->next; curTac->title = LABEL;
-            freeLinkNode();
         }
         if (stmt->number == 7){
+            char* endTag = generateLabel(labelCnt);
+            labelCnt++;
+            curTac->next = newTac(endTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = GOTO;
+            //false label
+            curTac->next = newTac(falseTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
             addLinkNode();
             parseStmt(prev, stmt->children[6], returnValType, ttag, ftag);
             freeLinkNode();
+            curTac->next = newTac(endTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
+        }else{
+            //false label
+            curTac->next = newTac(falseTag, NULL, NULL, NULL);
+            curTac = curTac->next; curTac->title = LABEL;
         }
     }else if(!strcmp(NDtypes[leftmost->type],"WHILE")){
         //|WHILE LP Exp RP Stmt
