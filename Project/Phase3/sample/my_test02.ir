@@ -1,4 +1,4 @@
-FUNC fact :
+FUNCTION fact :
 PARAM v0
 IF v0 == #1 GOTO label0
 GOTO label1
@@ -11,7 +11,7 @@ t1 := CALL fact
 t2 := v0 * t1
 RETURN t2
 
-FUNC main :
+FUNCTION main :
 READ v1
 IF v1 > #1 GOTO label2
 GOTO label3
@@ -22,4 +22,3 @@ LABEL label3 :
 v2 := #1
 WRITE v2
 RETURN #0
-Total lines: 23

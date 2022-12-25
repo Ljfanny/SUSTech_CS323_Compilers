@@ -1,4 +1,4 @@
-FUNC add :
+FUNCTION add :
 PARAM v0
 t0 := *v0
 t1 := v0 + #4
@@ -6,7 +6,7 @@ t2 := *t1
 t3 := t0 + t2
 RETURN t3
 
-FUNC main :
+FUNCTION main :
 DEC v2 8
 t4 := &v2
 *t4 := #1
@@ -16,4 +16,3 @@ ARG &v2
 v1 := CALL add
 WRITE v1
 RETURN #0
-Total lines: 17

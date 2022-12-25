@@ -1,4 +1,4 @@
-FUNC main :
+FUNCTION main :
 READ v0
 IF v0 > #0 GOTO label0
 GOTO label1
@@ -13,4 +13,3 @@ WRITE t1
 LABEL label3 :
 WRITE #0
 RETURN #0
-Total lines: 15

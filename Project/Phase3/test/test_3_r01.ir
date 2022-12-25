@@ -1,4 +1,4 @@
-FUNC main :
+FUNCTION main :
 v3 := #0
 v0 := #5
 t0 := v0 * v0
@@ -16,4 +16,3 @@ t9 := t8 - #4
 v3 := t7 + t9
 WRITE v3
 RETURN #0
-Total lines: 18

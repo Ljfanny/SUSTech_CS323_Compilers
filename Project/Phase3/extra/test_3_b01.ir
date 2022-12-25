@@ -1,4 +1,4 @@
-FUNC Joseph :
+FUNCTION Joseph :
 PARAM v0
 PARAM v1
 DEC v2 400
@@ -58,11 +58,10 @@ GOTO label3
 LABEL label5 :
 RETURN #0
 
-FUNC main :
+FUNCTION main :
 READ v7
 READ v8
 ARG v8
 ARG v7
 t18 := CALL Joseph
 RETURN #0
-Total lines: 66

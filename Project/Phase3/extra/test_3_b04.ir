@@ -1,4 +1,4 @@
-FUNC main :
+FUNCTION main :
 DEC v0 8
 DEC v1 8
 t0 := &v0
@@ -16,4 +16,3 @@ t10 := &v0 + #4
 t11 := *t10
 WRITE t11
 RETURN #0
-Total lines: 18

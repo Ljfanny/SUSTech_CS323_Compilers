@@ -1,4 +1,4 @@
-FUNC mod :
+FUNCTION mod :
 PARAM v0
 PARAM v1
 t0 := v0 / v1
@@ -8,7 +8,7 @@ v2 := t2
 v3 := v2
 RETURN v2
 
-FUNC power :
+FUNCTION power :
 PARAM v4
 PARAM v5
 t3 := #1 + v5
@@ -30,7 +30,7 @@ GOTO label0
 LABEL label2 :
 RETURN v6
 
-FUNC getNumDigits :
+FUNCTION getNumDigits :
 PARAM v7
 v8 := #0
 IF v7 < #0 GOTO label3
@@ -51,7 +51,7 @@ GOTO label5
 LABEL label7 :
 RETURN v8
 
-FUNC isNarcissistic :
+FUNCTION isNarcissistic :
 PARAM v9
 t18 := #1 + v9
 t19 := t18 - #1
@@ -82,7 +82,7 @@ RETURN #1
 LABEL label12 :
 RETURN #0
 
-FUNC main :
+FUNCTION main :
 v14 := #0
 v15 := #300
 LABEL label13 :
@@ -102,4 +102,3 @@ GOTO label13
 LABEL label15 :
 WRITE v14
 RETURN v14
-Total lines: 100

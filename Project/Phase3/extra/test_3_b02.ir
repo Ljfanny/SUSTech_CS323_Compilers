@@ -1,4 +1,4 @@
-FUNC Swap :
+FUNCTION Swap :
 PARAM v0
 PARAM v1
 PARAM v2
@@ -15,7 +15,7 @@ t10 := v0 + t9
 *t10 := v3
 RETURN #0
 
-FUNC Partition :
+FUNCTION Partition :
 PARAM v4
 PARAM v5
 PARAM v6
@@ -65,7 +65,7 @@ GOTO label0
 LABEL label2 :
 RETURN v5
 
-FUNC QuickSort :
+FUNCTION QuickSort :
 PARAM v8
 PARAM v9
 PARAM v10
@@ -90,7 +90,7 @@ t29 := CALL QuickSort
 LABEL label16 :
 RETURN #0
 
-FUNC main :
+FUNCTION main :
 v12 := #8
 DEC v13 32
 v14 := #0
@@ -122,4 +122,3 @@ v14 := v14 + #1
 GOTO label20
 LABEL label22 :
 RETURN #0
-Total lines: 121

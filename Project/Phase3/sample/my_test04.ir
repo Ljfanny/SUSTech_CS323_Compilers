@@ -1,4 +1,4 @@
-FUNC add :
+FUNCTION add :
 PARAM v0
 t0 := *v0
 t1 := v0 + #4
@@ -6,7 +6,7 @@ t2 := *t1
 t3 := t0 + t2
 RETURN t3
 
-FUNC main :
+FUNCTION main :
 DEC v1 8
 DEC v2 8
 v3 := #0
@@ -38,4 +38,3 @@ v4 := #0
 GOTO label0
 LABEL label2 :
 RETURN #0
-Total lines: 39

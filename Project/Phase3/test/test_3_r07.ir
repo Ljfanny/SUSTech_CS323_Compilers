@@ -1,4 +1,4 @@
-FUNC gcd1 :
+FUNCTION gcd1 :
 PARAM v0
 PARAM v1
 t0 := v0 / v1
@@ -18,7 +18,7 @@ LABEL label2 :
 v2 := v1
 RETURN v2
 
-FUNC gcd2 :
+FUNCTION gcd2 :
 PARAM v4
 PARAM v5
 v6 := #0
@@ -51,7 +51,7 @@ ARG v4
 t13 := CALL gcd2
 RETURN t13
 
-FUNC main :
+FUNCTION main :
 READ t14
 v7 := t14
 READ t15
@@ -65,4 +65,3 @@ ARG v7
 t17 := CALL gcd2
 WRITE t17
 RETURN #0
-Total lines: 65

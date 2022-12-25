@@ -1,4 +1,4 @@
-FUNC main :
+FUNCTION main :
 v5 := #1
 v6 := #2
 v7 := #3
@@ -35,4 +35,3 @@ LABEL label9 :
 WRITE v3
 LABEL label6 :
 RETURN #0
-Total lines: 37
