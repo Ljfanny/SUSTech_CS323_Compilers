@@ -538,8 +538,8 @@ Type *parseExp(int isAss, Node exp) {
                     irop = "/";
                 }
                 if (leftmostType->tag[0] == '#' && rightmostType->tag[0] == '#') {
-                    char lf[10];
-                    char rg[10];
+                    char* lf = (char*)malloc(sizeof(char) * (strlen(leftmostType->tag) - 1));
+                    char* rg = (char*)malloc(sizeof(char) * (strlen(rightmostType->tag) - 1));
                     for (size_t i = 1; i < strlen(leftmostType->tag); i++) {
                         lf[i - 1] = leftmostType->tag[i];
                     }
