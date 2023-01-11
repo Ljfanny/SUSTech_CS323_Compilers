@@ -177,3 +177,13 @@ READ *t31
 [INFO] 2022-12-25 23:48:40,261 (irsim.py 567): Program has exited gracefully
 [INFO] 2022-12-25 23:48:40,261 (irsim.py 567): Total instructions = 20
 [INFO] 2022-12-26 00:04:46,680 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2023-01-10 22:08:38,341 (irsim.py 620): Parsed arguments: {'irpath': 'test/test_3_r01.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-10 22:08:38,344 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-10 22:08:40,519 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-10 22:08:40,519 (irsim.py 567): Total instructions = 18
+[DEBUG] 2023-01-10 22:11:27,188 (irsim.py 620): Parsed arguments: {'irpath': 'test/test_3_r02.ir', 'inputs': '2000,9', 'logpath': 'irsim.log'}
+[INFO] 2023-01-10 22:11:27,191 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-10 22:11:29,436 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-10 22:11:29,436 (irsim.py 567): Total instructions = 21
+[INFO] 2023-01-10 22:11:43,564 (irsim.py 567): KeyboardInterrupt raised, quit program
+[INFO] 2023-01-10 22:11:43,565 (irsim.py 567): KeyboardInterrupt raised, quit program
